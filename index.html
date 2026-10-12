@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#11151d">
+ <title>Sprite Foundry — Map & Motion Lab</title><link rel="stylesheet" href="style.css">
+ <script src="library.js" defer></script><script src="project.js" defer></script><script src="ui.js" defer></script><script src="physics.js" defer></script><script src="autocut.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+ <header class="topbar">
+  <div class="brand"><span class="brand-mark">◈</span><div><h1>SPRITE FOUNDRY</h1><p>MAP & MOTION LAB</p></div></div>
+  <div class="view-actions"><button id="toggleLibrary" aria-pressed="true">Library</button><button id="toggleInspector" aria-pressed="true">Controls</button><button id="resetLayout" title="Restore default panel widths">Reset layout</button><button id="fullscreen">Fullscreen</button></div>
+  <div class="top-actions"><span id="saveStatus">Local workspace</span><button id="newProject" title="Start a fresh empty map; keep your sprite library">New blank project</button><button id="loadMap">Open</button><button id="saveMap">Save project</button><button id="exportPNG" class="accent">Export PNG ↗</button></div>
+ </header>
+ <main id="workspaceLayout">
+  <aside class="library panel" id="libraryPanel">
+   <div class="section-title"><h2>Asset library</h2><span>YOUR SHEETS</span></div>
+   <details class="image-import"><summary>+ Upload sprite sheets</summary>
+    <label class="upload">Terrain sheets<input id="terrainUpload" type="file" accept="image/png,image/jpeg,image/webp" multiple><span id="terrainSource" class="source-name">terrain5.png</span></label>
+    <label class="upload">Character sheets<input id="mobUpload" type="file" accept="image/png,image/jpeg,image/webp" multiple><span id="mobSource" class="source-name">Mobs5.png</span></label>
+    <label class="upload">Asset sheets<input id="assetUpload" type="file" accept="image/png,image/jpeg,image/webp" multiple><span id="assetSource" class="source-name">Upload an asset sheet</span></label>
+    <p class="muted">Select several files at once. Sheets start with a 4 × 4 cut and remain in your library.</p>
+   </details>
+   <div class="tabs"><button id="terrainTab" class="active">Terrain</button><button id="assetTab">Assets</button><button id="mobTab">Mobs</button><button id="backgroundTab">Color</button></div>
+   <div id="spriteLibrary">
+    <div class="sheet-library"><div class="section-title"><span class="eyebrow">SAVED SHEETS</span><span id="libraryCount"></span></div><div id="sheetList" class="sheet-list" aria-label="Saved sprite sheets"></div></div>
+    <p id="paletteHint" class="muted">Click a sprite, then paint on the map.</p><div id="palette" class="palette"></div>
+    <div class="selected-card"><canvas id="preview" width="144" height="144"></canvas><div><span class="eyebrow">CURRENT BRUSH</span><h3 id="assetName"></h3><p id="assetMeta"></p></div></div>
+    <button id="openCutEditor" class="wide cut-launch">✂ Edit this sheet's cut</button>
+   </div>
+   <section id="backgroundTools" hidden><span class="eyebrow">PAINT BELOW THE TILES</span>
+    <label class="color-control">Brush color<input id="backgroundColor" type="color" value="#354b3a"><output id="backgroundColorValue">#354b3a</output></label><div id="colorSwatches" class="color-swatches" aria-label="Background color swatches"></div>
+    <p class="muted">Paint or flood-fill colors underneath terrain and sprites. Erase on this layer to restore the map's base color.</p>
+    <label class="color-control">Map base color<input id="baseColor" type="color" value="#171e29"></label><button id="paintAllBackground" class="wide">Paint whole background</button>
+   </section>
+   <details class="sheet-settings"><summary>Sprite display settings</summary><label class="check"><input id="trimTerrain" type="checkbox" checked> Trim terrain padding</label><label class="check"><input id="trimAssets" type="checkbox" checked> Trim asset padding</label><p class="muted">Terrain → assets → characters. Transparent PNGs reveal the background beneath.</p></details>
+   <div class="library-footer"><span class="status-dot"></span><span id="sheetStatus">Loading sheets…</span></div>
+  </aside>
+  <div id="resizeLibrary" class="panel-resizer" role="separator" tabindex="0" aria-label="Resize asset library" aria-orientation="vertical"></div>
+  <section class="workspace">
+   <div class="toolbar panel"><div class="tools"><button data-tool="paint" class="active" title="Paint (B)">✎ <span>Paint</span></button><button data-tool="erase" title="Erase active layer (E)">⌫ <span>Erase</span></button><button data-tool="fill" title="Flood fill terrain or color (F)">▧ <span>Fill</span></button><button data-tool="pick" title="Pick sprite or color (I)">⌖ <span>Pick</span></button><button data-tool="pan" title="Pan (H or hold Space)">✥ <span>Pan</span></button><button data-tool="wall" title="Draw boundaries along cell edges (W)">▥ <span>Wall</span></button><button data-tool="block" title="Paint blocked cells (X)">▩ <span>Block</span></button></div><div class="history"><button id="undo" title="Undo (Ctrl+Z)">↶</button><button id="redo" title="Redo (Ctrl+Shift+Z)">↷</button></div></div>
+   <div class="canvas-wrap" id="canvasWrap"><canvas id="mapCanvas" aria-label="Editable sprite map"></canvas><div class="canvas-caption"><span class="status-dot"></span><span id="activeLayerLabel">TERRAIN</span><span id="mapDimensions"></span></div><div class="zoom-controls"><button id="zoomOut" aria-label="Zoom out">−</button><span id="zoomLabel">100%</span><button id="zoomIn" aria-label="Zoom in">+</button><button id="fitView">Fit map</button></div></div>
+   <div class="bottom-bar panel"><span id="cursorStatus">Choose a brush and paint</span><span>Right click: erase · Space + drag: pan · Wheel: zoom</span></div>
+  </section>
+  <div id="resizeInspector" class="panel-resizer" role="separator" tabindex="0" aria-label="Resize controls" aria-orientation="vertical"></div>
+  <aside class="inspector panel" id="inspectorPanel">
+   <div class="section-title"><h2>Scene controls</h2><span class="live-pill">LIVE</span></div>
+   <section><span class="eyebrow">PLACE & PREVIEW</span><button id="playPause" class="wide accent">Ⅱ Pause preview</button><label class="control-label">New mob size <output id="sizeValue">90%</output><input id="mobSize" type="range" min="10" max="350" value="90"></label><label class="control-label">New asset size <output id="assetSizeValue">100%</output><input id="assetSize" type="range" min="10" max="350" value="100"></label><p class="muted">New placements keep these sizes. Resize existing sprites individually below.</p><label class="check"><input id="roam" type="checkbox" checked> Let mobs roam</label><label class="control-label">Idle frame rate <output id="fpsValue">3 fps</output><input id="fps" type="range" min="1" max="12" value="3"></label><label class="control-label">Movement speed <output id="speedValue">0.6 tiles/s</output><input id="speed" type="range" min="0" max="20" value="6"></label></section>
+   <details class="inspector-group" open><summary>Placed assets <span id="assetCount">0</span></summary><div id="assetSizes" class="placement-size-list"></div></details>
+   <details class="inspector-group" open><summary>Placed mobs <span id="mobCount">0</span></summary><div id="mobSizes" class="placement-size-list"></div></details>
+   <details class="inspector-group" open><summary>Boundaries & collision</summary><label class="check"><input id="enableCollision" type="checkbox" checked> Enable collisions</label><label class="check"><input id="collideMobs" type="checkbox" checked> Mobs collide with each other</label><label class="check"><input id="collideAssets" type="checkbox" checked> Mobs collide with solid assets</label><label class="check"><input id="keepInside" type="checkbox" checked> Keep hitboxes inside map edges</label><label class="check"><input id="stayOnTerrain" type="checkbox" checked> Roam only on painted terrain</label><label class="check"><input id="newAssetsSolid" type="checkbox" checked> New assets are solid</label><label class="control-label">Hitbox size <output id="hitboxValue">40% of sprite</output><input id="hitboxScale" type="range" min="10" max="100" value="40"></label><label class="check"><input id="showCollision" type="checkbox" checked> Show walls and blocked cells</label><label class="check"><input id="showHitboxes" type="checkbox"> Show sprite hitboxes</label><div class="button-pair"><button id="wallTool">Draw walls</button><button id="blockTool">Block cells</button></div><label class="check"><input id="straightWalls" type="checkbox" checked> Straight wall lines</label><button id="clearCollision" class="wide">Clear walls & blocked cells</button><p class="muted">Drag Wall to preview a straight line; release to apply. Disable Straight wall lines for freehand, or hold Shift to snap. Right-drag erases walls. Block paints forbidden cells. Solid checkboxes on placed sprites control their sprite collisions. Collision overlays stay out of PNG exports.</p></details>
+   <details class="inspector-group"><summary>Map dimensions & visibility</summary><div class="dimension-inputs"><label>Width<input id="mapWidth" type="number" min="4" max="64" value="20"></label><label>Height<input id="mapHeight" type="number" min="4" max="64" value="14"></label></div><button id="resizeMap" class="wide">Resize map</button><label class="check"><input id="showGrid" type="checkbox" checked> Show grid</label><label class="check"><input id="showAssets" type="checkbox" checked> Show assets</label><label class="check"><input id="showMobs" type="checkbox" checked> Show mobs</label><p class="muted"><strong id="tileCount">0</strong> terrain tiles</p></details>
+   <details class="inspector-group project-controls"><summary>World maps & dungeon floors</summary><label class="control-label">Project name<input id="projectName" type="text" maxlength="80" value="My dungeon"></label><label class="control-label">Current map<select id="sceneSelect"></select></label><label class="control-label">Map type<select id="sceneKind"><option value="floor">Dungeon floor</option><option value="world">World map</option><option value="area">Area / room</option></select></label><label class="control-label">Map name<input id="sceneName" type="text" maxlength="80" value="Floor 1"></label><label class="control-label">Dungeon / region<input id="sceneGroup" type="text" maxlength="80" value="Main dungeon"></label><label class="control-label">Floor number<input id="sceneFloor" type="number" min="-99" max="999" value="1"></label><button id="updateScene" class="wide">Update map details</button><div class="button-pair"><button id="newFloor">+ Floor</button><button id="newWorld">+ World</button></div><button id="newArea" class="wide">+ Area / room</button><button id="duplicateScene" class="wide">Duplicate current map</button><button id="saveScene" class="wide">Save current map only</button></details>
+   <details class="inspector-group"><summary>Scene actions & shortcuts</summary><button id="demoMap" class="wide">✦ Load demo scene</button><button id="clearMap" class="wide danger">Clear map</button><button id="restorePreviousProject" class="wide" disabled>Restore previous project</button><p class="muted shortcuts">B paint · E erase · F fill · I pick<br>H pan · P play/pause · Ctrl/Cmd + Z undo<br>Drag panel edges to resize the workspace.</p></details>
+  </aside>
+ </main>
+ <dialog id="cutDialog" aria-labelledby="cutDialogTitle">
+  <header class="dialog-header"><div><h2 id="cutDialogTitle">Sprite cutting studio</h2><p id="cutSheetName" class="muted">Select a saved sheet first.</p></div><button id="closeCutEditor" aria-label="Close sprite cutting studio">✕ Close</button></header>
+  <div class="cut-studio"><div class="cut-stage"><canvas id="cutPreview" width="1200" height="900" aria-label="Draggable sheet cutting preview"></canvas><p class="muted">Drag green boundaries. Blue outlines show the resulting sprite cuts.</p></div><aside class="cut-controls">
+   <div class="dimension-inputs"><label>Columns<input id="cutColumns" type="number" min="1" max="16" value="4"></label><label>Rows<input id="cutRows" type="number" min="1" max="16" value="4"></label></div>
+   <div class="dimension-inputs"><label>Left margin<input id="cutLeft" type="number" min="0" value="0"></label><label>Top margin<input id="cutTop" type="number" min="0" value="0"></label></div>
+   <div class="dimension-inputs"><label>Right margin<input id="cutRight" type="number" min="0" value="0"></label><label>Bottom margin<input id="cutBottom" type="number" min="0" value="0"></label></div>
+   <div class="dimension-inputs"><label>Gap X<input id="cutGapX" type="number" min="0" value="0"></label><label>Gap Y<input id="cutGapY" type="number" min="0" value="0"></label></div>
+   <div class="dimension-inputs"><label>Inset X<input id="cutInsetX" type="number" min="0" value="0"></label><label>Inset Y<input id="cutInsetY" type="number" min="0" value="0"></label></div>
+   <button id="autoCut" class="wide">✦ Detect transparent gutters</button><p class="muted">Auto-cut proposes boundaries for the chosen rows and columns. Transparent PNGs work best. Review the preview, then Apply to save.</p><p class="muted">Values are image pixels. Drag boundaries for uneven cells. Mob columns must be even. A cut cannot remove cells used by maps or undo history.</p><button id="applyCut" class="wide accent">Apply & save cut</button><button id="resetCut" class="wide">Reset to 4 × 4</button><p id="cutFeedback" class="muted" role="status">Changes are saved when you click Apply.</p>
+  </aside></div>
+ </dialog>
+ <div id="toast" role="status"></div><input id="mapFile" type="file" accept=".json,application/json" hidden>
+</body>
+</html>
+
