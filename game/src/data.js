@@ -14,5 +14,5 @@ export const sheets = Array.from({length:111},(_,i)=>i+1).map(n=>({id:String(n).
 export const spriteRegistry = Object.fromEntries(sheets.flatMap(s=>Array.from({length:16},(_,cell)=>[
   `${s.id}.r${Math.floor(cell/4)+1}c${cell%4+1}`,{sheet:s.id,cell}
 ])));
-export const art = {adventurers:'01',floor:'03',walls:'04',props:'05'};
+export const art = {adventurers:'01',floor:'05',walls:'04',props:'03'};
 
