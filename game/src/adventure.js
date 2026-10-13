@@ -17,7 +17,15 @@ export class Adventure {
   if(this.current)this.current.drops=pr.drops;
   let region=this.regions.get(id);
   if(!region){const combat=new Combat(world,p,pr.stats);combat.randomState=world.numericSeed||1;combat.start();combat.onNotice=this.onNotice;if(world.depth===2)for(const e of combat.enemies)e.faction='underkeep';region={world,combat,drops:[]};this.regions.set(id,region);
-   combat.onDefeat=(enemy)=>{this.totalKills=(this.totalKills||0)+1;if(!enemy.noLoot)pr.drop(enemy,this.totalKills);if(enemy.finalBoss){
+   combat.onDefeat=(enemy)=>{if(!enemy.wildlife)this.totalKills=(this.totalKills||0)+1;if(!enemy.noLoot)pr.drop(enemy,this.totalKills||1);if(enemy.colossal){
+    // Expedition bosses are optional; never satisfy story artifact or dungeon boss conditions.
+    world.colossiDefeated??=new Set();world.colossiDefeated.add(enemy.species);
+    const reward=pr.makeItem('weapon',true);
+    reward.rarity=3;reward.name=enemy.name+' Trophy';
+    reward.stats.attack=Math.max(reward.stats.attack,18);
+    pr.items.push(reward);pr.addGold(120);
+    this.onNotice(enemy.name+' defeated! Colossal trophy and 120 gold awarded. The frontier remains open.');
+   }else if(enemy.finalBoss){
     world.bossDefeated=true;this.quests.heraldDefeated=true;this.quests.artifacts.add('Heart of the Underkeep');
     for(const e of combat.enemies)if(e.summoner===enemy.id){e.hp=0;e.state='dead';}enemy.runes=[];combat.projectiles=[];world.traps=[];
     const reward=pr.makeItem('trinket',true);Object.assign(reward,{name:'Heartward Seal',rarity:3,stats:{crit:.12,haste:.2,hp:30}});pr.items.push(reward);pr.addGold(150);pr.potions+=3;
