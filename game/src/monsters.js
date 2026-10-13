@@ -13,6 +13,22 @@ export const monsters={
  quartermaster:define('quartermaster','Bandit Quartermaster',8,90,53,16,65,'miniboss',{boss:true,abilities:['lunge','reinforce'],cost:10}),
  keeper:define('keeper','Chapel Keeper',14,85,42,14,65,'miniboss',{boss:true,kind:'magic',range:180,faction:'chapel',biomes:['chapel'],abilities:['rune','summon'],cost:10}),
 };
+// Milestone 7.5C: region-specific roaming hostiles; colossal bosses remain reserved for 7.5D.
+const expeditionMonster=(id,name,sheet,frame,hp,speed,damage,xp,role,biome,extra={})=>({
+ ...monsters.grunt,id,name,sheet,frame,frames:[frame,frame+1],hp,speed,damage,xp,role,
+ kind:role==='ranged'?'magic':'melee',faction:'frontier',biomes:[biome],
+ detection:190,range:role==='ranged'?180:35,loot:{gold:1,rarity:0},cost:3,...extra
+});
+monsters.fireImp=expeditionMonster('fireImp','Cinder Imp','16',0,32,76,10,18,'skirmisher','volcanic');
+monsters.hellhound=expeditionMonster('hellhound','Hellfire Hound','16',4,64,83,17,30,'hunter','volcanic');
+monsters.magmaElemental=expeditionMonster('magmaElemental','Magma Elemental','16',6,105,43,24,43,'tank','volcanic',{armor:5,resistance:.3});
+monsters.sporeling=expeditionMonster('sporeling','Sporeling','12',8,38,62,10,19,'skirmisher','jungle');
+monsters.jungleStalker=expeditionMonster('jungleStalker','Redcap Stalker','12',0,72,66,16,31,'hunter','jungle');
+monsters.fungalMage=expeditionMonster('fungalMage','Violetcap Spore Mage','12',4,54,48,15,32,'ranged','jungle');
+monsters.frostStalker=expeditionMonster('frostStalker','Frostbound Hunter','06',6,74,69,18,33,'hunter','frozen');
+monsters.iceWraith=expeditionMonster('iceWraith','Icebound Specter','07',6,61,54,16,32,'ranged','frozen');
+monsters.coastRaider=expeditionMonster('coastRaider','Coast Marauder','02',8,76,67,17,32,'hunter','coast');
+monsters.drownedWraith=expeditionMonster('drownedWraith','Drowned Wraith','06',8,64,55,16,34,'ranged','coast');
 monsters.brute={...monsters.tank,id:'brute',name:'Orc Clubber Brute',hp:100,damage:24,armor:5,speed:43,cost:6,xp:36,abilities:['lunge']};
 monsters.herald={...monsters.keeper,id:'herald',name:'The First Herald',finalBoss:true,hp:280,damage:24,armor:4,xp:180,abilities:['rune','summon'],loot:{gold:3,rarity:3}};
 export const legacyMonsters=['grunt','archer','tank','scavenger','bandit','cult'].map(id=>monsters[id]);
