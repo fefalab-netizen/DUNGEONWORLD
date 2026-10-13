@@ -11,32 +11,32 @@ BATCH 01 | SET 001 | Adventurers I | FILE: PRESENT
   r2c2: Blue Wizard [B]
   r2c3: Green Cleric [A]
   r2c4: Green Cleric [B]
-  r3c1: Elf Ranger [A]
-  r3c2: Elf Ranger [B]
+  r3c1: Blond Axe Adventurer [A]
+  r3c2: Blond Axe Adventurer [B]
   r3c3: Hooded Rogue [A]
   r3c4: Hooded Rogue [B]
-  r4c1: Barbarian [A]
-  r4c2: Barbarian [B]
-  r4c3: Alchemist [A]
-  r4c4: Alchemist [B]
+  r4c1: Barbarian with Club [A]
+  r4c2: Barbarian with Club [B]
+  r4c3: Hooded Potion Bearer [A]
+  r4c4: Hooded Potion Bearer [B]
 
 BATCH 01 | SET 002 | Dungeon Denizens | FILE: PRESENT
-  r1c1: Goblin Grunt [A]
-  r1c2: Goblin Grunt [B]
+  r1c1: Goblin Spearman [A]
+  r1c2: Goblin Spearman [B]
   r1c3: Goblin Archer [A]
   r1c4: Goblin Archer [B]
-  r2c1: Goblin Shaman [A]
-  r2c2: Goblin Shaman [B]
-  r2c3: Orc Raider [A]
-  r2c4: Orc Raider [B]
-  r3c1: Orc Brute [A]
-  r3c2: Orc Brute [B]
-  r3c3: Ratfolk Scavenger [A]
-  r3c4: Ratfolk Scavenger [B]
-  r4c1: Masked Bandit [A]
-  r4c2: Masked Bandit [B]
-  r4c3: Cult Initiate [A]
-  r4c4: Cult Initiate [B]
+  r2c1: Orc Clubber [A]
+  r2c2: Orc Clubber [B]
+  r2c3: Ratfolk Knife Fighter [A]
+  r2c4: Ratfolk Knife Fighter [B]
+  r3c1: Masked Bandit Swordsman [A]
+  r3c2: Masked Bandit Swordsman [B]
+  r3c3: Hooded Crossbowman [A]
+  r3c4: Hooded Crossbowman [B]
+  r4c1: Masked Cult Staff-Bearer [A]
+  r4c2: Masked Cult Staff-Bearer [B]
+  r4c3: Masked Fire Cultist [A]
+  r4c4: Masked Fire Cultist [B]
 
 BATCH 01 | SET 003 | Dungeon Entrance Props, Traps & Supplies | FILE: PRESENT
   r1c1: Wall-Mounted Torch
@@ -57,40 +57,40 @@ BATCH 01 | SET 003 | Dungeon Entrance Props, Traps & Supplies | FILE: PRESENT
   r4c4: Mossy Stone Bust Statue
 
 BATCH 01 | SET 004 | Stone Walls and Doors | FILE: PRESENT
-  r1c1: North Wall
-  r1c2: South Wall
-  r1c3: West Wall
-  r1c4: East Wall
-  r2c1: NW Wall Corner
-  r2c2: NE Wall Corner
-  r2c3: SW Wall Corner
-  r2c4: SE Wall Corner
-  r3c1: Vertical Wall Endcap
-  r3c2: Horizontal Wall Endcap
-  r3c3: Cracked Wall
-  r3c4: Mossy Wall
-  r4c1: Open Doorway
-  r4c2: Closed Wooden Door
-  r4c3: Locked Iron Door
-  r4c4: Iron Gate
+  r1c1: Plain Stone Brick Wall
+  r1c2: Cracked Stone Brick Wall
+  r1c3: Mossy Stone Brick Wall
+  r1c4: Skull Relief Stone Wall
+  r2c1: Outside Stone Wall Corner
+  r2c2: Inside Stone Wall Corner
+  r2c3: T-Shaped Stone Wall Junction
+  r2c4: Stone Wall End Piece
+  r3c1: Open Stone Archway
+  r3c2: Closed Wooden Door in Stone Arch
+  r3c3: Locked Wooden Door in Stone Arch
+  r3c4: Barred Iron Gate in Stone Arch
+  r4c1: Barred Window in Stone Wall
+  r4c2: Stone Column
+  r4c3: Collapsed Stone Pillar
+  r4c4: Short Broken Stone Wall
 
-BATCH 01 | SET 005 | Entrance Props and Traps | FILE: PRESENT
-  r1c1: Wall Torch
-  r1c2: Standing Torch
-  r1c3: Wooden Barrel
-  r1c4: Wooden Crate
-  r2c1: Chest Closed
-  r2c2: Chest Open
-  r2c3: Scattered Bones
-  r2c4: Skull Pile
-  r3c1: Spikes Retracted
-  r3c2: Spikes Extended
-  r3c3: Lever Off
-  r3c4: Lever On
-  r4c1: Stairs Up
-  r4c2: Stairs Down
-  r4c3: Stone Pillar
-  r4c4: Torn Banner
+BATCH 01 | SET 005 | Stone Dungeon Floors and Floor Features | FILE: PRESENT
+  r1c1: Plain Rounded Flagstone
+  r1c2: Cracked Flagstone
+  r1c3: Mossy Flagstone
+  r1c4: Small Cobblestone Floor
+  r2c1: Rocky Brown Dirt
+  r2c2: Dirt with Stones and Bones
+  r2c3: Skull and Bone-Strewn Flagstone
+  r2c4: Bloodstained Flagstone
+  r3c1: Square Pressure Plate in Stone Floor
+  r3c2: Water Pool in Stone Floor
+  r3c3: Green Slime Pool in Stone Floor
+  r3c4: Lava Cracks in Stone Floor
+  r4c1: Open Pit in Stone Floor
+  r4c2: Dark Stairwell in Stone Floor
+  r4c3: Closed Wooden Floor Hatch
+  r4c4: Violet Rune Circle in Stone Floor
 
 BATCH 02 | SET 006 | Crypt Undead | FILE: PRESENT
   r1c1: Skeleton Swordsman [A]
