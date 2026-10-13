@@ -1,0 +1,2005 @@
+ENDLESS DUNGEON — MASTER SPRITE LABELS v4 — VISUAL AUDIT
+SETS 001–111 — 1776 CELL LABELS IN ROW-MAJOR 4x4 ORDER
+Source: original numbered PNGs in user-supplied Sprites.rar (01.png–111.png).
+Every sheet has been visually compared to its previous TXT entry; mismatched descriptions and sheet categories corrected.
+Cells use row/column coordinates r1c1–r4c4 (top left to bottom right). Adjacent [A]/[B] labels are matching idle-frame pairs.
+Labels describe VISIBLE OBJECTS; they do not guarantee an object has gameplay behavior described by its name.
+Note: Alternate PNGs 01b.png, 02b.png and 05b.png were present but are NOT mapped as numbered sheets; the 111 primary numbered PNGs are the audit basis.
+
+BATCH 01 | SET 001 | Adventurers I | FILE: PRESENT
+  r1c1: Dwarf Axeman [A]
+  r1c2: Dwarf Axeman [B]
+  r1c3: Silver Knight [A]
+  r1c4: Silver Knight [B]
+  r2c1: Blue Wizard [A]
+  r2c2: Blue Wizard [B]
+  r2c3: Green Staff Mage [A]
+  r2c4: Green Staff Mage [B]
+  r3c1: Blond Axe Adventurer [A]
+  r3c2: Blond Axe Adventurer [B]
+  r3c3: Hooded Rogue [A]
+  r3c4: Hooded Rogue [B]
+  r4c1: Barbarian with Club [A]
+  r4c2: Barbarian with Club [B]
+  r4c3: Hooded Potion Bearer [A]
+  r4c4: Hooded Potion Bearer [B]
+
+BATCH 01 | SET 002 | Dungeon Denizens | FILE: PRESENT
+  r1c1: Goblin Spearman [A]
+  r1c2: Goblin Spearman [B]
+  r1c3: Goblin Archer [A]
+  r1c4: Goblin Archer [B]
+  r2c1: Orc Clubber [A]
+  r2c2: Orc Clubber [B]
+  r2c3: Ratfolk Knife Fighter [A]
+  r2c4: Ratfolk Knife Fighter [B]
+  r3c1: Bandit Swordsman [A]
+  r3c2: Bandit Swordsman [B]
+  r3c3: Hooded Crossbowman [A]
+  r3c4: Hooded Crossbowman [B]
+  r4c1: Masked Cult Staff-Bearer [A]
+  r4c2: Masked Cult Staff-Bearer [B]
+  r4c3: Masked Fire Cultist [A]
+  r4c4: Masked Fire Cultist [B]
+
+BATCH 01 | SET 003 | Dungeon Entrance Props, Traps & Supplies | FILE: PRESENT
+  r1c1: Wall-Mounted Torch
+  r1c2: Standing Fire Brazier
+  r1c3: Wooden Barrel
+  r1c4: Wooden Crate
+  r2c1: Treasure Chest Closed
+  r2c2: Treasure Chest Open
+  r2c3: Raised Spike Trap
+  r2c4: Open Iron Bear Trap
+  r3c1: Red-Handle Lever
+  r3c2: Hanging Metal Hook
+  r3c3: Coiled Rope
+  r3c4: Wooden Directional Signpost
+  r4c1: Golden Key
+  r4c2: Red Health Potion
+  r4c3: Leather Adventurer Satchel
+  r4c4: Mossy Stone Bust Statue
+
+BATCH 01 | SET 004 | Stone Walls and Doors | FILE: PRESENT
+  r1c1: Plain Stone Brick Wall
+  r1c2: Cracked Stone Brick Wall
+  r1c3: Mossy Stone Brick Wall
+  r1c4: Skull Relief Stone Wall
+  r2c1: Outside Stone Wall Corner
+  r2c2: Inside Stone Wall Corner
+  r2c3: T-Shaped Stone Wall Junction
+  r2c4: Stone Wall End Piece
+  r3c1: Open Stone Archway
+  r3c2: Closed Wooden Door in Stone Arch
+  r3c3: Locked Wooden Door in Stone Arch
+  r3c4: Barred Iron Gate in Stone Arch
+  r4c1: Barred Window in Stone Wall
+  r4c2: Stone Column
+  r4c3: Collapsed Stone Pillar
+  r4c4: Short Broken Stone Wall
+
+BATCH 01 | SET 005 | Stone Dungeon Floors and Floor Features | FILE: PRESENT
+  r1c1: Plain Rounded Flagstone
+  r1c2: Cracked Flagstone
+  r1c3: Mossy Flagstone
+  r1c4: Small Cobblestone Floor
+  r2c1: Rocky Brown Dirt
+  r2c2: Dirt with Stones and Bones
+  r2c3: Skull and Bone-Strewn Flagstone
+  r2c4: Bloodstained Flagstone
+  r3c1: Square Pressure Plate in Stone Floor
+  r3c2: Water Pool in Stone Floor
+  r3c3: Green Slime Pool in Stone Floor
+  r3c4: Lava Cracks in Stone Floor
+  r4c1: Open Pit in Stone Floor
+  r4c2: Dark Stairwell in Stone Floor
+  r4c3: Closed Wooden Floor Hatch
+  r4c4: Violet Rune Circle in Stone Floor
+
+BATCH 02 | SET 006 | Crypt Undead | FILE: PRESENT
+  r1c1: Skeleton Swordsman with Shield [A]
+  r1c2: Skeleton Swordsman with Shield [B]
+  r1c3: Zombie Shambler [A]
+  r1c4: Zombie Shambler [B]
+  r2c1: Pale Ghoul [A]
+  r2c2: Pale Ghoul [B]
+  r2c3: Skeletal Hound [A]
+  r2c4: Skeletal Hound [B]
+  r3c1: Hooded Specter [A]
+  r3c2: Hooded Specter [B]
+  r3c3: Undead Hooded Archer [A]
+  r3c4: Undead Hooded Archer [B]
+  r4c1: Rotting Zombie Clubber [A]
+  r4c2: Rotting Zombie Clubber [B]
+  r4c3: Ghost Mage with Blue Flames [A]
+  r4c4: Ghost Mage with Blue Flames [B]
+
+BATCH 02 | SET 007 | Crypt Occultists and Dark Minions | FILE: PRESENT
+  r1c1: Hooded Skull-Staff Necromancer [A]
+  r1c2: Hooded Skull-Staff Necromancer [B]
+  r1c3: White-Robed Skeletal Priest [A]
+  r1c4: White-Robed Skeletal Priest [B]
+  r2c1: Red-Hooded Knife Cultist [A]
+  r2c2: Red-Hooded Knife Cultist [B]
+  r2c3: Pale Blue Banshee [A]
+  r2c4: Pale Blue Banshee [B]
+  r3c1: Armored Undead Swordsman [A]
+  r3c2: Armored Undead Swordsman [B]
+  r3c3: Skull-Faced Mage with Purple Flame [A]
+  r3c4: Skull-Faced Mage with Purple Flame [B]
+  r4c1: Shadow Mage with Violet Flame [A]
+  r4c2: Shadow Mage with Violet Flame [B]
+  r4c3: Red-Robed Skull-Staff Shaman [A]
+  r4c4: Red-Robed Skull-Staff Shaman [B]
+
+BATCH 02 | SET 008 | Crypt Floors | FILE: PRESENT
+  r1c1: Plain Crypt Flagstones
+  r1c2: Broken Crypt Flagstones
+  r1c3: Mossy Crypt Flagstones
+  r1c4: Bloodstained Crypt Flagstones
+  r2c1: Dirt Between Crypt Stones
+  r2c2: Bone-Littered Crypt Floor
+  r2c3: Rocky Grave Dirt
+  r2c4: Dense Skulls and Bones Floor
+  r3c1: Rocky Brown Dirt
+  r3c2: Brown Cracked Earth
+  r3c3: Red Ritual Sigil Floor
+  r3c4: Dark Purple Stone Floor
+  r4c1: Blue Water Flooded Crypt Floor
+  r4c2: Tan Round Mosaic Tile
+  r4c3: Purple Rune Crypt Floor
+  r4c4: Open Crypt Floor Pit
+
+BATCH 02 | SET 009 | Crypt Walls and Tomb Entrances | FILE: PRESENT
+  r1c1: Moss-Flecked Crypt Wall
+  r1c2: Cracked Mossy Crypt Wall
+  r1c3: Heavily Mossy Crypt Wall
+  r1c4: Crypt Stone Wall Corner
+  r2c1: Broken Mossy Wall Segment
+  r2c2: Wall Torch on Crypt Wall
+  r2c3: Open Stone Crypt Arch
+  r2c4: Barred Crypt Arch
+  r3c1: Sealed Tombstone Door
+  r3c2: Open Dark Crypt Doorway
+  r3c3: Narrow Barred Crypt Doorway
+  r3c4: Skull-Framed Iron Gate
+  r4c1: Crypt Stone Column
+  r4c2: Broken Crypt Column
+  r4c3: Red Skull Banner in Wall
+  r4c4: Skull Burial Niche
+
+BATCH 02 | SET 010 | Crypt Relics and Traps | FILE: PRESENT
+  r1c1: Closed Wooden Coffin with Cross
+  r1c2: Open Wooden Coffin with Cross
+  r1c3: Closed Stone Sarcophagus
+  r1c4: Broken Open Stone Sarcophagus
+  r2c1: Lit Triple Candelabrum
+  r2c2: Skull Surrounded by Candles
+  r2c3: Memorial Altar with Candles
+  r2c4: Dark Ritual Altar with Skull
+  r3c1: Gravestone with Cross
+  r3c2: Patterned Burial Urn
+  r3c3: Pile of Skeletal Bones
+  r3c4: Hooded Stone Statue
+  r4c1: Hanging Iron Cage
+  r4c2: Hanging Chain with Hook
+  r4c3: Raised Spike Trap
+  r4c4: Red-Handle Floor Lever
+
+BATCH 03 | SET 011 | Cavern Beasts | FILE: PRESENT
+  r1c1: Cave Rat [A]
+  r1c2: Cave Rat [B]
+  r1c3: Purple Cave Bat [A]
+  r1c4: Purple Cave Bat [B]
+  r2c1: Red-Eyed Cave Spider [A]
+  r2c2: Red-Eyed Cave Spider [B]
+  r2c3: Pale Cave Lizard [A]
+  r2c4: Pale Cave Lizard [B]
+  r3c1: Chest Mimic [A]
+  r3c2: Chest Mimic [B]
+  r3c3: Burrowing Mole Beast [A]
+  r3c4: Burrowing Mole Beast [B]
+  r4c1: Blue Crystal Rock Spider [A]
+  r4c2: Blue Crystal Rock Spider [B]
+  r4c3: Cave Toad [A]
+  r4c4: Cave Toad [B]
+
+BATCH 03 | SET 012 | Fungal Horrors | FILE: PRESENT
+  r1c1: Redcap Axe Brute [A]
+  r1c2: Redcap Axe Brute [B]
+  r1c3: Redcap Archer [A]
+  r1c4: Redcap Archer [B]
+  r2c1: Violetcap Spore Mage [A]
+  r2c2: Violetcap Spore Mage [B]
+  r2c3: Redcap Fungal Brawler [A]
+  r2c4: Redcap Fungal Brawler [B]
+  r3c1: Green Spore Slime [A]
+  r3c2: Green Spore Slime [B]
+  r3c3: Violetcap Staff Mage [A]
+  r3c4: Violetcap Staff Mage [B]
+  r4c1: Fungal Toxic Horror [A]
+  r4c2: Fungal Toxic Horror [B]
+  r4c3: Redcap One-Eyed Guardian [A]
+  r4c4: Redcap One-Eyed Guardian [B]
+
+BATCH 03 | SET 013 | Cavern Ground and Cave Floor Features | FILE: PRESENT
+  r1c1: Smooth Cavern Stones
+  r1c2: Broken Cavern Stones
+  r1c3: Mossy Cavern Stones
+  r1c4: Loose Rock and Pebble Ground
+  r2c1: Brown Cavern Dirt
+  r2c2: Bone-Littered Cave Floor
+  r2c3: Damp Cave Dirt
+  r2c4: Glowing Pink Mushroom Floor
+  r3c1: Shallow Blue Water Pool
+  r3c2: Green Luminous Slime Pool
+  r3c3: Violet Crystal Cave Floor
+  r3c4: Dark Cavern Rock
+  r4c1: Dark Open Chasm
+  r4c2: Round Dirt Pit
+  r4c3: Closed Wooden Floor Hatch
+  r4c4: Purple Rune Floor Circle
+
+BATCH 03 | SET 014 | Cavern Walls and Openings | FILE: PRESENT
+  r1c1: Plain Natural Rock Wall
+  r1c2: Mossy Natural Rock Wall
+  r1c3: Purple Crystal Ore Wall
+  r1c4: Gold Ore Wall
+  r2c1: Rock Wall Corner
+  r2c2: Narrow Cracked Rock Wall
+  r2c3: Broken Rock Wall
+  r2c4: Open Dark Cave Mouth
+  r3c1: Loose Rocks and Rubble
+  r3c2: Tunnel with Stalactites
+  r3c3: Cave Stalagmite Formation
+  r3c4: Iron-Barred Cave Gate
+  r4c1: Intact Stone Pillar
+  r4c2: Broken Stone Pillar
+  r4c3: Hanging Tree Roots on Cave Wall
+  r4c4: Skull and Bone Cave Niche
+
+BATCH 03 | SET 015 | Cavern Props and Hazards | FILE: PRESENT
+  r1c1: Red Mushroom Cluster
+  r1c2: Blue Glowing Mushroom Cluster
+  r1c3: Tall Stalagmite
+  r1c4: Hanging Stalactites
+  r2c1: Blue Crystal Cluster
+  r2c2: Purple Crystal Cluster
+  r2c3: Cave Cobweb
+  r2c4: Hanging Spider Egg Cocoon
+  r3c1: Green Gas Vent
+  r3c2: Ore Mine Cart on Track
+  r3c3: Rope Bridge over Gap
+  r3c4: Wall-Mounted Torch on Rock
+  r4c1: Wooden Rope Ladder
+  r4c2: Campfire on Stones
+  r4c3: Pile of Skulls and Bones
+  r4c4: Gold and Gem Ore Pile
+
+BATCH 04 | SET 016 | Infernal Legion | FILE: PRESENT
+  r1c1: Fire Imp [A]
+  r1c2: Fire Imp [B]
+  r1c3: Demon Axe Warrior [A]
+  r1c4: Demon Axe Warrior [B]
+  r2c1: Hellfire Hound [A]
+  r2c2: Hellfire Hound [B]
+  r2c3: Magma Elemental [A]
+  r2c4: Magma Elemental [B]
+  r3c1: Winged Red Demon [A]
+  r3c2: Winged Red Demon [B]
+  r3c3: Horned Demon Brute with Mace [A]
+  r3c4: Horned Demon Brute with Mace [B]
+  r4c1: Flaming Skull Sorcerer [A]
+  r4c2: Flaming Skull Sorcerer [B]
+  r4c3: Horned Demon Knight with Shield [A]
+  r4c4: Horned Demon Knight with Shield [B]
+
+BATCH 04 | SET 017 | Abyssal Horrors | FILE: PRESENT
+  r1c1: Void Cloaked Spirit [A]
+  r1c2: Void Cloaked Spirit [B]
+  r1c3: Red-Bladed Shadow Knight [A]
+  r1c4: Red-Bladed Shadow Knight [B]
+  r2c1: Winged Bone Drake [A]
+  r2c2: Winged Bone Drake [B]
+  r2c3: Red-Hooded Abyss Mage [A]
+  r2c4: Red-Hooded Abyss Mage [B]
+  r3c1: Many-Eyed Tentacle Eye Monster [A]
+  r3c2: Many-Eyed Tentacle Eye Monster [B]
+  r3c3: Purple Tentacle Maw [A]
+  r3c4: Purple Tentacle Maw [B]
+  r4c1: Blue-Flame Grim Reaper [A]
+  r4c2: Blue-Flame Grim Reaper [B]
+  r4c3: Horned Void Overlord with Orb [A]
+  r4c4: Horned Void Overlord with Orb [B]
+
+BATCH 04 | SET 018 | Infernal Ground | FILE: PRESENT
+  r1c1: Lava-Seamed Obsidian
+  r1c2: Cracked Glowing Obsidian
+  r1c3: Ember-Speckled Volcanic Rock
+  r1c4: Dense Burning Lava Pebbles
+  r2c1: Wide Lava Cracks
+  r2c2: Dark Plain Obsidian Stones
+  r2c3: Red Infernal Ritual Sigil
+  r2c4: Ashy Pebbles with Hot Embers
+  r3c1: Skulls and Bones Floor
+  r3c2: Bright Orange Rune Tile
+  r3c3: Flowing Lava Crack Floor
+  r3c4: Yellow Sulfur Pool
+  r4c1: Violet Corruption on Stone
+  r4c2: Bloodstained Obsidian
+  r4c3: Dense Ember-Seamed Obsidian
+  r4c4: Purple Vortex Portal in Ground
+
+BATCH 04 | SET 019 | Infernal Architecture | FILE: PRESENT
+  r1c1: Cracked Lava Rock Wall
+  r1c2: Jagged Magma Wall
+  r1c3: Glowing Lava-Broken Wall
+  r1c4: Lava Stone Corner
+  r2c1: Broken Lava Wall Segment
+  r2c2: Open Horned Infernal Arch
+  r2c3: Closed Horned Infernal Gate
+  r2c4: Barred Horned Hell Gate
+  r3c1: Skull-Adorned Barred Gate
+  r3c2: Lava Stone Plinth
+  r3c3: Lava Stone Pillar
+  r3c4: Infernal Fireplace
+  r4c1: Glowing Lava Stairway
+  r4c2: Chained Infernal Wall with Skull
+  r4c3: Horned Demon Skull Statue
+  r4c4: Hanging Infernal Rune Banner
+
+BATCH 04 | SET 020 | Endgame Props and Portals | FILE: PRESENT
+  r1c1: Skull Brazier with Orange Flame
+  r1c2: Skull Brazier with Blue Flame
+  r1c3: Horned Brazier with Red Flame
+  r1c4: Horned Skull Ritual Altar with Rune
+  r2c1: Horned Locked Demonic Chest
+  r2c2: Gilded Winged Treasure Chest
+  r2c3: Red-Handle Lava Lever
+  r2c4: Bloody Spike Trap
+  r3c1: Horned Skull Stone Altar
+  r3c2: Skull and Sword Pile
+  r3c3: Hanging Iron Cage with Fire
+  r3c4: Horned Molten Cauldron
+  r4c1: Purple Swirling Void Portal
+  r4c2: Red Swirling Fire Portal
+  r4c3: Fiery Pentagram Ritual Circle
+  r4c4: Horned Demon Gargoyle Statue
+
+BATCH 05 | SET 021 | Jungle Plant Monsters | FILE: PRESENT
+  r1c1: Red Carnivorous Flower [A]
+  r1c2: Red Carnivorous Flower [B]
+  r1c3: Walking Leaf Treant [A]
+  r1c4: Walking Leaf Treant [B]
+  r2c1: Flower-Head Sproutling [A]
+  r2c2: Flower-Head Sproutling [B]
+  r2c3: Flower Staff Shaman [A]
+  r2c4: Flower Staff Shaman [B]
+  r3c1: Toothed Vine Plant [A]
+  r3c2: Toothed Vine Plant [B]
+  r3c3: Thorny Red-Eyed Vine Crawler [A]
+  r3c4: Thorny Red-Eyed Vine Crawler [B]
+  r4c1: Redcap Moss Brute [A]
+  r4c2: Redcap Moss Brute [B]
+  r4c3: One-Eyed Flower Guardian [A]
+  r4c4: One-Eyed Flower Guardian [B]
+
+BATCH 05 | SET 022 | Jungle Beasts and Tribes | FILE: PRESENT
+  r1c1: Thorny Four-Legged Jungle Stalker [A]
+  r1c2: Thorny Four-Legged Jungle Stalker [B]
+  r1c3: Bright Frog Spearman [A]
+  r1c4: Bright Frog Spearman [B]
+  r2c1: Lizard Blade Hunter [A]
+  r2c2: Lizard Blade Hunter [B]
+  r2c3: Lizard Spearman [A]
+  r2c4: Lizard Spearman [B]
+  r3c1: Root-Tusk Boar [A]
+  r3c2: Root-Tusk Boar [B]
+  r3c3: Green Canopy Cobra [A]
+  r3c4: Green Canopy Cobra [B]
+  r4c1: Mossback Gorilla [A]
+  r4c2: Mossback Gorilla [B]
+  r4c3: Jungle Beetle with Bladed Horn [A]
+  r4c4: Jungle Beetle with Bladed Horn [B]
+
+BATCH 05 | SET 023 | Jungle Ground and Floor Features | FILE: PRESENT
+  r1c1: Mossy Grey Stones
+  r1c2: Brown Earth and Pebbles
+  r1c3: Gnarled Tree Roots Floor
+  r1c4: Lily-Pad Water Pool
+  r2c1: Fallen Leaves and Dirt
+  r2c2: Pale Mossy Ruin Path
+  r2c3: Pink Flowers in Grass
+  r2c4: Yellow Pollen Slime Floor
+  r3c1: Bones and Skull on Dirt
+  r3c2: Vine-Tangled Stone
+  r3c3: Rocks in Jungle Dirt
+  r3c4: Green Vegetation on Mud
+  r4c1: Square Temple Mosaic
+  r4c2: Vine-Rimmed Open Pit
+  r4c3: Wooden Hatch on Ruin Tile
+  r4c4: Green Jungle Rune Floor
+
+BATCH 05 | SET 024 | Jungle Ruins and Walls | FILE: PRESENT
+  r1c1: Mossy Ruin Stone Wall
+  r1c2: Cracked Mossy Ruin Wall
+  r1c3: Overgrown Vine Wall
+  r1c4: Thick Ruin Wall Corner
+  r2c1: Collapsed Short Ruin Wall
+  r2c2: Vine-Hung Dark Ruin Door
+  r2c3: Root-Choked Stone Arch
+  r2c4: Barred Jungle Ruin Gate
+  r3c1: Carved Stone Temple Door
+  r3c2: Mossy Shrine with Idol
+  r3c3: Vine-Wrapped Stone Pillar
+  r3c4: Collapsed Temple Column
+  r4c1: Rubble and Broken Temple Stones
+  r4c2: Hanging Jungle Vines
+  r4c3: Skull Relief in Stone Ruin
+  r4c4: Stone Temple Shrine
+
+BATCH 05 | SET 025 | Jungle Props and Hazards | FILE: PRESENT
+  r1c1: Carnivorous Jungle Plant
+  r1c2: Hanging Vine Tangle
+  r1c3: Green Poison Bulb Cluster
+  r1c4: Bone Totem
+  r2c1: Wooden Rope Bridge
+  r2c2: Mossy Relic Idol Shrine
+  r2c3: Carved Wooden Jungle Idol
+  r2c4: Rope Snare Trap
+  r3c1: Raised Spike Trap
+  r3c2: Wooden Supplies Crate
+  r3c3: Mossy Treasure Chest
+  r3c4: Burning Jungle Torch
+  r4c1: Skulls and Bones Pile
+  r4c2: Red Mushroom Cluster
+  r4c3: Red Berry Jungle Plant
+  r4c4: Moss-Covered Stone Head
+
+BATCH 06 | SET 026 | Frostfang Beasts | FILE: PRESENT
+  r1c1: Ice Wolf [A]
+  r1c2: Ice Wolf [B]
+  r1c3: Blue Snow Bat [A]
+  r1c4: Blue Snow Bat [B]
+  r2c1: Ice-Spiked Frost Boar [A]
+  r2c2: Ice-Spiked Frost Boar [B]
+  r2c3: Spotted Snow Leopard [A]
+  r2c4: Spotted Snow Leopard [B]
+  r3c1: Mountain Ram [A]
+  r3c2: Mountain Ram [B]
+  r3c3: Coiled Ice Serpent [A]
+  r3c4: Coiled Ice Serpent [B]
+  r4c1: White Yeti [A]
+  r4c2: White Yeti [B]
+  r4c3: Ice Crystal Spider [A]
+  r4c4: Ice Crystal Spider [B]
+
+BATCH 06 | SET 027 | Frozen Peak Dwellers and Spirits | FILE: PRESENT
+  r1c1: Goatfolk Axe Raider [A]
+  r1c2: Goatfolk Axe Raider [B]
+  r1c3: Goatfolk Ice Mage [A]
+  r1c4: Goatfolk Ice Mage [B]
+  r2c1: Frost Wraith [A]
+  r2c2: Frost Wraith [B]
+  r2c3: Hooded Snow Clan Brawler [A]
+  r2c4: Hooded Snow Clan Brawler [B]
+  r3c1: Ice Armored Golem [A]
+  r3c2: Ice Armored Golem [B]
+  r3c3: White-Haired Ice Sorceress [A]
+  r3c4: White-Haired Ice Sorceress [B]
+  r4c1: Mountain Goatfolk Shield Guard [A]
+  r4c2: Mountain Goatfolk Shield Guard [B]
+  r4c3: Hooded Snow Spirit with Staff [A]
+  r4c4: Hooded Snow Spirit with Staff [B]
+
+BATCH 06 | SET 028 | Frozen Ground and Ice Features | FILE: PRESENT
+  r1c1: Packed Snow Stones
+  r1c2: Dark Blue Cracked Ice
+  r1c3: Pale Blue Ice Stones
+  r1c4: Snow-Covered Rubble
+  r2c1: Wind-Swept Snow
+  r2c2: Snowy Pebble Road
+  r2c3: Bloodstained Snow
+  r2c4: Smooth Diagonal Glacier Ice
+  r3c1: Wet Snow and Meltwater
+  r3c2: Blue Ice Crystal Floor
+  r3c3: Rocky Frozen Dirt
+  r3c4: Dark Blue Frosted Ice
+  r4c1: Open Ice Chasm
+  r4c2: Footprints in Snow
+  r4c3: Wooden Hatch in Snow
+  r4c4: Blue Frost Rune Tile
+
+BATCH 06 | SET 029 | Mountain Walls and Ice Caves | FILE: PRESENT
+  r1c1: Snow-Capped Rock Wall
+  r1c2: Solid Blue Ice Wall
+  r1c3: Snowy Rock Corner
+  r1c4: Frozen Collapsed Rock Wall
+  r2c1: Cliff Wall with Icicles
+  r2c2: Ice Cave Opening
+  r2c3: Blue-Ice-Sealed Archway
+  r2c4: Frozen Iron-Barred Gate
+  r3c1: Stone Rune Door with Snow
+  r3c2: Ice Glacier Pillar
+  r3c3: Broken Ice Column
+  r3c4: Wooden-Supported Ice Cave Mouth
+  r4c1: Frozen Shrine Alcove with Candle
+  r4c2: Snowy Stone Stairway
+  r4c3: Dark Open Ice Chasm
+  r4c4: Snow-Covered Rubble Wall
+
+BATCH 06 | SET 030 | Frost Props and Hazards | FILE: PRESENT
+  r1c1: Snowy Campfire
+  r1c2: Blue Frozen Brazier
+  r1c3: Icy Wooden Ladder
+  r1c4: Avalanche Warning Flag
+  r2c1: Blue Crystal Shrine
+  r2c2: Snow-Covered Wooden Crate
+  r2c3: Frozen Treasure Chest
+  r2c4: Frost-Covered Torch
+  r3c1: Ice Spike Trap
+  r3c2: Frozen Iron Bear Trap
+  r3c3: Carved Frost Rune Cairn
+  r3c4: Snow-Covered Broken Wood
+  r4c1: Bundle of Snowy Logs
+  r4c2: Rolled Winter Sleeping Bag
+  r4c3: Frozen String of Bunting
+  r4c4: Blue Rune Ice Pillar
+
+BATCH 07 | SET 031 | Drowned Dead | FILE: PRESENT
+  r1c1: Drowned Pirate with Cutlass [A]
+  r1c2: Drowned Pirate with Cutlass [B]
+  r1c3: Bloated Barnacle Corpse [A]
+  r1c4: Bloated Barnacle Corpse [B]
+  r2c1: Hooded Harpoon Revenant [A]
+  r2c2: Hooded Harpoon Revenant [B]
+  r2c3: Coral-Head Skeleton Pirate [A]
+  r2c4: Coral-Head Skeleton Pirate [B]
+  r3c1: Barnacle-Encrusted Drowned Knight [A]
+  r3c2: Barnacle-Encrusted Drowned Knight [B]
+  r3c3: Staff-Bearing Drowned Priest [A]
+  r3c4: Staff-Bearing Drowned Priest [B]
+  r4c1: Pale Seaweed Wraith [A]
+  r4c2: Pale Seaweed Wraith [B]
+  r4c3: Anchor-Wielding Drowned Brute [A]
+  r4c4: Anchor-Wielding Drowned Brute [B]
+
+BATCH 07 | SET 032 | Abyssal Tide Spawn | FILE: PRESENT
+  r1c1: Coral Crab Mutant [A]
+  r1c2: Coral Crab Mutant [B]
+  r1c3: Blue Sea Serpent [A]
+  r1c4: Blue Sea Serpent [B]
+  r2c1: Coral-Crowned Reef Priest [A]
+  r2c2: Coral-Crowned Reef Priest [B]
+  r2c3: Blue Jellyfish Wraith [A]
+  r2c4: Blue Jellyfish Wraith [B]
+  r3c1: Dark Hooded Angler Cultist [A]
+  r3c2: Dark Hooded Angler Cultist [B]
+  r3c3: Coral-Horned Tide Mage [A]
+  r3c4: Coral-Horned Tide Mage [B]
+  r4c1: Shell-Backed Deep-Sea Clubber [A]
+  r4c2: Shell-Backed Deep-Sea Clubber [B]
+  r4c3: Many-Mouthed Reef Crawler [A]
+  r4c4: Many-Mouthed Reef Crawler [B]
+
+BATCH 07 | SET 033 | Flooded Crypt Ground and Floor Features | FILE: PRESENT
+  r1c1: Wet Algae Flagstones
+  r1c2: Algae-Covered Stone
+  r1c3: Shell Debris Floor
+  r1c4: Barnacle and Water Floor
+  r2c1: Shallow Blue Tidal Water
+  r2c2: Puddled Mossy Stone
+  r2c3: Coral and Shell Floor
+  r2c4: Pebbled Stone Floor
+  r3c1: Wet Brown Mud and Pebbles
+  r3c2: Bones in Flooded Stone
+  r3c3: Green Seaweed-Filled Floor
+  r3c4: Blue Tide Rune Floor
+  r4c1: Iron-Grated Water Drain Floor
+  r4c2: Deep Round Water Pit
+  r4c3: Coral-Covered Floor
+  r4c4: Pale Wet Stone Floor
+
+BATCH 07 | SET 034 | Sunken Props and Shipwreck Debris | FILE: PRESENT
+  r1c1: Rusty Anchor Wrapped in Kelp
+  r1c2: Hanging Blue Sea Lantern
+  r1c3: Coral Trident Shrine
+  r1c4: Bubbling Kelp Cluster
+  r2c1: Barnacled Harpoon Launcher
+  r2c2: Sunken Barnacle Chest
+  r2c3: Broken Ship Wheel
+  r2c4: Barnacle-Encrusted Urn
+  r3c1: Skull and Coral Bone Pile
+  r3c2: Coiled Ship Rope
+  r3c3: Kelp and Red Coral
+  r3c4: Striped Ocean Buoy
+  r4c1: Pink Conch Shrine
+  r4c2: Blue Flame Tide Brazier
+  r4c3: Shipwreck Wood Planks
+  r4c4: Pearl Oyster Shrine
+
+BATCH 07 | SET 035 | Tide Crypt Walls and Tomb Entrances | FILE: PRESENT
+  r1c1: Barnacle-Encrusted Stone Wall
+  r1c2: Kelp-Covered Stone Wall
+  r1c3: Coral-Covered Reef Wall
+  r1c4: Sunken Stone Corner
+  r2c1: Barnacle and Coral Wall Rubble
+  r2c2: Open Underwater Stone Arch
+  r2c3: Flooded Open Stone Arch
+  r2c4: Iron-Barred Crypt Gate
+  r3c1: Tidal Rune-Sealed Door
+  r3c2: Barred Sunken Tomb Door
+  r3c3: Drowned Statue Shrine Niche
+  r3c4: Coral-Covered Stone Column
+  r4c1: Dark Underwater Crypt Arch
+  r4c2: Skull-Carved Tomb Wall
+  r4c3: Broken Reef Arch
+  r4c4: Fallen Engraved Gravestone
+
+BATCH 08 | SET 036 | Starborn Creatures | FILE: PRESENT
+  r1c1: Purple Void Hound [A]
+  r1c2: Purple Void Hound [B]
+  r1c3: Blue Comet Slime [A]
+  r1c4: Blue Comet Slime [B]
+  r2c1: Star-Armored Beetle [A]
+  r2c2: Star-Armored Beetle [B]
+  r2c3: Crystal Meteor Crab [A]
+  r2c4: Crystal Meteor Crab [B]
+  r3c1: Astral Serpent [A]
+  r3c2: Astral Serpent [B]
+  r3c3: Floating Cosmic Eye [A]
+  r3c4: Floating Cosmic Eye [B]
+  r4c1: Blue-Galaxy Winged Moth [A]
+  r4c2: Blue-Galaxy Winged Moth [B]
+  r4c3: Star Crystal Rock Crawler [A]
+  r4c4: Star Crystal Rock Crawler [B]
+
+BATCH 08 | SET 037 | Cosmic Cult and Eldritch Beings | FILE: PRESENT
+  r1c1: Blue-Robed Star Priest [A]
+  r1c2: Blue-Robed Star Priest [B]
+  r1c3: Pink-Eyed Skull Warlock [A]
+  r1c4: Pink-Eyed Skull Warlock [B]
+  r2c1: Astral Horned Knight [A]
+  r2c2: Astral Horned Knight [B]
+  r2c3: Crowned Skull Sorcerer [A]
+  r2c4: Crowned Skull Sorcerer [B]
+  r3c1: Hooded Star Lantern Keeper [A]
+  r3c2: Hooded Star Lantern Keeper [B]
+  r3c3: Dark Celestial Seer [A]
+  r3c4: Dark Celestial Seer [B]
+  r4c1: One-Eyed Pink-Magic Cultist [A]
+  r4c2: One-Eyed Pink-Magic Cultist [B]
+  r4c3: Blue Crowned Void Wraith [A]
+  r4c4: Blue Crowned Void Wraith [B]
+
+BATCH 08 | SET 038 | Astral Ground | FILE: PRESENT
+  r1c1: Cratered Grey Meteor Rock
+  r1c2: Starlit Stone Floor
+  r1c3: Blue Rune Circle on Stone
+  r1c4: Fractured Void-Filled Stone
+  r2c1: Purple Galaxy-Speckled Floor
+  r2c2: White Constellation Floor
+  r2c3: Purple Gravity Vortex Floor
+  r2c4: Purple Crystal Floor
+  r3c1: Blue Cracked Meteor Floor
+  r3c2: Pink Energy-Cracked Stone
+  r3c3: Deep Meteor Crater
+  r3c4: Violet Stardust Path
+  r4c1: Red Starlight on Stone
+  r4c2: Violet Celestial Rune Tile
+  r4c3: Bright Blue Star-Crystal Floor
+  r4c4: Swirling Violet Cosmic Rift Floor
+
+BATCH 08 | SET 039 | Fallen Cosmic Ruins and Architecture | FILE: PRESENT
+  r1c1: Mossy Observatory Rubble
+  r1c2: Ruined Celestial Arch Fragment
+  r1c3: Blue Rune Monolith
+  r1c4: Blue Crystal Observatory Rock
+  r2c1: Ruined Stone Wall Corner
+  r2c2: Broken Cosmic Masonry
+  r2c3: Starlit Open Stone Arch
+  r2c4: Iron-Barred Celestial Arch
+  r3c1: Moon Rune-Sealed Stone Door
+  r3c2: Broken Observatory Column
+  r3c3: Blue Astral-Rune Pillar
+  r3c4: Fallen Star Observatory Sculpture
+  r4c1: Stone Astral Shrine Niche
+  r4c2: Collapsed Star Arch
+  r4c3: Glowing Blue Astral Portal
+  r4c4: Broken Celestial Stone Statue
+
+BATCH 08 | SET 040 | Starfall Props and Anomalies | FILE: PRESENT
+  r1c1: Purple Meteor Crystal Cluster
+  r1c2: Floating Dark Star Orb
+  r1c3: Blue Crystal on Astral Pedestal
+  r1c4: Hanging Starfall Lantern
+  r2c1: One-Eyed Astral Reliquary Chest
+  r2c2: Floating Purple Gravity Vortex
+  r2c3: Stone-Vault Violet Portal
+  r2c4: Stone-Vault Red Portal
+  r3c1: Purple Rune Teleport Pedestal
+  r3c2: Ancient Star Telescope
+  r3c3: Purple Crystal Spike Trap
+  r3c4: Blue Arcane Flame Brazier
+  r4c1: Crescent Moon Banner
+  r4c2: Starry Cosmic Egg Relic
+  r4c3: Celestial Orb on Pedestal
+  r4c4: Floating Blue-Violet Crystal
+
+BATCH 09 | SET 041 | Steel and Shield Heroes | FILE: PRESENT
+  r1c1: Mace Bastion Knight [A]
+  r1c2: Mace Bastion Knight [B]
+  r1c3: Chainfighter [A]
+  r1c4: Chainfighter [B]
+  r2c1: Spear Dancer [A]
+  r2c2: Spear Dancer [B]
+  r2c3: Plumed Hat Duelist [A]
+  r2c4: Plumed Hat Duelist [B]
+  r3c1: Gauntlet Boxer [A]
+  r3c2: Gauntlet Boxer [B]
+  r3c3: Cross-Shield Tower Guard [A]
+  r3c4: Cross-Shield Tower Guard [B]
+  r4c1: Hammer Warbreaker [A]
+  r4c2: Hammer Warbreaker [B]
+  r4c3: Red-Hooded Caravan Knight [A]
+  r4c4: Red-Hooded Caravan Knight [B]
+
+BATCH 09 | SET 042 | Spells and Curses Heroes | FILE: PRESENT
+  r1c1: Ember Witch [A]
+  r1c2: Ember Witch [B]
+  r1c3: Rune Scribe [A]
+  r1c4: Rune Scribe [B]
+  r2c1: Blizzard Caller [A]
+  r2c2: Blizzard Caller [B]
+  r2c3: Grave Cantor [A]
+  r2c4: Grave Cantor [B]
+  r3c1: Prism Mage [A]
+  r3c2: Prism Mage [B]
+  r3c3: Swamp Hexer [A]
+  r3c4: Swamp Hexer [B]
+  r4c1: Star Binder [A]
+  r4c2: Star Binder [B]
+  r4c3: Thunder Cook [A]
+  r4c4: Thunder Cook [B]
+
+BATCH 09 | SET 043 | Shadow and Skill Heroes | FILE: PRESENT
+  r1c1: Knife Juggler [A]
+  r1c2: Knife Juggler [B]
+  r1c3: Snare Hunter [A]
+  r1c4: Snare Hunter [B]
+  r2c1: Mask Thief [A]
+  r2c2: Mask Thief [B]
+  r2c3: Wind Scout [A]
+  r2c4: Wind Scout [B]
+  r3c1: Bolt Sniper [A]
+  r3c2: Bolt Sniper [B]
+  r3c3: Locksmith [A]
+  r3c4: Locksmith [B]
+  r4c1: Venom Rogue [A]
+  r4c2: Venom Rogue [B]
+  r4c3: Acrobat [A]
+  r4c4: Acrobat [B]
+
+BATCH 09 | SET 044 | Faith and Wilderness Heroes | FILE: PRESENT
+  r1c1: Moss Warden [A]
+  r1c2: Moss Warden [B]
+  r1c3: Lantern Cleric [A]
+  r1c4: Lantern Cleric [B]
+  r2c1: Bone Medic [A]
+  r2c2: Bone Medic [B]
+  r2c3: Beast Friend [A]
+  r2c4: Beast Friend [B]
+  r3c1: Root Druid [A]
+  r3c2: Root Druid [B]
+  r3c3: Salt Paladin [A]
+  r3c4: Salt Paladin [B]
+  r4c1: Wind Shepherd [A]
+  r4c2: Wind Shepherd [B]
+  r4c3: Mushroom Oracle [A]
+  r4c4: Mushroom Oracle [B]
+
+BATCH 09 | SET 045 | Ridiculous Heroes | FILE: PRESENT
+  r1c1: Frying Pan Knight [A]
+  r1c2: Frying Pan Knight [B]
+  r1c3: Tax Collector [A]
+  r1c4: Tax Collector [B]
+  r2c1: Bagpipe Berserker [A]
+  r2c2: Bagpipe Berserker [B]
+  r2c3: Puppet Duelist [A]
+  r2c4: Puppet Duelist [B]
+  r3c1: Bread Knight [A]
+  r3c2: Bread Knight [B]
+  r3c3: Bell Ringer [A]
+  r3c4: Bell Ringer [B]
+  r4c1: Battle Beekeeper [A]
+  r4c2: Battle Beekeeper [B]
+  r4c3: Angry Librarian [A]
+  r4c4: Angry Librarian [B]
+
+BATCH 10 | SET 046 | Burrowfolk & Smallfolk | FILE: PRESENT
+  r1c1: Mole Tunneler [A]
+  r1c2: Mole Tunneler [B]
+  r1c3: Rat Alchemist [A]
+  r1c4: Rat Alchemist [B]
+  r2c1: Frog Monk [A]
+  r2c2: Frog Monk [B]
+  r2c3: Snail Herald [A]
+  r2c4: Snail Herald [B]
+  r3c1: Mouse Ranger [A]
+  r3c2: Mouse Ranger [B]
+  r3c3: Hedgehog Guard [A]
+  r3c4: Hedgehog Guard [B]
+  r4c1: Bat Cartographer [A]
+  r4c2: Bat Cartographer [B]
+  r4c3: Squirrel Raider [A]
+  r4c4: Squirrel Raider [B]
+
+BATCH 10 | SET 047 | Living Objects | FILE: PRESENT
+  r1c1: Candlekin [A]
+  r1c2: Candlekin [B]
+  r1c3: Potkin [A]
+  r1c4: Potkin [B]
+  r2c1: Bookling [A]
+  r2c2: Bookling [B]
+  r2c3: Hollow Armor [A]
+  r2c4: Hollow Armor [B]
+  r3c1: Clockborn [A]
+  r3c2: Clockborn [B]
+  r3c3: Porcelain Doll [A]
+  r3c4: Porcelain Doll [B]
+  r4c1: Broom Sentinel [A]
+  r4c2: Broom Sentinel [B]
+  r4c3: Mirrorling [A]
+  r4c4: Mirrorling [B]
+
+BATCH 10 | SET 048 | Wildborn Tribes | FILE: PRESENT
+  r1c1: Toad Guardian [A]
+  r1c2: Toad Guardian [B]
+  r1c3: Moss Troll [A]
+  r1c4: Moss Troll [B]
+  r2c1: Stagfolk Mystic [A]
+  r2c2: Stagfolk Mystic [B]
+  r2c3: Root Knight [A]
+  r2c4: Root Knight [B]
+  r3c1: Horned Satyr [A]
+  r3c2: Horned Satyr [B]
+  r3c3: Lizard Scout [A]
+  r3c4: Lizard Scout [B]
+  r4c1: Mushroom Folk [A]
+  r4c2: Mushroom Folk [B]
+  r4c3: Ape Relic Hunter [A]
+  r4c4: Ape Relic Hunter [B]
+
+BATCH 10 | SET 049 | Element-Born | FILE: PRESENT
+  r1c1: Emberling [A]
+  r1c2: Emberling [B]
+  r1c3: Icicle Monk [A]
+  r1c4: Icicle Monk [B]
+  r2c1: Mud Shifter [A]
+  r2c2: Mud Shifter [B]
+  r2c3: Tidekin [A]
+  r2c4: Tidekin [B]
+  r3c1: Stormglass Mage [A]
+  r3c2: Stormglass Mage [B]
+  r3c3: Smoke Nomad [A]
+  r3c4: Smoke Nomad [B]
+  r4c1: Crystal Singer [A]
+  r4c2: Crystal Singer [B]
+  r4c3: Sand Wisp [A]
+  r4c4: Sand Wisp [B]
+
+BATCH 10 | SET 050 | Uncanny Souls | FILE: PRESENT
+  r1c1: Skullbound Bard [A]
+  r1c2: Skullbound Bard [B]
+  r1c3: Ghost in Armor [A]
+  r1c4: Ghost in Armor [B]
+  r2c1: Star-Eyed Pilgrim [A]
+  r2c2: Star-Eyed Pilgrim [B]
+  r2c3: Headless Squire [A]
+  r2c4: Headless Squire [B]
+  r3c1: Serpent Courtier [A]
+  r3c2: Serpent Courtier [B]
+  r3c3: Moth Diviner [A]
+  r3c4: Moth Diviner [B]
+  r4c1: Owl Witch [A]
+  r4c2: Owl Witch [B]
+  r4c3: Three-Eyed Wanderer [A]
+  r4c4: Three-Eyed Wanderer [B]
+
+BATCH 11 | SET 051 | Merchants & Specialists | FILE: PRESENT
+  r1c1: Relic Broker [A]
+  r1c2: Relic Broker [B]
+  r1c3: Potion Dealer [A]
+  r1c4: Potion Dealer [B]
+  r2c1: Armor Repairer [A]
+  r2c2: Armor Repairer [B]
+  r2c3: Map Seller [A]
+  r2c4: Map Seller [B]
+  r3c1: Coin Changer [A]
+  r3c2: Coin Changer [B]
+  r3c3: Enchanter [A]
+  r3c4: Enchanter [B]
+  r4c1: Beast Tamer [A]
+  r4c2: Beast Tamer [B]
+  r4c3: Food Seller [A]
+  r4c4: Food Seller [B]
+
+BATCH 11 | SET 052 | Camp & Survival | FILE: PRESENT
+  r1c1: Camp Cook [A]
+  r1c2: Camp Cook [B]
+  r1c3: Innkeeper [A]
+  r1c4: Innkeeper [B]
+  r2c1: Camp Doctor [A]
+  r2c2: Camp Doctor [B]
+  r2c3: Tinker [A]
+  r2c4: Tinker [B]
+  r3c1: Porter [A]
+  r3c2: Porter [B]
+  r3c3: Torch Keeper [A]
+  r3c4: Torch Keeper [B]
+  r4c1: Stablehand [A]
+  r4c2: Stablehand [B]
+  r4c3: Dungeon Guide [A]
+  r4c4: Dungeon Guide [B]
+
+BATCH 11 | SET 053 | Guild & Civilian Life | FILE: PRESENT
+  r1c1: Guild Registrar [A]
+  r1c2: Guild Registrar [B]
+  r1c3: Quest Clerk [A]
+  r1c4: Quest Clerk [B]
+  r2c1: Librarian [A]
+  r2c2: Librarian [B]
+  r2c3: Historian [A]
+  r2c4: Historian [B]
+  r3c1: Bounty Clerk [A]
+  r3c2: Bounty Clerk [B]
+  r3c3: Settlement Mayor [A]
+  r3c4: Settlement Mayor [B]
+  r4c1: Watch Captain [A]
+  r4c2: Watch Captain [B]
+  r4c3: Gossip Courier [A]
+  r4c4: Gossip Courier [B]
+
+BATCH 11 | SET 054 | Wanderers & Pilgrims | FILE: PRESENT
+  r1c1: Lost Explorer [A]
+  r1c2: Lost Explorer [B]
+  r1c3: Cartographer [A]
+  r1c4: Cartographer [B]
+  r2c1: Exiled Noble [A]
+  r2c2: Exiled Noble [B]
+  r2c3: Traveling Monk [A]
+  r2c4: Traveling Monk [B]
+  r3c1: Gravedigger [A]
+  r3c2: Gravedigger [B]
+  r3c3: Wandering Bard [A]
+  r3c4: Wandering Bard [B]
+  r4c1: Pilgrim Oracle [A]
+  r4c2: Pilgrim Oracle [B]
+  r4c3: Retired Adventurer [A]
+  r4c4: Retired Adventurer [B]
+
+BATCH 11 | SET 055 | Questionable Merchants | FILE: PRESENT
+  r1c1: Mimic Merchant [A]
+  r1c2: Mimic Merchant [B]
+  r1c3: Skeleton Pawnbroker [A]
+  r1c4: Skeleton Pawnbroker [B]
+  r2c1: Sentient Coin Dealer [A]
+  r2c2: Sentient Coin Dealer [B]
+  r2c3: Mask Vendor [A]
+  r2c4: Mask Vendor [B]
+  r3c1: Witch of Returns [A]
+  r3c2: Witch of Returns [B]
+  r3c3: Debt Collector [A]
+  r3c4: Debt Collector [B]
+  r4c1: Devil Notary [A]
+  r4c2: Devil Notary [B]
+  r4c3: Cursed Tailor [A]
+  r4c4: Cursed Tailor [B]
+
+BATCH 12 | SET 056 | The Red Ledger | FILE: PRESENT
+  r1c1: Ledger Marshal [A]
+  r1c2: Ledger Marshal [B]
+  r1c3: Crimson Auditor [A]
+  r1c4: Crimson Auditor [B]
+  r2c1: Inkblade Agent [A]
+  r2c2: Inkblade Agent [B]
+  r2c3: Contract Mage [A]
+  r2c4: Contract Mage [B]
+  r3c1: Claim Hunter [A]
+  r3c2: Claim Hunter [B]
+  r3c3: Pawn Captain [A]
+  r3c4: Pawn Captain [B]
+  r4c1: Ink Scribe [A]
+  r4c2: Ink Scribe [B]
+  r4c3: Red Judge [A]
+  r4c4: Red Judge [B]
+
+BATCH 12 | SET 057 | The Hollow Choir | FILE: PRESENT
+  r1c1: Bell Priest [A]
+  r1c2: Bell Priest [B]
+  r1c3: Choir Nun [A]
+  r1c4: Choir Nun [B]
+  r2c1: Mask Cantor [A]
+  r2c2: Mask Cantor [B]
+  r2c3: Bone Organist [A]
+  r2c4: Bone Organist [B]
+  r3c1: Silent Exorcist [A]
+  r3c2: Silent Exorcist [B]
+  r3c3: Candle Confessor [A]
+  r3c4: Candle Confessor [B]
+  r4c1: Sorrow Knight [A]
+  r4c2: Sorrow Knight [B]
+  r4c3: Choir Seer [A]
+  r4c4: Choir Seer [B]
+
+BATCH 12 | SET 058 | The Thorn Court | FILE: PRESENT
+  r1c1: Briar Envoy [A]
+  r1c2: Briar Envoy [B]
+  r1c3: Antler Regent [A]
+  r1c4: Antler Regent [B]
+  r2c1: Rose Duelist [A]
+  r2c2: Rose Duelist [B]
+  r2c3: Sap Witch [A]
+  r2c4: Sap Witch [B]
+  r3c1: Thorn Archer [A]
+  r3c2: Thorn Archer [B]
+  r3c3: Bloom Knight [A]
+  r3c4: Bloom Knight [B]
+  r4c1: Vine Herald [A]
+  r4c2: Vine Herald [B]
+  r4c3: Garden Executioner [A]
+  r4c4: Garden Executioner [B]
+
+BATCH 12 | SET 059 | The Rift Cartographers | FILE: PRESENT
+  r1c1: Rift Navigator [A]
+  r1c2: Rift Navigator [B]
+  r1c3: Compass Savant [A]
+  r1c4: Compass Savant [B]
+  r2c1: Lantern Surveyor [A]
+  r2c2: Lantern Surveyor [B]
+  r2c3: Portal Mason [A]
+  r2c4: Portal Mason [B]
+  r3c1: Gravity Warden [A]
+  r3c2: Gravity Warden [B]
+  r3c3: Astrolabe Adept [A]
+  r3c4: Astrolabe Adept [B]
+  r4c1: Echo Tracker [A]
+  r4c2: Echo Tracker [B]
+  r4c3: Void Diver [A]
+  r4c4: Void Diver [B]
+
+BATCH 12 | SET 060 | Wandering Rivals & Allies | FILE: PRESENT
+  r1c1: Rival Captain [A]
+  r1c2: Rival Captain [B]
+  r1c3: Lone Duelist [A]
+  r1c4: Lone Duelist [B]
+  r2c1: Trap Specialist [A]
+  r2c2: Trap Specialist [B]
+  r2c3: Cursed Champion [A]
+  r2c4: Cursed Champion [B]
+  r3c1: Mercenary Healer [A]
+  r3c2: Mercenary Healer [B]
+  r3c3: Scout Companion [A]
+  r3c4: Scout Companion [B]
+  r4c1: Monster Diplomat [A]
+  r4c2: Monster Diplomat [B]
+  r4c3: Grinning Gladiator [A]
+  r4c4: Grinning Gladiator [B]
+
+BATCH 13 | SET 061 | Ceiling Citizens and Inverted Cityfolk | FILE: PRESENT
+  r1c1: Lantern Watchman [A]
+  r1c2: Lantern Watchman [B]
+  r1c3: Blue-Hooded Grappling Thief [A]
+  r1c4: Blue-Hooded Grappling Thief [B]
+  r2c1: Top-Hatted Gravity Bailiff [A]
+  r2c2: Top-Hatted Gravity Bailiff [B]
+  r2c3: Bell-Bearing Masked Monk [A]
+  r2c4: Bell-Bearing Masked Monk [B]
+  r3c1: Blue-Cloaked Roof Runner [A]
+  r3c2: Blue-Cloaked Roof Runner [B]
+  r3c3: Umbrella Fencer [A]
+  r3c4: Umbrella Fencer [B]
+  r4c1: Hammer-Wielding City Mason [A]
+  r4c2: Hammer-Wielding City Mason [B]
+  r4c3: Blue-Hatted Smoke Witch [A]
+  r4c4: Blue-Hatted Smoke Witch [B]
+
+BATCH 13 | SET 062 | Inverted City Ground and Gravity Floor Features | FILE: PRESENT
+  r1c1: Floating White Stone Floor
+  r1c2: Orange Copper Roof Tiles
+  r1c3: Pale Broken Floating Stone
+  r1c4: Golden Four-Way Gravity Arrow Tile
+  r2c1: Skyglass Blue Floor
+  r2c2: Cloud Gap Through Broken Floor
+  r2c3: Deep Starry Void Hole
+  r2c4: Golden Gear Mechanism Floor
+  r3c1: Blue Roof Shingles
+  r3c2: Iron Rail Balcony Floor
+  r3c3: Floating Red Bricks
+  r3c4: Glowing Blue Gravity Arrow Tile
+  r4c1: White Cracked Sky Stone
+  r4c2: Suspended Wooden Trapdoor
+  r4c3: Deep Sky Void Crack
+  r4c4: Hanging Golden Mechanism Floor
+
+BATCH 13 | SET 063 | Impossible City Architecture | FILE: PRESENT
+  r1c1: Floating Stone City Arch
+  r1c2: Floating Clocktower Facade
+  r1c3: Floating Balcony with Blue Lantern
+  r1c4: Floating Blue-Window Tower
+  r2c1: Suspended Stone Stairway
+  r2c2: Bell-Tower Arch
+  r2c3: Floating Blue-Window House
+  r2c4: Floating Narrow Tower
+  r3c1: Floating Balcony with Pennant
+  r3c2: Chain-Linked Floating Bridge
+  r3c3: Suspended Blue-Window Spire
+  r3c4: Floating Smoking Chimney
+  r4c1: Blue Swirling Portal Tower
+  r4c2: Floating Tower with Blue Banner
+  r4c3: Small Floating Stone Platform
+  r4c4: Chain-Hung Floating Pillar
+
+BATCH 13 | SET 064 | Gravity City Props and Relics | FILE: PRESENT
+  r1c1: Suspended Wooden Bench
+  r1c2: Hanging Stone Counterweight
+  r1c3: Bronze Gravity Compass
+  r1c4: Rope-Wound Metal Reel
+  r2c1: Wind Vent with White Tornado
+  r2c2: Brown Gravity Switch Lever
+  r2c3: Floating Blue Lantern Beacon
+  r2c4: Hanging Blue Streetlamp
+  r3c1: Hanging Bells
+  r3c2: Suspended Wooden Crate
+  r3c3: Hanging Metal Grapple
+  r3c4: Directional Signpost
+  r4c1: Iron Tether Anchor Ring
+  r4c2: Suspended Hourglass
+  r4c3: Glowing Blue Gravity Compass Device
+  r4c4: Floating Pink Gravity Rune
+
+BATCH 13 | SET 065 | Gravity Anomaly Monsters | FILE: PRESENT
+  r1c1: Anchor Golem [A]
+  r1c2: Anchor Golem [B]
+  r1c3: Floating City Lamplighter [A]
+  r1c4: Floating City Lamplighter [B]
+  r2c1: Blue-Hatted Floating Mechanic [A]
+  r2c2: Blue-Hatted Floating Mechanic [B]
+  r2c3: Fractured Floating Hound [A]
+  r2c4: Fractured Floating Hound [B]
+  r3c1: Winged Clockwork Gargoyle [A]
+  r3c2: Winged Clockwork Gargoyle [B]
+  r3c3: Blue-Robed Compass Wraith [A]
+  r3c4: Blue-Robed Compass Wraith [B]
+  r4c1: Walking Stained-Glass Window Mimic [A]
+  r4c2: Walking Stained-Glass Window Mimic [B]
+  r4c3: Orbiting Blue Eye Swarm [A]
+  r4c4: Orbiting Blue Eye Swarm [B]
+
+BATCH 14 | SET 066 | Marrow Scavengers | FILE: PRESENT
+  r1c1: Bonepicker Raider [A]
+  r1c2: Bonepicker Raider [B]
+  r1c3: Skull-Cap Pilgrim with Lantern [A]
+  r1c4: Skull-Cap Pilgrim with Lantern [B]
+  r2c1: Marrow Pickaxe Miner [A]
+  r2c2: Marrow Pickaxe Miner [B]
+  r2c3: Tusk Shieldbearer [A]
+  r2c4: Tusk Shieldbearer [B]
+  r3c1: Vulture Tamer [A]
+  r3c2: Vulture Tamer [B]
+  r3c3: Ribcage Hermit [A]
+  r3c4: Ribcage Hermit [B]
+  r4c1: Fossil Carver [A]
+  r4c2: Fossil Carver [B]
+  r4c3: Jawbone Shaman [A]
+  r4c4: Jawbone Shaman [B]
+
+BATCH 14 | SET 067 | Titan Remnant Monsters | FILE: PRESENT
+  r1c1: Bone Finger Crawler [A]
+  r1c2: Bone Finger Crawler [B]
+  r1c3: Vertebra Serpent [A]
+  r1c4: Vertebra Serpent [B]
+  r2c1: Ivory Scarab [A]
+  r2c2: Ivory Scarab [B]
+  r2c3: Skeleton Antler Stag [A]
+  r2c4: Skeleton Antler Stag [B]
+  r3c1: Fossil Crab [A]
+  r3c2: Fossil Crab [B]
+  r3c3: Skull Lantern Spirit [A]
+  r3c4: Skull Lantern Spirit [B]
+  r4c1: Giant Ossuary Golem [A]
+  r4c2: Giant Ossuary Golem [B]
+  r4c3: Floating Horned Titan Skull [A]
+  r4c4: Floating Horned Titan Skull [B]
+
+BATCH 14 | SET 068 | Fossil Dust and Bone Ground | FILE: PRESENT
+  r1c1: Buried Ribs and Bones in Sand
+  r1c2: Honeycomb Fossil Fragments
+  r1c3: Grey Fossil Stone and Shells
+  r1c4: Amber Ore Pebble Floor
+  r2c1: Ancient Pawprint Fossil Floor
+  r2c2: Buried Skull and Ribs
+  r2c3: Tan Cracked Earth
+  r2c4: Circular Fossil Skeleton Tile
+  r3c1: Rib Fossil in Brown Dirt
+  r3c2: Fossil Ribs and Bone Pieces
+  r3c3: Pale Broken Bone Slabs
+  r3c4: Open Toothed Bone Pit
+  r4c1: Skull-and-Bone Fence Floor
+  r4c2: Dense Bone Fragments
+  r4c3: Pebbles with Fossil Shells
+  r4c4: Large Ancient Pawprint Floor
+
+BATCH 14 | SET 069 | Titan Bones and Ossuary Architecture | FILE: PRESENT
+  r1c1: Giant Ribcage Wall
+  r1c2: Stacked Bone Column
+  r1c3: Hanging Giant Jawbone Arch
+  r1c4: Pair of Giant Tusks Arch
+  r2c1: Bone Bridge Segment
+  r2c2: Skull-and-Rib Rock Shelter
+  r2c3: Bone Lattice Fence
+  r2c4: Bone-Covered Rock Arch
+  r3c1: Wood and Bone Ladder
+  r3c2: Titan Knucklebone Column
+  r3c3: Skull-Framed Toothed Bone Gate
+  r3c4: Bone-and-Tusk Arch
+  r4c1: Open Ribcage Shrine
+  r4c2: Hanging Bone and Tusk Garland
+  r4c3: Wrapped Bone Pillar
+  r4c4: Low Bone Fence
+
+BATCH 14 | SET 070 | Scavenger Camp Props and Bone Hazards | FILE: PRESENT
+  r1c1: Burning Skull Brazier
+  r1c2: Bone-Rimmed Mining Cart
+  r1c3: Marrow Bone Pile
+  r1c4: Tusks and Skull Totem
+  r2c1: Bone War Horn
+  r2c2: Jawbone Snap Trap
+  r2c3: Red Titan Heartstone Nest
+  r2c4: Red Bone Camp Banner
+  r3c1: Bone-and-Skull Hanging Rack
+  r3c2: Bone Urns and Jugs
+  r3c3: Mining Pickaxe and Shovel Rack
+  r3c4: Ivory Spike Trap
+  r4c1: Hanging Lantern on Bone Post
+  r4c2: Bone-Rimmed Relic Chest
+  r4c3: Carved Fossil Tombstone
+  r4c4: Bone Charm Merchant Stall
+
+BATCH 15 | SET 071 | Orchard Keepers | FILE: PRESENT
+  r1c1: Stained-Glass Gardener [A]
+  r1c2: Stained-Glass Gardener [B]
+  r1c3: Crystal Shepherd [A]
+  r1c4: Crystal Shepherd [B]
+  r2c1: Prism Deerfolk [A]
+  r2c2: Prism Deerfolk [B]
+  r2c3: Glazier Knight [A]
+  r2c4: Glazier Knight [B]
+  r3c1: Amber Fruit Witch [A]
+  r3c2: Amber Fruit Witch [B]
+  r3c3: Glassroot Druid [A]
+  r3c4: Glassroot Druid [B]
+  r4c1: Orchard Harvester [A]
+  r4c2: Orchard Harvester [B]
+  r4c3: Mirror Mask Ranger [A]
+  r4c4: Mirror Mask Ranger [B]
+
+BATCH 15 | SET 072 | Shattered Wildlife | FILE: PRESENT
+  r1c1: Prism Stag [A]
+  r1c2: Prism Stag [B]
+  r1c3: Glasswing Moth [A]
+  r1c4: Glasswing Moth [B]
+  r2c1: Crystal Hare [A]
+  r2c2: Crystal Hare [B]
+  r2c3: Shardback Boar [A]
+  r2c4: Shardback Boar [B]
+  r3c1: Mirror Serpent [A]
+  r3c2: Mirror Serpent [B]
+  r3c3: Glass Orchard Wasp [A]
+  r3c4: Glass Orchard Wasp [B]
+  r4c1: Kaleidoscope Spider [A]
+  r4c2: Kaleidoscope Spider [B]
+  r4c3: Stained-Glass Owl [A]
+  r4c4: Stained-Glass Owl [B]
+
+BATCH 15 | SET 073 | Glass Orchard Prism Paths and Ground | FILE: PRESENT
+  r1c1: Rainbow Mosaic Glass Path
+  r1c2: Gold-Circled Blue Prism Mosaic
+  r1c3: Blue and White Glass Shard Floor
+  r1c4: Visible Roots Beneath Glass Floor
+  r2c1: Iridescent Pink Glass Tiles
+  r2c2: Broken Clear Glass Pane Floor
+  r2c3: Crystal Shards on Orchard Soil
+  r2c4: Pale Flower-Rimmed Stone Path
+  r3c1: Amber Gold Prism Path
+  r3c2: White Gold Geometric Garden Tile
+  r3c3: Red Blue Rainbow Stained-Glass Floor
+  r3c4: Dark Starry Glass Soil
+  r4c1: Mossy Pink Blossom Mosaic
+  r4c2: Shimmering Pink-Blue Glass Pool
+  r4c3: Green Root Glass Floor
+  r4c4: Dark Open Glass Chasm
+
+BATCH 15 | SET 074 | Stained-Glass Orchard Trees and Conservatories | FILE: PRESENT
+  r1c1: Rainbow Fruit Glass Tree
+  r1c2: Pink Blossom Glass Tree
+  r1c3: Blue Crystal-Bough Tree
+  r1c4: Hanging Glass Leaf Willow
+  r2c1: Domed Flowering Conservatory
+  r2c2: Blooming Stone Garden Arch
+  r2c3: Crystal-Topped Glass Gazebo
+  r2c4: Hanging Prism Garden Arbor
+  r3c1: Flowering Glass Fence
+  r3c2: Stained-Glass Prism Fence
+  r3c3: Pointed Prism Garden Gate
+  r3c4: Arched Crystal Garden Bridge
+  r4c1: Large Glass Garden Pavilion
+  r4c2: Low Rainbow Crystal Wall
+  r4c3: Tall Crystal Conservatory Door
+  r4c4: Mossy Glass Trellis Wall
+
+BATCH 15 | SET 075 | Prismatic Fruit and Glass Garden Props | FILE: PRESENT
+  r1c1: Red-Orange Prism Apple
+  r1c2: Hanging Crystal Grape Cluster
+  r1c3: Blue Crystal Pear
+  r1c4: Pair of Pink Glass Cherries
+  r2c1: Orchard Prism Lantern
+  r2c2: Glass Crystal Garden Plinth
+  r2c3: Floating Rainbow Orb on Stand
+  r2c4: Flower-Framed Prism Mirror
+  r3c1: Rainbow Prism Fountain
+  r3c2: Wide Crystal Basin Fountain
+  r3c3: Hanging Crystal Chandelier
+  r3c4: Rainbow Crystal Cluster
+  r4c1: Crystal Spike Garden Hazard
+  r4c2: Spinning Prism Windmill
+  r4c3: Glass Spike Fence
+  r4c4: Large Crystal Lotus Pedestal
+
+BATCH 16 | SET 076 | The Cursed Cast | FILE: PRESENT
+  r1c1: Masked Prima Donna [A]
+  r1c2: Masked Prima Donna [B]
+  r1c3: Ashen Tenor [A]
+  r1c4: Ashen Tenor [B]
+  r2c1: Stage Duelist [A]
+  r2c2: Stage Duelist [B]
+  r2c3: Ballet Specter [A]
+  r2c4: Ballet Specter [B]
+  r3c1: Tragedy Actor [A]
+  r3c2: Tragedy Actor [B]
+  r3c3: Comedy Actor [A]
+  r3c4: Comedy Actor [B]
+  r4c1: Cinder Chorister [A]
+  r4c2: Cinder Chorister [B]
+  r4c3: Curtain Sorceress [A]
+  r4c4: Curtain Sorceress [B]
+
+BATCH 16 | SET 077 | Orchestra of the Damned | FILE: PRESENT
+  r1c1: Violin Marionette [A]
+  r1c2: Violin Marionette [B]
+  r1c3: Tuba Brute [A]
+  r1c4: Tuba Brute [B]
+  r2c1: Drum Golem [A]
+  r2c2: Drum Golem [B]
+  r2c3: Cello Wraith [A]
+  r2c4: Cello Wraith [B]
+  r3c1: Cymbal Imp [A]
+  r3c2: Cymbal Imp [B]
+  r3c3: Conductor Shade [A]
+  r3c4: Conductor Shade [B]
+  r4c1: Music Stand Mimic [A]
+  r4c2: Music Stand Mimic [B]
+  r4c3: Harp Spider [A]
+  r4c4: Harp Spider [B]
+
+BATCH 16 | SET 078 | Haunted Theater Floor Tiles | FILE: PRESENT
+  r1c1: Blood-Speckled Wooden Stageboards
+  r1c2: Red Carpet with Gold Border
+  r1c3: Black and White Theater Mosaic
+  r1c4: Round Spotlight on Wood Floor
+  r2c1: Red Curtain Edge on Stageboards
+  r2c2: Red Gold Ornate Carpet
+  r2c3: Closed Wooden Stage Trapdoor
+  r2c4: Orchestra Pit Edge and Music Stands
+  r3c1: Burned Ember Stageboards
+  r3c2: Scattered Dust and Rope on Wood
+  r3c3: Cracked Grey Theater Floor
+  r3c4: Herringbone Wooden Stage Floor
+  r4c1: Red Ritual Circle with Candles
+  r4c2: Long Red Carpet Runner
+  r4c3: Open Broken Wooden Trapdoor
+  r4c4: Dusty Wood Stage Floor
+
+BATCH 16 | SET 079 | Haunted Theater Architecture | FILE: PRESENT
+  r1c1: Red Velvet Curtain
+  r1c2: Gold Opera Arch
+  r1c3: Red-Draped Balcony Railing
+  r1c4: Ornate Dressing Mirror and Stool
+  r2c1: Candled Red Carpet Stairway
+  r2c2: Gold Double Stage Doors
+  r2c3: Theater Candle Pillar
+  r2c4: Red Velvet Proscenium Stage
+  r3c1: Tall Arched Theater Window
+  r3c2: White Classical Statue
+  r3c3: Hanging Gold Chandelier
+  r3c4: Royal Red Balcony Box
+  r4c1: Curtained Backstage Door
+  r4c2: Red Gold Theater Wall Panel
+  r4c3: Small Balcony Box
+  r4c4: Lit Backstage Curtain Entry
+
+BATCH 16 | SET 080 | Haunted Instruments and Theater Traps | FILE: PRESENT
+  r1c1: Haunted Red-Glowing Cello
+  r1c2: Haunted Drum with Sticks
+  r1c3: Skull-Faced Ghost Harp
+  r1c4: Music Stand Mimic with Tongue
+  r2c1: Flying Conductor Baton
+  r2c2: Standing Theater Spotlight
+  r2c3: Open Floor Trapdoor
+  r2c4: Stage Spike Trap
+  r3c1: Burning Hanging Chandelier
+  r3c2: Stage Lever
+  r3c3: Pair of Opera Masks
+  r3c4: Haunted Pipe Organ
+  r4c1: Burning Footlight Strip
+  r4c2: Heavy Hanging Sandbag Pulley
+  r4c3: Red Curtained Void Portal
+  r4c4: Flying Sheet Music
+
+BATCH 17 | SET 081 | Outdoor Terrain I | FILE: PRESENT
+  r1c1: Plain Grass
+  r1c2: Grass With Dark Tufts
+  r1c3: Worn Grass
+  r1c4: Patchy Grass With Dirt
+  r2c1: Plain Dirt
+  r2c2: Dirt With Pebbles
+  r2c3: Packed Earth
+  r2c4: Muddy Dirt
+  r3c1: Narrow Path
+  r3c2: Worn Path
+  r3c3: Stone-Speckled Path
+  r3c4: Overgrown Path
+  r4c1: Grass-Dirt Blend
+  r4c2: Grass Edge With Trail Wear
+  r4c3: Trampled Ground
+  r4c4: Dry Dusty Earth
+
+BATCH 17 | SET 082 | Outdoor Terrain II | FILE: PRESENT
+  r1c1: Shallow Water
+  r1c2: Deep Water
+  r1c3: Water Ripples
+  r1c4: Muddy Shoreline
+  r2c1: Cliff Top Edge
+  r2c2: Cliff Face
+  r2c3: Rocky Ledge
+  r2c4: Cracked Ledge
+  r3c1: Wood Bridge Horizontal
+  r3c2: Wood Bridge Vertical
+  r3c3: Stone Bridge Segment
+  r3c4: Rope Bridge Segment
+  r4c1: Stepping Stones
+  r4c2: Riverbank Transition
+  r4c3: Rocky Stream Crossing
+  r4c4: Raised Earth Ledge
+
+BATCH 17 | SET 083 | Nature Props | FILE: PRESENT
+  r1c1: Small Leafy Tree
+  r1c2: Medium Pine Tree
+  r1c3: Dead Tree
+  r1c4: Tree Stump
+  r2c1: Round Bush
+  r2c2: Wide Bush
+  r2c3: Berry Bush
+  r2c4: Thorny Bush
+  r3c1: Small Rock
+  r3c2: Medium Boulder
+  r3c3: Rock Cluster
+  r3c4: Mossy Boulder
+  r4c1: Fallen Log
+  r4c2: Branch Pile
+  r4c3: Tall Grass Clump
+  r4c4: Mushroom Cluster
+
+BATCH 17 | SET 084 | Camp Structures | FILE: PRESENT
+  r1c1: Small Tent
+  r1c2: Large Tent
+  r1c3: Open Market Stall
+  r1c4: Covered Stall
+  r2c1: Wood Fence Straight
+  r2c2: Wood Fence Corner
+  r2c3: Fence Gate
+  r2c4: Spiked Barricade
+  r3c1: Campfire
+  r3c2: Stone Firepit
+  r3c3: Bedroll
+  r3c4: Cooking Spit
+  r4c1: Supply Rack
+  r4c2: Crate Stack
+  r4c3: Barrel Stack
+  r4c4: Notice Post
+
+BATCH 17 | SET 085 | Outdoor Ruins | FILE: PRESENT
+  r1c1: Simple Gravestone
+  r1c2: Cracked Gravestone
+  r1c3: Mossy Gravestone
+  r1c4: Skull Grave Marker
+  r2c1: Stone Monument
+  r2c2: Broken Monument
+  r2c3: Rune Stone
+  r2c4: Weathered Shrine
+  r3c1: Broken Column
+  r3c2: Ruined Pillar Base
+  r3c3: Toppled Statue
+  r3c4: Ruined Arch Fragment
+  r4c1: Rubble Pile
+  r4c2: Ruined Altar
+  r4c3: Outdoor Sarcophagus
+  r4c4: Ancient Carved Slab
+
+BATCH 18 | SET 086 | Weapons | FILE: PRESENT
+  r1c1: Iron Sword
+  r1c2: Steel Longsword
+  r1c3: Curved Saber
+  r1c4: Runic Greatsword
+  r2c1: Hand Axe
+  r2c2: Battle Axe
+  r2c3: Double Axe
+  r2c4: Bone Cleaver
+  r3c1: Shortbow
+  r3c2: Longbow
+  r3c3: Recurve Bow
+  r3c4: Crystal Bow
+  r4c1: Wooden Staff
+  r4c2: Fire Staff
+  r4c3: Frost Staff
+  r4c4: Necromancer Staff
+
+BATCH 18 | SET 087 | Armor & Equipment | FILE: PRESENT
+  r1c1: Leather Hood
+  r1c2: Iron Helmet
+  r1c3: Knight Helmet
+  r1c4: Horned Helmet
+  r2c1: Wooden Shield
+  r2c2: Iron Shield
+  r2c3: Tower Shield
+  r2c4: Runic Shield
+  r3c1: Leather Chestplate
+  r3c2: Chainmail Armor
+  r3c3: Steel Breastplate
+  r3c4: Enchanted Robe
+  r4c1: Traveler Cloak
+  r4c2: Ranger Cape
+  r4c3: Royal Mantle
+  r4c4: Shadow Cloak
+
+BATCH 18 | SET 088 | Consumables & Loot | FILE: PRESENT
+  r1c1: Health Potion
+  r1c2: Mana Potion
+  r1c3: Stamina Potion
+  r1c4: Antidote
+  r2c1: Bread
+  r2c2: Roasted Meat
+  r2c3: Bandage Roll
+  r2c4: Throwing Bomb
+  r3c1: Gold Coin Stack
+  r3c2: Silver Coin Stack
+  r3c3: Gemstone
+  r3c4: Treasure Pouch
+  r4c1: Fire Scroll
+  r4c2: Healing Scroll
+  r4c3: Ancient Relic
+  r4c4: Mysterious Key
+
+BATCH 18 | SET 089 | Combat Effects | FILE: PRESENT
+  r1c1: Shield Block [A]
+  r1c2: Shield Block [B]
+  r1c3: Perfect Parry [A]
+  r1c4: Perfect Parry [B]
+  r2c1: Dodge Puff [A]
+  r2c2: Dodge Puff [B]
+  r2c3: Guard Break [A]
+  r2c4: Guard Break [B]
+  r3c1: Skill Activation [A]
+  r3c2: Skill Activation [B]
+  r3c3: Spell Charge [A]
+  r3c4: Spell Charge [B]
+  r4c1: Combat Recovery [A]
+  r4c2: Combat Recovery [B]
+  r4c3: Exhaustion [A]
+  r4c4: Exhaustion [B]
+
+BATCH 18 | SET 090 | Dungeon Decorations | FILE: PRESENT
+  r1c1: Stone Altar
+  r1c2: Sacrificial Altar
+  r1c3: Wizard Pedestal
+  r1c4: Ancient Shrine
+  r2c1: Knight Statue
+  r2c2: Broken Statue
+  r2c3: Gargoyle Statue
+  r2c4: Stone Fountain
+  r3c1: Wooden Table
+  r3c2: Wooden Chair
+  r3c3: Bookshelf
+  r3c4: Weapon Rack
+  r4c1: Floor Candelabra
+  r4c2: Hanging Banner
+  r4c3: Wall Tapestry
+  r4c4: Ornate Sarcophagus
+
+BATCH 19 | SET 091 | Bosses & Elites | FILE: PRESENT
+  r1c1: Bandit Champion [A]
+  r1c2: Bandit Champion [B]
+  r1c3: Bone Colossus [A]
+  r1c4: Bone Colossus [B]
+  r2c1: Rotwood Matron [A]
+  r2c2: Rotwood Matron [B]
+  r2c3: Frostfang Tyrant [A]
+  r2c4: Frostfang Tyrant [B]
+  r3c1: Drowned Admiral [A]
+  r3c2: Drowned Admiral [B]
+  r3c3: Starfall Herald [A]
+  r3c4: Starfall Herald [B]
+  r4c1: Ashen Maestro [A]
+  r4c2: Ashen Maestro [B]
+  r4c3: Infernal Juggernaut [A]
+  r4c4: Infernal Juggernaut [B]
+
+BATCH 19 | SET 092 | Outdoor Wilderness Hazards | FILE: PRESENT
+  r1c1: Concealed Ground Pit
+  r1c2: Raised Ground Spikes
+  r1c3: Thorny Bramble Patch
+  r1c4: Green Poison Puddle
+  r2c1: Quicksand Vortex
+  r2c2: Sharp Ice Patch
+  r2c3: Molten Lava Crack
+  r2c4: Lightning-Charged Ground
+  r3c1: Iron Jaw Bear Trap
+  r3c2: Rope Snare
+  r3c3: Hanging Wasp Nest
+  r3c4: Falling Boulders
+  r4c1: Swinging Log Trap
+  r4c2: Dense Bramble Barricade
+  r4c3: Loose Rockfall
+  r4c4: Steam Geyser Vent
+
+BATCH 19 | SET 093 | Outdoor Grass, Dirt, Stone and Shore Transitions | FILE: PRESENT
+  r1c1: Grass-to-Dirt Edge with Grass North
+  r1c2: Grass-to-Dirt Edge with Grass West
+  r1c3: Grass-to-Dirt Edge with Grass South
+  r1c4: Grass-to-Dirt Edge with Grass East
+  r2c1: Grass-to-Dirt Corner NW
+  r2c2: Grass-to-Dirt Corner NE
+  r2c3: Grass-to-Dirt Corner SW
+  r2c4: Grass-to-Dirt Corner SE
+  r3c1: Stone-to-Dirt Edge with Stone North
+  r3c2: Stone-to-Dirt Edge with Stone West
+  r3c3: Stone-to-Dirt Edge with Stone South
+  r3c4: Stone-to-Dirt Edge with Stone East
+  r4c1: Grass-to-Water Shore with Grass North
+  r4c2: Grass-to-Water Shore with Grass West
+  r4c3: Grass-to-Water Shore with Grass South
+  r4c4: Grass-to-Water Shore with Grass East
+
+BATCH 19 | SET 094 | UI Skill and Status Icons | FILE: PRESENT
+  r1c1: Melee Attack Skill Icon
+  r1c2: Shield Guard Skill Icon
+  r1c3: Bow Ranged Skill Icon
+  r1c4: Staff Magic Skill Icon
+  r2c1: Dodge Dash Skill Icon
+  r2c2: Hooded Stealth Skill Icon
+  r2c3: Green Healing Skill Icon
+  r2c4: Blue Summoning Skill Icon
+  r3c1: Burning Flame Status Icon
+  r3c2: Frozen Snowflake Status Icon
+  r3c3: Poison Skull Status Icon
+  r3c4: Golden Star Haste Icon
+  r4c1: Purple Curse Flame Icon
+  r4c2: Winged Boots Speed Icon
+  r4c3: Brown Inventory Bag Icon
+  r4c4: Quest Exclamation Scroll Icon
+
+BATCH 19 | SET 095 | Dungeon Mechanisms and Interactive Fixtures | FILE: PRESENT
+  r1c1: Stone Lever in Down Position
+  r1c2: Stone Lever with Red Knob Up
+  r1c3: Raised Square Floor Pressure Plate
+  r1c4: Depressed Square Floor Pressure Plate
+  r2c1: Closed Iron-Barred Stone Gate
+  r2c2: Open Iron-Barred Stone Gate
+  r2c3: Floor Vent Grate
+  r2c4: Raised Dual-Spike Trap
+  r3c1: Dormant Round Rune Switch
+  r3c2: Activated Glowing Blue Rune Switch
+  r3c3: Intact Stone Statue
+  r3c4: Broken Stone Statue
+  r4c1: Open Dark Floor Chasm
+  r4c2: Wooden Drawbridge over Pit
+  r4c3: Inactive Crystal Pedestal
+  r4c4: Activated Blue Crystal Pedestal
+
+BATCH 20 | SET 096 | Settlement Signs, Wagons and Supplies | FILE: PRESENT
+  r1c1: Wooden Direction Signpost
+  r1c2: Quest Noticeboard
+  r1c3: Hanging Shop Coin Sign
+  r1c4: Hanging Inn Mug Sign
+  r2c1: Wooden Handcart
+  r2c2: Covered Horse Wagon
+  r2c3: Wooden Wheelbarrow
+  r2c4: Packed Supply Sled
+  r3c1: Grain Sacks
+  r3c2: Stacked Supply Crates
+  r3c3: Three Wooden Barrels
+  r3c4: Stone Village Water Well
+  r4c1: Hanging Street Lantern
+  r4c2: Laundry Line with Clothes
+  r4c3: Shovel and Pitchfork Tool Rack
+  r4c4: Market Fruit and Vegetable Baskets
+
+BATCH 20 | SET 097 | Magical Effects | FILE: PRESENT
+  r1c1: Rune Circle [A]
+  r1c2: Rune Circle [B]
+  r1c3: Rift Portal [A]
+  r1c4: Rift Portal [B]
+  r2c1: Barrier Aura [A]
+  r2c2: Barrier Aura [B]
+  r2c3: Healing Bloom [A]
+  r2c4: Healing Bloom [B]
+  r3c1: Fire Glyph [A]
+  r3c2: Fire Glyph [B]
+  r3c3: Frost Sigil [A]
+  r3c4: Frost Sigil [B]
+  r4c1: Lightning Coil [A]
+  r4c2: Lightning Coil [B]
+  r4c3: Shadow Mist [A]
+  r4c4: Shadow Mist [B]
+
+BATCH 20 | SET 098 | Quest Objects | FILE: PRESENT
+  r1c1: Bronze Seal
+  r1c2: Obsidian Seal
+  r1c3: Royal Signet
+  r1c4: Guild Medallion
+  r2c1: Ancient Key
+  r2c2: Star Key
+  r2c3: Temple Tablet
+  r2c4: Cipher Scroll
+  r3c1: Dragon Egg
+  r3c2: Petrified Seed
+  r3c3: Bottled Ember
+  r3c4: Memory Crystal
+  r4c1: Shattered Crown
+  r4c2: Titan Heartstone
+  r4c3: Sealed Letter
+  r4c4: Rift Compass
+
+BATCH 20 | SET 099 | Weapon Swing Effects | FILE: PRESENT
+  r1c1: Horizontal Sword Slash [A]
+  r1c2: Horizontal Sword Slash [B]
+  r1c3: Downward Sword Cleave [A]
+  r1c4: Downward Sword Cleave [B]
+  r2c1: Upward Sword Slash [A]
+  r2c2: Upward Sword Slash [B]
+  r2c3: Diagonal Dagger Cut [A]
+  r2c4: Diagonal Dagger Cut [B]
+  r3c1: Heavy Greatsword Arc [A]
+  r3c2: Heavy Greatsword Arc [B]
+  r3c3: Broad Axe Sweep [A]
+  r3c4: Broad Axe Sweep [B]
+  r4c1: Spear Thrust Trail [A]
+  r4c2: Spear Thrust Trail [B]
+  r4c3: Twin-Blade Spin [A]
+  r4c4: Twin-Blade Spin [B]
+
+BATCH 20 | SET 100 | Hit Impact Effects | FILE: PRESENT
+  r1c1: Metal Sparks [A]
+  r1c2: Metal Sparks [B]
+  r1c3: Shield Strike Ring [A]
+  r1c4: Shield Strike Ring [B]
+  r2c1: Stone Chip Impact [A]
+  r2c2: Stone Chip Impact [B]
+  r2c3: Wood Splinter Impact [A]
+  r2c4: Wood Splinter Impact [B]
+  r3c1: Light Blood Burst [A]
+  r3c2: Light Blood Burst [B]
+  r3c3: Heavy Blood Burst [A]
+  r3c4: Heavy Blood Burst [B]
+  r4c1: Magic Impact Flash [A]
+  r4c2: Magic Impact Flash [B]
+  r4c3: Critical Starburst [A]
+  r4c4: Critical Starburst [B]
+
+BATCH 21 | SET 101 | Ground Variation | FILE: PRESENT
+  r1c1: Plain Grey Flagstone
+  r1c2: Irregular Cracked Flagstone
+  r1c3: Mossy Flagstone
+  r1c4: Pebbled Brown Earth
+  r2c1: Rounded Stone Paving
+  r2c2: Dark Rocky Stone
+  r2c3: Bone-Strewn Dirt
+  r2c4: Deep Blue Water
+  r3c1: Wooden Floorboards
+  r3c2: Bloodstained Stone
+  r3c3: Metal Floor Grate
+  r3c4: Candlelit Ritual Circle
+  r4c1: Broken Wooden Pit
+  r4c2: Dark Cavern Earth
+  r4c3: Dusty Stony Ground
+  r4c4: Broken Stone Rubble
+
+BATCH 21 | SET 102 | Architectural Structures | FILE: PRESENT
+  r1c1: Plain Grey Stone Wall
+  r1c2: Moss-Covered Stone Wall
+  r1c3: Open Stone Archway
+  r1c4: Closed Wooden Door
+  r2c1: Iron-Barred Archway
+  r2c2: Cracked Stone Wall
+  r2c3: Stone Wall Corner
+  r2c4: Freestanding Stone Column
+  r3c1: Torch Wall Alcove
+  r3c2: Ascending Stone Stairs
+  r3c3: Descending Stone Stairs
+  r3c4: Empty Stone Recess
+  r4c1: Skull Burial Niche
+  r4c2: Wooden Double Door
+  r4c3: Narrow Lit Window
+  r4c4: Broken Mossy Pillar
+
+BATCH 21 | SET 103 | Volcanic Outdoor Terrain & Lava Transitions | FILE: PRESENT
+  r1c1: Rough Volcanic Basalt
+  r1c2: Lava-Cracked Basalt
+  r1c3: Ash-Powdered Stone
+  r1c4: Rust-Red Volcanic Dirt
+  r2c1: Dark Obsidian Stone
+  r2c2: Ember-Strewn Basalt
+  r2c3: Rough Volcanic Gravel
+  r2c4: Grey Ash and Pebbles
+  r3c1: Flowing Lava
+  r3c2: Molten Lava Variation
+  r3c3: Lava-to-Basalt Edge
+  r3c4: Lava-to-Scorched Soil Edge
+  r4c1: Ash and Rock Transition
+  r4c2: Burnt Gravel and Soil
+  r4c3: Bright Magma Fissures
+  r4c4: Ember-Flecked Volcanic Floor
+
+BATCH 21 | SET 104 | Volcanic Formations & Props | FILE: PRESENT
+  r1c1: Small Cracked Lava Boulder
+  r1c2: Large Magma-Cracked Boulder
+  r1c3: Glowing Lava Crystal Spires
+  r1c4: Columnar Basalt Formation
+  r2c1: Smoking Volcanic Vent
+  r2c2: Small Smoking Fissure
+  r2c3: Cinder and Ash Heap
+  r2c4: Burning Hollow Tree Stump
+  r3c1: Scorched Leafless Tree
+  r3c2: Tall Magma-Cracked Monolith
+  r3c3: Skull-Topped Ash Totem
+  r3c4: Volcanic Rune Stone
+  r4c1: Fire Shrine in Rock
+  r4c2: Smoldering Fallen Timbers
+  r4c3: Jagged Obsidian Outcrop
+  r4c4: Glowing Coal and Cinder Pile
+
+BATCH 21 | SET 105 | Jungle Canopy, Vegetation & Paths | FILE: PRESENT
+  r1c1: Leafy Jungle Ground
+  r1c2: Dense Broadleaf Floor
+  r1c3: Jungle Dirt and Seedlings
+  r1c4: Exposed Tree Roots
+  r2c1: Overgrown Dirt Path
+  r2c2: Curved Jungle Trail
+  r2c3: Wet Jungle Mud
+  r2c4: Dense Fern Canopy
+  r3c1: Jungle Path Side Transition
+  r3c2: Dirt and Leaf Transition
+  r3c3: Root-Crossed Trail
+  r3c4: Shadowed Leaf Canopy
+  r4c1: Vegetation with Thick Roots
+  r4c2: Flowering Jungle Undergrowth
+  r4c3: Mud Puddles and Pebbles
+  r4c4: Overgrown Mossy Stone Path
+
+BATCH 22 | SET 106 | Jungle Wildlife — Two-Frame Idle | FILE: PRESENT
+  r1c1: Red Macaw [A]
+  r1c2: Red Macaw [B]
+  r1c3: Toucan [A]
+  r1c4: Toucan [B]
+  r2c1: Red-Eyed Tree Frog [A]
+  r2c2: Red-Eyed Tree Frog [B]
+  r2c3: Green Tree Lizard [A]
+  r2c4: Green Tree Lizard [B]
+  r3c1: Spotted Gecko [A]
+  r3c2: Spotted Gecko [B]
+  r3c3: Blue Butterfly [A]
+  r3c4: Blue Butterfly [B]
+  r4c1: Jungle Monkey [A]
+  r4c2: Jungle Monkey [B]
+  r4c3: Green Jungle Snake [A]
+  r4c4: Green Jungle Snake [B]
+
+BATCH 22 | SET 107 | Snowfield, Mountain & Ice Terrain | FILE: PRESENT
+  r1c1: Packed Snow
+  r1c2: Sparkling Snow
+  r1c3: Lumpy Snowdrifts
+  r1c4: Snow and Wet Rock
+  r2c1: Pale Frosted Ice
+  r2c2: Fractured Ice Sheet
+  r2c3: Deep Blue Frozen Water
+  r2c4: Snow-Dusted Grey Stone
+  r3c1: Snow Over Stone Edge North
+  r3c2: Snow Over Stone Edge West
+  r3c3: Snow Over Stone Edge South
+  r3c4: Snow Over Stone Edge East
+  r4c1: Exposed Mountain Rock
+  r4c2: Patchy Snow and Rocks
+  r4c3: Thin Blue Ice
+  r4c4: Wind-Swept Snowdrifts
+
+BATCH 22 | SET 108 | Arctic Wildlife — Two-Frame Idle | FILE: PRESENT
+  r1c1: Penguin [A]
+  r1c2: Penguin [B]
+  r1c3: Puffin [A]
+  r1c4: Puffin [B]
+  r2c1: Arctic Fox [A]
+  r2c2: Arctic Fox [B]
+  r2c3: Snow Hare [A]
+  r2c4: Snow Hare [B]
+  r3c1: Seal [A]
+  r3c2: Seal [B]
+  r3c3: Walrus [A]
+  r3c4: Walrus [B]
+  r4c1: Snowy Owl [A]
+  r4c2: Snowy Owl [B]
+  r4c3: Polar Bear Cub [A]
+  r4c4: Polar Bear Cub [B]
+
+BATCH 22 | SET 109 | Coastlines, Beaches & Island Terrain | FILE: PRESENT
+  r1c1: Dry Golden Sand
+  r1c2: Dark Wet Sand
+  r1c3: Shallow Turquoise Water
+  r1c4: Deep Blue Ocean
+  r2c1: Coastline — Water North
+  r2c2: Coastline — Water East
+  r2c3: Coastline — Water South
+  r2c4: Coastline — Water West
+  r3c1: Coastline — NW Water Corner
+  r3c2: Coastline — NE Water Corner
+  r3c3: Coastline — SW Water Corner
+  r3c4: Coastline — SE Water Corner
+  r4c1: Rocky Coastline
+  r4c2: Sand-to-Grass Transition
+  r4c3: Rocky Tide Pools
+  r4c4: Pebble Beach
+
+BATCH 22 | SET 110 | Coastal Wildlife — Two-Frame Idle | FILE: PRESENT
+  r1c1: Red Shore Crab [A]
+  r1c2: Red Shore Crab [B]
+  r1c3: Seagull [A]
+  r1c4: Seagull [B]
+  r2c1: Sandpiper [A]
+  r2c2: Sandpiper [B]
+  r2c3: Sea Turtle Hatchling [A]
+  r2c4: Sea Turtle Hatchling [B]
+  r3c1: Pelican [A]
+  r3c2: Pelican [B]
+  r3c3: Hermit Crab [A]
+  r3c4: Hermit Crab [B]
+  r4c1: Puffin [A]
+  r4c2: Puffin [B]
+  r4c3: Beach Lizard [A]
+  r4c4: Beach Lizard [B]
+
+BATCH 23 | SET 111 | Wreckage & Shoreline Props | FILE: PRESENT
+  r1c1: Driftwood Pile
+  r1c2: Broken Rowboat
+  r1c3: Broken Mast with Torn Sail
+  r1c4: Tangled Fishing Net and Floats
+  r2c1: Rusted Ship Anchor
+  r2c2: Seashell Cluster
+  r2c3: Red-and-White Fishing Buoy
+  r2c4: Half-Buried Treasure Chest
+  r3c1: Coiled Dock Rope
+  r3c2: Barnacle-Covered Crate
+  r3c3: Broken Wooden Barrel
+  r3c4: Rope-Wrapped Dock Post
+  r4c1: Weathered Wooden Oar
+  r4c2: Rolled Sailcloth
+  r4c3: Washed-Ashore Crab Trap
+  r4c4: Broken Shoreline Signpost
