@@ -1,4 +1,4 @@
-import {TILE} from './world.js?v=6.0';
+import {TILE} from './world.js?v=7.0';
 
 export function seedNumber(value){let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;}
 export function createDungeon(seed='Dunbarrow'){

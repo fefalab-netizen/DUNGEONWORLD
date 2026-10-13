@@ -1,7 +1,7 @@
-import {legacyMonsters,spawnMonster} from './monsters.js?v=6.0';
-import {updateEnemy} from './enemy-ai.js?v=6.0';
-import {flipForAim,facingAngle} from './facing.js?v=6.0';
-import {move,canOccupy,TILE} from './world.js?v=6.0';
+import {legacyMonsters,spawnMonster} from './monsters.js?v=7.0';
+import {updateEnemy} from './enemy-ai.js?v=7.0';
+import {flipForAim,facingAngle} from './facing.js?v=7.0';
+import {move,canOccupy,TILE} from './world.js?v=7.0';
 export const weapons=[
  {kind:'melee',cooldown:.55,range:55,arc:1.2,fx:10,special:'Wide axe sweep'},
  {kind:'melee',cooldown:.4,range:52,arc:.95,fx:0,special:'Heavy armor'},

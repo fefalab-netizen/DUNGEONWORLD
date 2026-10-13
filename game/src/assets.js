@@ -1,5 +1,5 @@
-import {coreSheets} from './sprite-usage.js?v=6.0';
-import {sheets} from './data.js?v=6.0';
+import {coreSheets} from './sprite-usage.js?v=7.0';
+import {sheets} from './data.js?v=7.0';
 
 export function gridLines(size) {return Array.from({length:5},(_,i)=>Math.round(size*i/4));}
 function findGutters(profile) {

@@ -1,5 +1,6 @@
-import {move,canOccupy} from './world.js?v=6.0';
-import {spawnMonster} from './monsters.js?v=6.0';
+import {updateHerald} from './herald.js?v=7.0';
+import {move,canOccupy} from './world.js?v=7.0';
+import {spawnMonster} from './monsters.js?v=7.0';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function tactics(e,enemies){
  const allies=enemies.filter(a=>a!==e&&a.hp>0&&a.faction===e.faction&&dist(a,e)<260);
@@ -8,13 +9,15 @@ export function tactics(e,enemies){
  return {frontline,injured,allies,mode:e.role==='ranged'?(frontline?'covered':'independent'):e.role==='support'?(injured?'heal':allies.length?'ward':'offense'):e.role==='tank'?(allies.length?'protect':'pressure'):'offense'};
 }
 function summon(c,e){
+ if(c.world.depth===3&&c.world.bossDefeated)return false;
  if(c.enemies.filter(a=>a.hp>0&&a.summoner===e.id).length>=2)return false;
  for(const [dx,dy]of [[48,0],[-48,0],[0,48],[0,-48]]){
   const x=e.x+dx,y=e.y+dy;if(!canOccupy(c.world,x,y,12)||dist({x,y},c.player)<60||c.enemies.some(a=>a.hp>0&&dist(a,{x,y})<26))continue;
-  const n=spawnMonster(e.faction==='chapel'?'bone':'grunt',c.nextEnemyId++,x,y,c.world.seed);n.summoner=e.id;n.alert=true;n.cooldown=1.3;n.xp=0;n.noLoot=true;c.enemies.push(n);c.effect('100',12,x,y,42,0,.5);return true;
+  const n=spawnMonster(e.faction==='chapel'?'bone':'grunt',c.nextEnemyId++,x,y,c.world.seed);n.faction=e.faction;n.summoner=e.id;n.alert=true;n.cooldown=1.3;n.xp=0;n.noLoot=true;c.enemies.push(n);c.effect('100',12,x,y,42,0,.5);return true;
  }return false;
 }
 export function updateEnemy(c,e,dt,clear){
+ if(e.finalBoss){updateHerald(c,e,dt,clear);return;}
  const p=c.player,w=c.world,d=dist(e,p);
  if(w.kind==='overworld'&&(d>640||dist(p,w.safeZone)<w.safeZone.radius)){e.state='idle';e.alert=false;return;}
  for(const k of ['cooldown','flash','slow','ward','abilityCooldown'])e[k]=Math.max(0,(e[k]||0)-dt);

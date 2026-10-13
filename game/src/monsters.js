@@ -13,6 +13,8 @@ export const monsters={
  quartermaster:define('quartermaster','Bandit Quartermaster',8,90,53,16,65,'miniboss',{boss:true,abilities:['lunge','reinforce'],cost:10}),
  keeper:define('keeper','Chapel Keeper',14,85,42,14,65,'miniboss',{boss:true,kind:'magic',range:180,faction:'chapel',biomes:['chapel'],abilities:['rune','summon'],cost:10}),
 };
+monsters.brute={...monsters.tank,id:'brute',name:'Orc Brute',hp:100,damage:24,armor:5,speed:43,cost:6,xp:36,abilities:['lunge']};
+monsters.herald={...monsters.keeper,id:'herald',name:'The First Herald',finalBoss:true,hp:280,damage:24,armor:4,xp:180,abilities:['rune','summon'],loot:{gold:3,rarity:3}};
 export const legacyMonsters=['grunt','archer','tank','scavenger','bandit','cult'].map(id=>monsters[id]);
 export function hashSeed(value){let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;}
 export const variationCurves={hp:.85,damage:.35,reach:.45,speed:.18,reward:.8};

@@ -1,4 +1,4 @@
-import {TILE} from './world.js?v=6.0';
+import {TILE} from './world.js?v=7.0';
 const mapCache=new WeakMap();
 export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
  const {minX,maxX,minY,maxY}=bounds;

@@ -1,6 +1,6 @@
-import {hashSeed,spawnMonster} from './monsters.js?v=6.0';
-import {directEncounter} from './encounters.js?v=6.0';
-import {canOccupy} from './world.js?v=6.0';
+import {hashSeed,spawnMonster} from './monsters.js?v=7.0';
+import {directEncounter} from './encounters.js?v=7.0';
+import {canOccupy} from './world.js?v=7.0';
 export function createStoryDungeon(seed,theme,level=1,progress=0){
  let rng=hashSeed(seed+theme);const random=()=>{rng=(Math.imul(rng,1664525)+1013904223)>>>0;return rng/4294967296;};
  const chapel=theme==='chapel',mainCount=chapel?7:6,width=80,height=60;
@@ -44,7 +44,7 @@ export function interactStory(w,p,pr,quests){
   if(t.lock==='objective'&&!w.hasKey)return w.theme==='chapel'?'The altar must be awakened first. Read the inscription.':'Find the guard key in the supply chamber first.';
   if(t.lock==='treasure'&&!w.treasureKey)return 'Locked treasury. Search the supply cache in the third chamber.';
   for(const d of w.doors.filter(d=>d.group===t.group)){d.open=true;w.solid[d.y*w.width+d.x]=false;}
-  if(t.lock==='secret'){quests.lore.add('A hidden passage behind crumbling masonry.');return 'Brittle barricade broken. A guarded cache lies beyond.';}return 'Door opened.';
+  if(t.lock==='secret'){quests.secrets?.add(w.seed+':'+t.group);quests.lore.add('A hidden passage behind crumbling masonry.');return 'Brittle barricade broken. A guarded cache lies beyond.';}return 'Door opened.';
  }
  if(a.kind==='lore'){quests.lore.add(t.text);return t.text;}
  if(a.kind==='supply'){w.treasureKey=true;t.active=true;return 'Found a brass treasury key among the stolen supplies.';}
@@ -52,7 +52,7 @@ export function interactStory(w,p,pr,quests){
  if(a.kind==='lever'){if(!w.ritual.plate)return 'The lever falls back. Wake the pressure plate first.';w.ritual.lever=true;w.treasureKey=true;t.active=true;return 'The lever catches and releases the side treasury lock. Touch the altar in the next chamber.';}
  if(a.kind==='altar'&&!w.ritual.lever)return 'The altar sleeps. Plate, lever, altar: the inscription describes the rite.';
  if(a.kind==='altar'||a.kind==='key'){w.key.taken=true;w.hasKey=true;return w.theme==='chapel'?'The ritual gate opens to your touch. The Chapel Keeper awaits.':'Guard key acquired. The Quartermaster’s chamber can now be opened.';}
- if(a.kind==='chest'){t.open=true;const item=pr.makeItem('weapon',true);if(t.rare){item.rarity=2;item.name='Rare Cache '+item.name.replace('Uncommon ','');item.stats.attack+=4;}pr.items.push(item);pr.gold+=t.rare?40:20;pr.potions++;return `Found ${item.name}, gold and a potion.`;}
+ if(a.kind==='chest'){t.open=true;const item=pr.makeItem('weapon',true);if(t.rare){item.rarity=2;item.name='Rare Cache '+item.name.replace('Uncommon ','');item.stats.attack+=4;}pr.items.push(item);pr.addGold(t.rare?40:20);pr.potions++;return `Found ${item.name}, gold and a potion.`;}
  if(a.kind==='entrance')return 'entrance';
  if(!w.bossDefeated)return 'Defeat the chamber guardian to claim the artifact and open the exit.';
  w.completed=true;return 'complete';

@@ -1,4 +1,4 @@
-import {rarities,colors,xpNeeded} from './progression.js?v=6.0';
+import {rarities,colors,xpNeeded} from './progression.js?v=7.0';
 const labels={hp:'Max HP',attack:'Power',defense:'Defense',speed:'Speed',crit:'Critical chance',haste:'Attack speed'};
 const value=(key,n)=>['crit','haste'].includes(key)?`${Math.round(n*100)}%`:n;
 export function openInventory(progression,assets,characterOnly=false){

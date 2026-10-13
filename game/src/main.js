@@ -1,19 +1,21 @@
-import {DebugSpeed} from './debug-speed.js?v=6.0';
-import {nearbyNPC} from './quests.js?v=6.0';
-import {openStory} from './story-ui.js?v=6.0';
-import {storyAction} from './story-dungeon.js?v=6.0';
-import {spriteUsage,coreSheets} from './sprite-usage.js?v=6.0';
-import {Adventure} from './adventure.js?v=6.0';
-import {reveal,nearbyLandmark} from './overworld.js?v=6.0';
-import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=6.0';
-import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=6.0';
-import {flipForAim} from './facing.js?v=6.0';
-import {AssetManager} from './assets.js?v=6.0';
-import {classes,art} from './data.js?v=6.0';
-import {TILE,direction} from './world.js?v=6.0';
-import {Combat,weapons,lineClear} from './combat.js?v=6.0';
-import {Progression,xpNeeded,colors} from './progression.js?v=6.0';
-import {openInventory} from './inventory.js?v=6.0';
+import {underkeepAction,underkeepSheets} from './underkeep.js?v=7.0';
+import {presentEnding} from './ending.js?v=7.0';
+import {DebugSpeed} from './debug-speed.js?v=7.0';
+import {nearbyNPC} from './quests.js?v=7.0';
+import {openStory} from './story-ui.js?v=7.0';
+import {storyAction} from './story-dungeon.js?v=7.0';
+import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.0';
+import {Adventure} from './adventure.js?v=7.0';
+import {reveal,nearbyLandmark} from './overworld.js?v=7.0';
+import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.0';
+import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.0';
+import {flipForAim} from './facing.js?v=7.0';
+import {AssetManager} from './assets.js?v=7.0';
+import {classes,art} from './data.js?v=7.0';
+import {TILE,direction} from './world.js?v=7.0';
+import {Combat,weapons,lineClear} from './combat.js?v=7.0';
+import {Progression,xpNeeded,colors} from './progression.js?v=7.0';
+import {openInventory} from './inventory.js?v=7.0';
 
 const $=id=>document.getElementById(id),canvas=$('game'),g=canvas.getContext('2d');
 const assets=new AssetManager(),keys=new Set(),debugSpeed=new DebugSpeed();
@@ -30,9 +32,9 @@ function reportError(error){$('fatal').hidden=false;$('fatal').textContent='Game
 addEventListener('error',event=>reportError(event.error||new Error(event.message)));
 function showStory(npc=null){if(!adventure)return;setMode('story');openStory(adventure,npc,()=>setMode('playing'));}
 async function encounter(){
- if(mode!=='playing'||!adventure)return;const npc=nearbyNPC(adventure);if(npc){showStory(npc);return;}
+ if(mode!=='playing'||!adventure)return;const npc=nearbyNPC(adventure);if(npc){if(npc.id==='aldric'&&adventure.quests.heraldDefeated){adventure.quests.finished=true;presentEnding(adventure,$('completeSummary'));setMode('complete');return;}showStory(npc);return;}
  const destination=world.kind==='overworld'?nearbyLandmark(world,player):null;
- if(destination?.id==='chapel'&&!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('loading');notifyLoot('Loading Bone Chapel artwork…');await assets.load(()=>{},['64','66','67','68','69','70']);if(!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('playing');notifyLoot('Chapel artwork missing. Check 64.png and 66–70.png in game/assets, then retry.');return;}setMode('playing');}
+ if((destination?.id==='chapel'||(destination?.id==='underkeep'&&adventure.quests.ready))&&!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('loading');notifyLoot('Loading dungeon artwork…');await assets.load(()=>{},['64','66','67','68','69','70']);if(!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('playing');notifyLoot('Dungeon artwork missing. Check 64.png and 66–70.png in game/assets, then retry.');return;}setMode('playing');}
  const oldWorld=world,message=adventure.interact();world=adventure.world;combat=adventure.combat;
  if(world!==oldWorld){Object.assign(camera,player);keys.clear();attacking=false;aimUntil=0;}
  notifyLoot(message);canvas.focus();
@@ -78,23 +80,23 @@ addEventListener('keyup',e=>keys.delete(e.code));
 function blur(){keys.clear();if(mode==='playing')setMode('paused');}
 addEventListener('blur',blur);document.addEventListener('visibilitychange',()=>{if(document.hidden)blur();});
 $('closeInfo').onclick=()=>$('info').close();
-$('helpButton').onclick=()=>{$('infoBody').innerHTML='<h2>Explore Dunbarrow</h2><p>Start in a safe camp. Follow roads west to the Raider Cellar or east to the Bone Chapel. E at the campfire restores health and supplies at least two potions. M toggles the exploration map. Trees, rocks and water block travel; roads and bridges connect all landmarks. Unknown terrain is hidden by fog.</p><p>WASD / arrows: walk and face movement. Moving the mouse aims; hold left click to attack in that direction. Space: dodge. E: open a nearby door or chest, pick up the golden key, or use stairs. I: inventory. C: statistics. 1: potion. M: toggle map. Escape: pause.</p><p>Recover each dungeon’s gate key or complete its ritual, defeat its miniboss, then use the violet exit stairs. Optional rooms are not required. J opens the quest journal. Talk to camp NPCs with E. Brunna buys and sells gear. Developer controls: F4 toggles movement speed; Shift+F4 cycles 1× / 2× / 4× / 8×. Cyan stairs return outdoors. Equipment, health, enemies, doors and opened chests persist when travelling between regions during this run. Spike traps pulse amber before firing. Chests give equipment and a potion. Enter a seed to replay its layout, or choose Random seed for another dungeon.</p>';$('info').showModal();};
+$('helpButton').onclick=()=>{$('infoBody').innerHTML='<h2>Explore Dunbarrow</h2><p>Start in a safe camp. Follow roads west to the Raider Cellar or east to the Bone Chapel. E at the campfire restores health and supplies at least two potions. M toggles the exploration map. Trees, rocks and water block travel; roads and bridges connect all landmarks. Unknown terrain is hidden by fog.</p><p>WASD / arrows: walk and face movement. Moving the mouse aims; hold left click to attack in that direction. Space: dodge. E: open a nearby door or chest, pick up the golden key, or use stairs. I: inventory. C: statistics. 1: potion. M: toggle map. Escape: pause.</p><p>Recover each dungeon’s gate key or complete its ritual, defeat its miniboss, then use the violet exit stairs. Optional rooms are not required. J opens the quest journal. Talk to camp NPCs with E. Brunna buys and sells gear. Developer controls: F4 toggles movement speed; Shift+F4 cycles 1× / 2× / 4× / 8×. The Black Stair opens after both artifacts. Its three floors retain their state when you backtrack. Cyan stairs ascend; violet stairs descend. Defeat the First Herald, take the exit home and speak to Aldric for the ending. Equipment, health, enemies, doors and opened chests persist when travelling between regions during this run. Spike traps pulse amber before firing. Chests give equipment and a potion. Enter a seed to replay its layout, or choose Random seed for another dungeon.</p>';$('info').showModal();};
 $('assetsButton').onclick=()=>{
   $('infoBody').innerHTML='<h2>Supplied asset report</h2><p>All 100 original PNGs are registered. Only core and visited-region sheets are loaded. Every cell has a stable physical ID (for example 05.r1c1). The planned labels differ from the pictures; the foundation uses visually verified mappings.</p><p>03.png = props · 04.png = walls · 05.png = floors. A/B character pairs share crop bounds and scale. Dimensions and alpha are inspected when loaded.</p><table><thead><tr><th>File</th><th>Actual dimensions</th><th>Transparency</th></tr></thead><tbody>'+[...assets.atlases].sort().map(([id,a])=>`<tr><td>${id}.png</td><td>${a.width} × ${a.height}</td><td>${a.transparent?'Present':'Absent'}</td></tr>`).join('')+'</tbody></table>';
   $('infoBody').innerHTML+='<h3>Verified cell uses (zero-based)</h3><p>'+spriteUsage.map(u=>`${u.sheet}.${u.cell}: ${u.use}`).join('<br>')+'</p>';
   for(const error of assets.errors){const p=document.createElement('p');p.textContent=error;$('infoBody').append(p);}$('info').showModal();
 };
-function simulate(dt){const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});dodgeRequested=false;if(world.kind==='overworld')reveal(world,player);else if(world.theme){world.explored??=new Set();const tx=Math.floor(player.x/32),ty=Math.floor(player.y/32);for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=tx+dx,y=ty+dy;if(x>=0&&y>=0&&x<world.width&&y<world.height)world.explored.add(y*world.width+x);}const plate=world.objects.find(o=>o.kind==='plate'&&Math.hypot(o.x-player.x,o.y-player.y)<20);if(plate&&!plate.active){plate.active=true;world.ritual.plate=true;notifyLoot('Pressure plate latched. Find the lever next.');}} for(const trap of world.traps)if(trapActive(trap,combat.time)&&Math.hypot(player.x-trap.x,player.y-trap.y)<17)combat.hurt(15,trap);const blend=1-Math.exp(-9*dt);camera.x+=(player.x-camera.x)*blend;camera.y+=(player.y-camera.y)*blend;animation+=dt;
+function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});dodgeRequested=false;if(world.kind==='overworld')reveal(world,player);else if(world.theme){world.explored??=new Set();const tx=Math.floor(player.x/32),ty=Math.floor(player.y/32);for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=tx+dx,y=ty+dy;if(x>=0&&y>=0&&x<world.width&&y<world.height)world.explored.add(y*world.width+x);}const plate=world.objects.find(o=>o.kind==='plate'&&Math.hypot(o.x-player.x,o.y-player.y)<20);if(plate&&!plate.active){plate.active=true;world.ritual.plate=true;notifyLoot('Pressure plate latched. Find the lever next.');}} for(const trap of world.traps)if(trapActive(trap,combat.time)&&Math.hypot(player.x-trap.x,player.y-trap.y)<17)combat.hurt(15,trap);const blend=1-Math.exp(-9*dt);camera.x+=(player.x-camera.x)*blend;camera.y+=(player.y-camera.y)*blend;animation+=dt;
  const picked=progression.collect(player,(a,b)=>lineClear(world,a,b));if(picked.length)notifyLoot(`Collected ${picked.map(i=>i.name).join(', ')} · I to equip${progression.points?' · C: improvement available':''}`);
  toastTime-=dt;if(toastTime<=0)$('toast').hidden=true;
  $('healthText').textContent=`${player.hp} / ${progression.stats.hp} HP`;document.querySelector('.health span').style.width=`${player.hp/progression.stats.hp*100}%`;
  $('xpText').textContent=`LEVEL ${progression.level} · ${progression.xp} / ${xpNeeded(progression.level)} XP`;$('xpFill').style.width=`${progression.xp/xpNeeded(progression.level)*100}%`;
  $('supplies').textContent=`Gold ${progression.gold} · Potions ${progression.potions} · 1 to heal${progression.points?' · C: '+progression.points+' improvement(s)':''}`;
- const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.theme?storyAction(world,player):nearbyInteraction(world,player);
+ const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.depth?underkeepAction(world,player):world.theme?storyAction(world,player):nearbyInteraction(world,player);
  $('questObjective').textContent=adventure.quests.objective;
  $('debugSpeed').hidden=!debugSpeed.enabled;$('debugSpeed').textContent=`DEV SPEED ${debugSpeed.value}× · F4 off · Shift+F4 change`;
- $('combatStatus').textContent=outdoors?`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · Key: ${world.hasKey?'found':'missing'}`;
- $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'?'Enter dungeon':'Read sign',door:'Open door',key:'Take key',chest:'Open chest',exit:'Use exit',entrance:'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
+ $('combatStatus').textContent=outdoors?`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
+ $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:'Open door',key:'Take key',chest:'Open chest',exit:world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
  if(player.hp<=0){$('resultSummary').textContent=`${classes[selected].name} · ${combat.kills} enemies defeated · ${player.xp} XP · ${Math.floor(combat.time)} seconds`;setMode('dead');}
 }
 function render(){
@@ -107,15 +109,15 @@ function render(){
   for(const drop of progression.drops)sprites.push({depth:drop.y-1,draw:()=>{g.strokeStyle=colors[drop.item.rarity];g.strokeRect(Math.round(drop.x+ox-11),Math.round(drop.y+oy-11),22,22);assets.draw(g,drop.item.sheet,drop.item.cell,drop.x+ox-9,drop.y+oy-9,18,18);}});
   if(!outdoors)for(let y=minY;y<maxY;y++)for(let x=minX;x<maxX;x++){
     const px=x*TILE+ox,py=y*TILE+oy,isProp=world.props.some(p=>p.x===x&&p.y===y),wall=world.solid[y*world.width+x]&&!isProp&&!world.doors.some(d=>d.x===x&&d.y===y);
-    assets.draw(g,world.theme==='chapel'?'68':art.floor,(x*13+y*7)%19===0?1:0,px,py,TILE,TILE);
+    assets.draw(g,world.floorSheet||(world.theme==='chapel'?'68':art.floor),(x*13+y*7)%19===0?1:0,px,py,TILE,TILE);
     // Subtle ground shading keeps characters and collision silhouettes legible.
     g.fillStyle='#07101735';g.fillRect(px,py,TILE,TILE);
-    if(wall)sprites.push({depth:(y+1)*TILE,draw:()=>{g.fillStyle='#070b0b88';g.fillRect(px+3,py+12,32,23);assets.draw(g,world.theme==='chapel'?'69':art.walls,[10,28].includes(x)&&[9,18].includes(y)?13:0,px,py-12,32,44);}});
+    if(wall)sprites.push({depth:(y+1)*TILE,draw:()=>{g.fillStyle='#070b0b88';g.fillRect(px+3,py+12,32,23);assets.draw(g,world.wallSheet||(world.theme==='chapel'?'69':art.walls),[10,28].includes(x)&&[9,18].includes(y)?13:0,px,py-12,32,44);}});
     if(debug&&world.solid[y*world.width+x]){g.strokeStyle='#e79462';g.strokeRect(px+.5,py+.5,31,31);}
   }
   for(const p of world.props)sprites.push({depth:(p.y+1)*TILE,draw:()=>assets.draw(g,p.sheet||art.props,p.cell,p.x*TILE+ox,p.y*TILE+oy-6,32,38)});
   for(const trap of world.traps){const active=trapActive(trap,combat.time),warning=(combat.time+trap.phase)%3>1.3;g.fillStyle=active?'#df714477':warning?(Math.sin(combat.time*20)>0?'#ffd45899':'#ffd45833'):'#c9a45822';g.fillRect(trap.x+ox-15,trap.y+oy-15,30,30);assets.draw(g,'95',active?7:6,trap.x+ox-14,trap.y+oy-12,28,24);}
-  if(!outdoors)for(const [p,color,label] of [[world.spawn,'#80dcdb','ENTRANCE'],[world.exit,(world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee','EXIT']]){g.fillStyle=color;for(let i=0;i<4;i++)g.fillRect(p.x+ox-13+i*2,p.y+oy-12+i*6,26-i*4,4);g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);}
+  if(!outdoors)for(const [p,color,label] of [[world.spawn,'#80dcdb',world.depth?'ASCEND':'ENTRANCE'],[world.exit,(world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee',world.depth?(world.depth===3?'WAY HOME':'DESCEND'):'EXIT']]){g.fillStyle=color;for(let i=0;i<4;i++)g.fillRect(p.x+ox-13+i*2,p.y+oy-12+i*6,26-i*4,4);g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);}
   for(const d of world.doors)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,'95',d.open?5:4,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
   for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'03',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
   if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'03',12,world.key.x+ox-10,world.key.y+oy-16,20,24)});
@@ -128,6 +130,7 @@ function render(){
     const size=42*(e.scale||1);g.fillStyle='#050b0bb0';g.beginPath();g.ellipse(x,y+5,e.radius*1.4,5,0,0,Math.PI*2);g.fill();g.save();if(e.flash>0)g.globalAlpha=.45;if(e.role==='ambusher'&&!e.alert)g.globalAlpha=.4;assets.draw(g,e.sheet,e.frames[Math.floor(animation/.42)%2],x-size*ratio/2,y+8-size,size*ratio,size,flipForAim(e.angle));g.restore();if(e.tier!=='normal'||e.ward>0){g.strokeStyle=e.ward>0?'#82e1e4':e.boss?'#e791f7':'#ffd877';g.beginPath();g.ellipse(x,y+5,e.radius*1.6,8,0,0,Math.PI*2);g.stroke();}if(e.tier!=='normal'){g.fillStyle='#ffe0a3';g.font='8px monospace';g.fillText(e.boss?e.name:'ELITE',x-25,y-size-5);}
     g.fillStyle='#321b22';g.fillRect(x-17,y-43,34,4);g.fillStyle='#cd6958';g.fillRect(x-17,y-43,34*e.hp/e.maxHp,4);
     if(e.state==='attack'){g.strokeStyle='#ffb769';g.lineWidth=2;g.beginPath();if(e.kind==='melee')g.arc(x,y,e.range+9,e.angle-.95,e.angle+.95);else{g.moveTo(x,y);g.lineTo(x+Math.cos(e.angle)*80,y+Math.sin(e.angle)*80);}g.stroke();g.fillStyle='#ffe0a3';g.font='bold 13px monospace';g.fillText('!',x-3,y-size-8);}
+    for(const r of e.runes||[]){g.fillStyle=r.fired?'#d09bff88':'#7d469733';g.strokeStyle='#e0b2ff';g.beginPath();g.arc(r.x+ox,r.y+oy,r.radius,0,Math.PI*2);g.fill();g.stroke();if(!r.fired){g.beginPath();g.arc(r.x+ox,r.y+oy,r.radius*Math.max(0,r.time/r.total),0,Math.PI*2);g.stroke();}}
     if(e.mark){g.strokeStyle='#d497ff';g.beginPath();g.arc(e.mark.x+ox,e.mark.y+oy,e.mark.radius,0,Math.PI*2);g.stroke();}if(e.action==='lunge'){g.strokeStyle='#ffb769';g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.cos(e.angle)*(96+e.range),y+Math.sin(e.angle)*(96+e.range));g.stroke();}if(e.action){g.fillStyle='#e5c6ff';g.font='8px monospace';g.fillText(e.action.toUpperCase(),x-20,y-size-18);}
     if(debug){g.strokeStyle='#ff9b74';g.strokeRect(x-14*e.scale,y+8-size,28*e.scale,size);g.font='8px monospace';g.fillText(e.state,x-15,y+19);}
   }});}
@@ -137,7 +140,7 @@ function render(){
   for(const n of combat.numbers){g.globalAlpha=Math.min(1,n.ttl*3);g.font='bold 11px monospace';g.textAlign='center';g.fillStyle='#101316';g.fillText(n.text,Math.round(n.x+ox)+1,Math.round(n.y+oy)+1);g.fillStyle=n.color;g.fillText(n.text,Math.round(n.x+ox),Math.round(n.y+oy));}g.globalAlpha=1;g.textAlign='start';
   if(outdoors)drawFog(g,world,player,bounds,ox,oy);
   if(debug){g.strokeStyle='#8effb4';g.strokeRect(Math.round(player.x-8+ox)+.5,Math.round(player.y-8+oy)+.5,16,16);$('debug').textContent=`COMBAT · fixed 60 Hz\nSeed: ${world.seed}\nRegion: ${outdoors?'Dunbarrow / chunks loaded: '+world.chunks.size:world.name}\nPosition: ${player.x.toFixed(1)}, ${player.y.toFixed(1)}\nFPS: ${Math.round(fps)} · living enemies: ${combat.enemies.filter(e=>e.hp>0).length}\nCollision: 16 × 16 feet box\nQuest: ${adventure?.quests.objective||'selection'}\nIdle frame: ${Math.floor(animation/.42)%2?'B':'A'} (420 ms)`;}
-  const boss=combat.enemies.find(e=>e.boss&&e.hp>0&&Math.hypot(e.x-player.x,e.y-player.y)<400);if(boss){g.fillStyle='#17121ee8';g.fillRect(viewWidth/2-130,45,260,25);g.fillStyle='#ad6688';g.fillRect(viewWidth/2-126,62,252*boss.hp/boss.maxHp,4);g.fillStyle='#ffe0bd';g.font='10px monospace';g.fillText(boss.name,viewWidth/2-110,57);}
+  const boss=combat.enemies.find(e=>e.boss&&e.hp>0&&Math.hypot(e.x-player.x,e.y-player.y)<400);if(boss){g.fillStyle='#17121ee8';g.fillRect(viewWidth/2-130,45,260,25);g.fillStyle='#ad6688';g.fillRect(viewWidth/2-126,62,252*boss.hp/boss.maxHp,4);g.fillStyle='#ffe0bd';g.font='10px monospace';g.fillText(boss.name+(boss.finalBoss?' · PHASE '+(boss.phase||1):''),viewWidth/2-110,57);}
   if(mapVisible&&outdoors)drawWorldMap(g,world,player,viewHeight);
   if(mapVisible&&!outdoors){const scale=2,mx=12,my=viewHeight-world.height*scale-32;g.fillStyle='#071014e8';g.fillRect(mx-4,my-4,world.width*scale+8,world.height*scale+8);for(let y=0;y<world.height;y++)for(let x=0;x<world.width;x++)if(!world.solid[y*world.width+x]&&(!world.theme||world.explored?.has(y*world.width+x))){g.fillStyle='#65736b';g.fillRect(mx+x*scale,my+y*scale,scale,scale);}for(const d of world.doors){if(world.theme&&!world.explored?.has(d.y*world.width+d.x))continue;g.fillStyle=d.open?'#65736b':'#dbaf70';g.fillRect(mx+d.x*scale,my+d.y*scale,2,2);}for(const [p,color] of [[world.exit,'#d498ff'],[world.spawn,'#80dcdb'],...(!world.key.taken?[[world.key,'#ffd45b']]:[]),[player,'#ffffff']]){if(world.theme&&!world.explored?.has(Math.floor(p.y/32)*world.width+Math.floor(p.x/32)))continue;g.fillStyle=color;g.fillRect(mx+p.x/TILE*scale-2,my+p.y/TILE*scale-2,4,4);}g.fillStyle='#d9ddcf';g.font='8px monospace';g.fillText('M: MAP · gold key / violet exit',mx,my-9);}
 }

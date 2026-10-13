@@ -1,4 +1,4 @@
-import {monsters} from './monsters.js?v=6.0';
+import {monsters} from './monsters.js?v=7.0';
 // Zero-based cells. New character pairs checked against the attached source sheets.
 export const spriteUsage=[
  ...Object.values(monsters).flatMap(m=>m.frames.map(cell=>({sheet:m.sheet,cell,use:m.name,pair:true}))),

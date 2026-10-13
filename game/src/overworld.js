@@ -1,5 +1,5 @@
-import {TILE} from './world.js?v=6.0';
-import {seedNumber} from './dungeon.js?v=6.0';
+import {TILE} from './world.js?v=7.0';
+import {seedNumber} from './dungeon.js?v=7.0';
 export const CHUNK_SIZE=64;
 export function createOverworld(seed='Dunbarrow'){
  const numericSeed=seedNumber(seed);let state=numericSeed;
