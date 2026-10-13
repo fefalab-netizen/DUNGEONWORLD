@@ -65,7 +65,7 @@ export function drawWorldMap(g,w,p,viewHeight){
  let cache=mapCache.get(w);
  if(!cache){const canvas=document.createElement('canvas');canvas.width=256;canvas.height=256;cache={canvas,x:-1,y:-1};mapCache.set(w,cache);}
  if(cache.x!==w.revealX||cache.y!==w.revealY){const c=cache.canvas.getContext('2d');c.fillStyle='#08100c';c.fillRect(0,0,256,256);
-  for(let y=0;y<256;y++)for(let x=0;x<256;x++){const i=y*256+x;if(!w.explored[i])continue;const t=w.terrain[i];c.fillStyle=t===2?'#376581':t===1||t===3?'#b49562':w.solid[i]?'#36462d':'#6a8152';c.fillRect(x,y,1,1);}
+  for(let y=0;y<256;y++)for(let x=0;x<256;x++){const i=y*256+x;if(!w.explored[i])continue;const t=w.terrain[i];c.fillStyle=w.expedition?(t===2?'#376581':t===4?'#d35829':t===5?'#94bfda':t===1||t===3?'#b49562':({volcanic:'#4b3533',jungle:'#346a35',frozen:'#bdd6e4',coast:'#c6ac70',outpost:'#688259'}[w.biomeAt(x,y)])):(t===2?'#376581':t===1||t===3?'#b49562':w.solid[i]?'#36462d':'#6a8152');c.fillRect(x,y,1,1);}
   cache.x=w.revealX;cache.y=w.revealY;
  }
  const size=Math.min(164,viewHeight*.42),scale=size/256,mx=12,my=viewHeight-size-35;
