@@ -10,20 +10,31 @@ export function createOverworld(seed='Dunbarrow'){
  // Logical geography remains resident; nearby 64x64 presentation chunks stream independently.
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
   const i=y*width+x,border=x<2||y<2||x>253||y>253;
-  const lake=Math.sin(x*.053+numericSeed%19)+Math.cos(y*.061)+Math.sin((x+y)*.027)>2.1;
+  const lake=Math.sin(x*.053+numericSeed%19)+Math.cos(y*.061)+Math.sin((x+y)*.027)+(.32*(hash(Math.floor(x/6),Math.floor(y/6))-.5))>2.1;
   terrain[i]=lake?2:0;solid[i]=border||lake||hash(x,y)<.075;
  }
  const definitions=[['camp','Dunbarrow Camp',128,128],['bandit','Bandit Road',76,128],['ridge','North Ridge',128,70],['grave','Grave Path',181,128],['approach','Sealed Stair Approach',128,181],['raider','The Raider Cellar',64,94],['chapel','The Bone Chapel',194,91],['underkeep','The Black Stair Underkeep',128,211]];
  const landmarks=definitions.map(([id,name,x,y])=>({id,name,tx:x+(id==='camp'?0:jitter()),ty:y+(id==='camp'?0:jitter())}));
  for(const l of landmarks){l.x=(l.tx+.5)*TILE;l.y=(l.ty+.5)*TILE;}
- const carve=(x,y,r=2)=>{for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const i=(y+dy)*width+x+dx;if(x+dx<2||x+dx>253||y+dy<2||y+dy>253)continue;terrain[i]=terrain[i]===2?3:1;solid[i]=false;}};
+ const carve=(x,y,r=2)=>{for(let dy=-r-1;dy<=r+1;dy++)for(let dx=-r-1;dx<=r+1;dx++){const nx=x+dx,ny=y+dy;if(nx<2||nx>253||ny<2||ny>253)continue;const distance=Math.max(Math.abs(dx),Math.abs(dy)),edge=hash(nx+881,ny-319);if(distance>r&&edge<.70)continue;const i=ny*width+nx;terrain[i]=terrain[i]===2?3:1;solid[i]=false;}};
  const routes=[[0,1],[0,2],[0,3],[0,4],[1,5],[3,6],[4,7],[2,5],[2,6]];
- for(const [a,b] of routes){let {tx:x,ty:y}=landmarks[a];const t=landmarks[b],horizontal=random()<.5;
-  const walkX=()=>{while(x!==t.tx){carve(x,y);x+=Math.sign(t.tx-x);}};
-  const walkY=()=>{while(y!==t.ty){carve(x,y);y+=Math.sign(t.ty-y);}};
-  if(horizontal){walkX();walkY();}else{walkY();walkX();}carve(x,y);
+ for(const [a,b] of routes){let {tx:x,ty:y}=landmarks[a];const t=landmarks[b];let horizontal=random()<.5;
+  // Advance along the dominant axis with short seeded bends, avoiding Manhattan L-shaped highways.
+  const bend=()=>{if(random()<.35){const nx=x+(random()<.5?-1:1),ny=y+(random()<.5?-1:1);if(nx>=4&&nx<=251&&ny>=4&&ny<=251){x=nx;y=ny;}}};
+  let steps=0;
+  while((x!==t.tx||y!==t.ty)&&steps++<1024){
+   carve(x,y);
+   const dx=t.tx-x,dy=t.ty-y;
+   if(Math.abs(dx)>Math.abs(dy)+4||(!dy&&dx))x+=Math.sign(dx);
+   else if(Math.abs(dy)>Math.abs(dx)+4||(!dx&&dy))y+=Math.sign(dy);
+   else if(horizontal){x+=Math.sign(dx);horizontal=false;}
+   else{y+=Math.sign(dy);horizontal=true;}
+   // This only affects the road width, not the connected centerline.
+   if(random()<.14)carve(x,y,3);
+  }
+  carve(t.tx,t.ty);
  }
- for(const l of landmarks){const r=l.id==='camp'?10:5;for(let y=l.ty-r;y<=l.ty+r;y++)for(let x=l.tx-r;x<=l.tx+r;x++){terrain[y*width+x]=l.id==='camp'?1:0;solid[y*width+x]=false;}}
+ for(const l of landmarks){const r=l.id==='camp'?10:5;for(let y=l.ty-r-1;y<=l.ty+r+1;y++)for(let x=l.tx-r-1;x<=l.tx+r+1;x++){const d=Math.hypot(x-l.tx,y-l.ty),edge=r-.8+hash(x+41,y+71)*2;if(d>edge&&Math.abs(x-l.tx)>2&&Math.abs(y-l.ty)>2)continue;terrain[y*width+x]=l.id==='camp'?1:0;solid[y*width+x]=false;}}
  const camp=landmarks[0],decorations=[{tx:camp.tx-5,ty:camp.ty-4,sheet:'84',cell:0,size:80},{tx:camp.tx+4,ty:camp.ty-4,sheet:'84',cell:1,size:86},{tx:camp.tx-5,ty:camp.ty+4,sheet:'84',cell:2,size:70},{tx:camp.tx+5,ty:camp.ty+4,sheet:'96',cell:11,size:58}];
  for(const p of decorations)solid[p.ty*width+p.tx]=true;
  const enemySpawns=[];
