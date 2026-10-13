@@ -15,7 +15,7 @@ export function campNPCs(w){const {x,y}=w.spawn;return [
  {id:'pell',name:'Brother Pell',role:'Scholar',sheet:'53',frame:6,x:x-80,y:y+80},
  {id:'merrin',name:'Merrin',role:'Wounded Scout',sheet:'51',frame:12,x:x+88,y:y+80},
  ];}
-export function nearbyNPC(a){return a.world.kind==='overworld'?a.npcs.find(n=>Math.hypot(n.x-a.player.x,n.y-a.player.y)<44):null;}
+export function nearbyNPC(a){return a.world.kind==='overworld'&&!a.world.expedition?a.npcs.find(n=>Math.hypot(n.x-a.player.x,n.y-a.player.y)<44):null;}
 export function dialogue(a,n){const q=a.quests;q.spoken.add(n.id);
  if(n.id==='aldric'){q.accepted=true;if(q.heraldDefeated)return 'You brought back the dawn. For once, I have no orders. Sit down. Brunna saved you some soup.';return q.stairOpen?'The stair is open. Enjoy the daylight while it lasts.':q.ready?'Both seals. You have done what my last three expeditions could not. Follow the southern road and open the Black Stair.':'Welcome to Dunbarrow. We have beds, soup, and increasingly unreasonable neighbors. Recover the Iron Seal Key from the Raider Cellar northwest, and the Rune of Opening from the Bone Chapel northeast. Either road comes first.';}
  if(n.id==='pell')return q.ready?'Iron binds the door; the rune tells it to remember. Take both to the Black Stair. Neither artifact can be sold.':'The chapel rite is simple: stand on the pressure plate, raise the lever, touch the altar. Its Keeper holds the Rune of Opening. The iron seal lies with the bandit Quartermaster. You need both to wake the Black Stair.';
