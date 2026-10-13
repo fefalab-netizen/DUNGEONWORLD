@@ -133,8 +133,8 @@ function render(){
    g.fillStyle=color;g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);
   }
   for(const d of world.doors)if(!d.open)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,d.lock==='treasure'?'04':'102',d.lock==='treasure'?14:3,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
-  for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'03',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
-  if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'03',12,world.key.x+ox-10,world.key.y+oy-16,20,24)});
+  for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'05',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
+  if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'98',4,world.key.x+ox-10,world.key.y+oy-16,20,24)});
   if(outdoors&&adventure)for(const n of adventure.npcs)sprites.push({depth:n.y+8,draw:()=>{assets.draw(g,n.sheet,n.frame+Math.floor(animation/.42)%2,n.x+ox-20,n.y+oy-34,40,42);g.fillStyle='#f4d992';g.font='8px monospace';g.fillText(n.name,n.x+ox-28,n.y+oy-43);}});
   for(const o of world.objects||[]){if(o.kind==='plate')assets.draw(g,'68',4,o.x+ox-15,o.y+oy-10,30,22);else if(o.kind==='lever')assets.draw(g,'64',5,o.x+ox-16,o.y+oy-28,32,36,o.active);else assets.draw(g,'03',o.kind==='supply'?2:13,o.x+ox-12,o.y+oy-20,24,28);g.fillStyle=o.active?'#8fdfb1':'#e3ce9b';g.font='7px monospace';g.fillText(o.kind.toUpperCase(),o.x+ox-18,o.y+oy+18);}
   if(world.theme==='chapel'&&!world.key.taken)assets.draw(g,'70',3,world.key.x+ox-22,world.key.y+oy-40,44,50);
