@@ -1,7 +1,7 @@
 import {updateHerald} from './herald.js?v=7.0';
 import {updateWildlife,updateColossal} from './frontier-ai.js?v=7.5d';
 import {move,canOccupy} from './world.js?v=7.0';
-import {spawnMonster} from './monsters.js?v=7.0';
+import {spawnMonster} from './monsters.js?v=7.5d';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function tactics(e,enemies){
  const allies=enemies.filter(a=>a!==e&&a.hp>0&&a.faction===e.faction&&dist(a,e)<260);
