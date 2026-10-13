@@ -77,6 +77,55 @@ export function createOverworld(seed='Dunbarrow',expedition=false){
   const x=l.tx+dx,y=l.ty+dy;if(Math.hypot(x-camp.tx,y-camp.ty)>15){solid[y*width+x]=false;terrain[y*width+x]=1;
    enemySpawns.push([x,y,expedition?biomeEnemies[expeditionBiome(x,y)]?.[k]||'coastRaider':type]);}
  }}
+ // 7.5D: seeded wildlife and four optional, distant roaming colossal encounters.
+ // Only passable, radius-clear cells are eligible; nothing spawns inside the outpost.
+ if(expedition){
+  const wildlife={
+   volcanic:['ashGecko','ashGecko','ashGecko'],
+   jungle:['jungleMacaw','jungleMonkey','jungleSnake','jungleLizard'],
+   frozen:['snowHare','arcticFox','walrus','snowOwl'],
+   coast:['shoreCrab','seaTurtle','seagull','pelican','beachLizard']
+  };
+  const free=(x,y,r=1)=>{
+   if(x<4||y<4||x>251||y>251)return false;
+   for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
+    const i=(y+dy)*width+x+dx;
+    if(solid[i]||[2,4].includes(terrain[i]))return false;
+   }
+   return true;
+  };
+  const find=(x,y,biome,radius=1)=>{
+   // Scan nearby cells with deterministic ordering; don't replace the authored paths.
+   for(let ring=0;ring<=16;ring++)for(let dy=-ring;dy<=ring;dy++)for(let dx=-ring;dx<=ring;dx++){
+    if(ring&&Math.max(Math.abs(dx),Math.abs(dy))!==ring)continue;
+    const tx=x+dx,ty=y+dy;
+    if(expeditionBiome(tx,ty)!==biome||!free(tx,ty,radius)||Math.hypot(tx-camp.tx,ty-camp.ty)<24)continue;
+    if(enemySpawns.some(s=>Math.hypot(s[0]-tx,s[1]-ty)<radius*3+4))continue;
+    return [tx,ty];
+   }
+   return null;
+  };
+  const locations=[
+   ['volcanic',70,140],['jungle',187,138],['frozen',130,59],['coast',132,201]
+  ];
+  for(const [biome,x,y] of locations){
+   const types=wildlife[biome];
+   for(let k=0;k<types.length;k++){
+    const px=x+(k%2?11:-10),py=y+Math.floor(k/2)*10-7;
+    const place=find(px,py,biome);
+    if(place)enemySpawns.push([place[0],place[1],types[k]]);
+   }
+  }
+  for(const [biome,id,x,y] of [
+   ['volcanic','infernalJuggernaut',58,144],
+   ['jungle','rotwoodMatron',203,144],
+   ['frozen','frostfangTyrant',132,46],
+   ['coast','drownedAdmiral',130,224]
+  ]){
+   const place=find(x,y,biome,2);
+   if(place)enemySpawns.push([place[0],place[1],id,'boss']);
+  }
+ }
  const w={kind:'overworld',expedition,biomeAt:expedition?expeditionBiome:null,seed:String(seed),numericSeed,width,height,terrain,solid,landmarks,decorations,enemySpawns,spawn:{x:camp.x,y:camp.y},safeZone:{x:camp.x,y:camp.y,radius:11*TILE},explored:new Uint8Array(width*height),chunks:new Map(),props:[],doors:[],traps:[],chests:[],hash};
  const report=validateOverworld(w);if(!report.valid)throw new Error('Overworld has unreachable landmarks.');
  reveal(w,w.spawn);updateChunks(w,w.spawn);return w;
