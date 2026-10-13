@@ -1,4 +1,5 @@
 import {updateHerald} from './herald.js?v=7.0';
+import {updateWildlife,updateColossal} from './frontier-ai.js?v=7.5d';
 import {move,canOccupy} from './world.js?v=7.0';
 import {spawnMonster} from './monsters.js?v=7.0';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -17,6 +18,8 @@ function summon(c,e){
  }return false;
 }
 export function updateEnemy(c,e,dt,clear){
+ if(e.wildlife){updateWildlife(c,e,dt,clear);return;}
+ if(e.colossal){updateColossal(c,e,dt,clear);return;}
  if(e.finalBoss){updateHerald(c,e,dt,clear);return;}
  const p=c.player,w=c.world,d=dist(e,p);
  if(w.kind==='overworld'&&(d>640||dist(p,w.safeZone)<w.safeZone.radius)){e.state='idle';e.alert=false;return;}
