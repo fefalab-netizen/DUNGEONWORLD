@@ -1,5 +1,5 @@
-import {createStoryDungeon,storyAction,interactStory} from './story-dungeon.js?v=7.0';
-import {hashSeed} from './monsters.js?v=7.0';
+import {createStoryDungeon,storyAction,interactStory} from './story-dungeon.js?v=7.5a-audit';
+import {hashSeed} from './monsters.js?v=7.5a-audit';
 
 export const floorNames=['Gate Halls','Broken Barracks','Sealed Sanctum'];
 export const underkeepSheets=['64','66','67','68','69','70'];
