@@ -6,14 +6,15 @@ export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
   const t=w.terrain[y*w.width+x],px=x*TILE+ox,py=y*TILE+oy;
   // All cell indices come from the master 001–111 sprite inventory.
   // Hash variation is stable for a given map seed and tile coordinate.
+   // Roads use one consistent dirt tile (81.r2c1) with rare stone variation (81.r2c2); bridges stay wooden.
   const h=w.hash(x,y),h2=w.hash(x+417,y-223);
   let sheet='81',cell=0;
   if(t===2){
    sheet='82';cell=h<.14?2:1;
    const shore=[[0,-1,12],[1,0,13],[0,1,14],[-1,0,15]];
    for(const [dx,dy,c] of shore){const nx=x+dx,ny=y+dy;if(nx>=0&&ny>=0&&nx<w.width&&ny<w.height&&w.terrain[ny*w.width+nx]!==2){sheet='93';cell=c;break;}}
-  }else if(t===3){sheet='82';cell=h<.50?8:10;}
-  else if(t===1){sheet='81';cell=[8,9,10,5,6,12,13,14][Math.min(7,Math.floor(h*8))];}
+  }else if(t===3){sheet='82';cell=8;}
+  else if(t===1){sheet='81';cell=h<.94?4:5;}
   else {
    cell=h<.40?0:h<.66?1:h<.78?2:h<.86?3:h<.93?12:h<.97?14:13;
    if(h2>.986){sheet='101';cell=3;}
