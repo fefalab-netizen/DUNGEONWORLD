@@ -1,13 +1,13 @@
 import {underkeepAction,underkeepSheets} from './underkeep.js?v=7.5a-audit';
 import {presentEnding} from './ending.js?v=7.0';
 import {DebugSpeed} from './debug-speed.js?v=7.0';
-import {nearbyNPC} from './quests.js?v=7.0';
+import {nearbyNPC} from './quests.js?v=7.5b';
 import {openStory} from './story-ui.js?v=7.0';
 import {storyAction} from './story-dungeon.js?v=7.0';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
-import {Adventure} from './adventure.js?v=7.5a';
+import {Adventure} from './adventure.js?v=7.5b';
 import {reveal,nearbyLandmark} from './overworld.js?v=7.5a';
-import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5a-roadfix';
+import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5b';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.0';
 import {flipForAim} from './facing.js?v=7.0';
 import {AssetManager} from './assets.js?v=7.5a-floorfix';
@@ -95,8 +95,8 @@ function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=poi
  const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.depth?underkeepAction(world,player):world.theme?storyAction(world,player):nearbyInteraction(world,player);
  $('questObjective').textContent=adventure.quests.objective;
  $('debugSpeed').hidden=!debugSpeed.enabled;$('debugSpeed').textContent=`DEV SPEED ${debugSpeed.value}× · F4 off · Shift+F4 change`;
- $('combatStatus').textContent=outdoors?`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
- $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:'Open door',key:'Take key',chest:'Open chest',exit:world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
+ $('combatStatus').textContent=outdoors?world.expedition?`${landmark?.name||'Expedition frontier'} · Caravan: free return`:`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
+ $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='caravan'?(world.expedition?'Return to Dunbarrow · FREE':`Travel to frontier · ${adventure.expeditionTrips?20:40} gold`):landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:'Open door',key:'Take key',chest:'Open chest',exit:world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
  if(player.hp<=0){$('resultSummary').textContent=`${classes[selected].name} · ${combat.kills} enemies defeated · ${player.xp} XP · ${Math.floor(combat.time)} seconds`;setMode('dead');}
 }
 function render(){
@@ -137,7 +137,7 @@ function render(){
   for(const d of world.doors)if(!d.open)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,d.lock==='treasure'?'04':'102',d.lock==='treasure'?10:3,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
   for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'03',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
   if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'98',4,world.key.x+ox-10,world.key.y+oy-16,20,24)});
-  if(outdoors&&adventure)for(const n of adventure.npcs)sprites.push({depth:n.y+8,draw:()=>{assets.draw(g,n.sheet,n.frame+Math.floor(animation/.42)%2,n.x+ox-20,n.y+oy-34,40,42);g.fillStyle='#f4d992';g.font='8px monospace';g.fillText(n.name,n.x+ox-28,n.y+oy-43);}});
+  if(outdoors&&!world.expedition&&adventure)for(const n of adventure.npcs)sprites.push({depth:n.y+8,draw:()=>{assets.draw(g,n.sheet,n.frame+Math.floor(animation/.42)%2,n.x+ox-20,n.y+oy-34,40,42);g.fillStyle='#f4d992';g.font='8px monospace';g.fillText(n.name,n.x+ox-28,n.y+oy-43);}});
   for(const o of world.objects||[]){if(o.kind==='plate')assets.draw(g,'95',o.active?3:2,o.x+ox-15,o.y+oy-10,30,22);else if(o.kind==='lever')assets.draw(g,'95',o.active?1:0,o.x+ox-16,o.y+oy-28,32,36);else assets.draw(g,o.kind==='supply'?'03':'90',o.kind==='supply'?2:0,o.x+ox-12,o.y+oy-20,24,28);g.fillStyle=o.active?'#8fdfb1':'#e3ce9b';g.font='7px monospace';g.fillText(o.kind.toUpperCase(),o.x+ox-18,o.y+oy+18);}
   if(world.theme==='chapel'&&!world.key.taken)assets.draw(g,'90',0,world.key.x+ox-22,world.key.y+oy-40,44,50);
   sprites.push({depth:player.y+8,draw:()=>{g.fillStyle='#050b0bb0';g.beginPath();g.ellipse(Math.round(player.x+ox),Math.round(player.y+oy+5),12,5,0,0,Math.PI*2);g.fill();g.save();if(player.flash>0)g.globalAlpha=.5;assets.character(g,classes[selected].frames[Math.floor(animation/.42)%2],player.x+ox,player.y+oy+8,42,player.flip);g.restore();}});
