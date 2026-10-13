@@ -1,4 +1,4 @@
-import {coreSheets} from './sprite-usage.js?v=7.5c';
+import {coreSheets} from './sprite-usage.js?v=7.5d';
 import {sheets} from './data.js?v=7.5a-floorfix';
 
 export function gridLines(size) {return Array.from({length:5},(_,i)=>Math.round(size*i/4));}
