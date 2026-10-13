@@ -36,7 +36,7 @@ async function encounter(){
  const destination=world.kind==='overworld'?nearbyLandmark(world,player):null;
  if((destination?.id==='chapel'||(destination?.id==='underkeep'&&adventure.quests.ready))&&!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('loading');notifyLoot('Loading dungeon artwork…');await assets.load(()=>{},['64','66','67','68','69','70']);if(!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('playing');notifyLoot('Dungeon artwork missing. Check 64.png and 66–70.png in game/assets, then retry.');return;}setMode('playing');}
  if(destination?.id==='caravan'&&!world.expedition&&adventure.progression.gold>=(adventure.expeditionTrips?20:40)){
-  const frontierSheets=['06','07','12','16','103','104','105','107','109','111'];
+  const frontierSheets=['06','07','12','16','91','103','104','105','106','107','108','109','110','111'];
   if(frontierSheets.some(id=>!assets.atlases.has(id))){
    setMode('loading');await assets.load(()=>{},frontierSheets);
    if(frontierSheets.some(id=>!assets.atlases.has(id))){setMode('playing');notifyLoot('Expedition art is unavailable. Verify the biome PNG files in game/assets.');return;}
@@ -160,7 +160,25 @@ function render(){
   for(const e of combat.enemies){if(e.hp<=0||Math.abs(e.x-player.x)>viewWidth/2+100||Math.abs(e.y-player.y)>viewHeight/2+100)continue;sprites.push({depth:e.y+8,draw:()=>{
     const x=Math.round(e.x+ox),y=Math.round(e.y+oy),a=assets.atlases.get(e.sheet),b=a?.frames[e.frame].bounds,ratio=b?(b.right-b.left+1)/(b.bottom-b.top+1):1;
     const size=42*(e.scale||1);g.fillStyle='#050b0bb0';g.beginPath();g.ellipse(x,y+5,e.radius*1.4,5,0,0,Math.PI*2);g.fill();g.save();if(e.flash>0)g.globalAlpha=.45;if(e.role==='ambusher'&&!e.alert)g.globalAlpha=.4;assets.draw(g,e.sheet,e.frames[Math.floor(animation/.42)%2],x-size*ratio/2,y+8-size,size*ratio,size,flipForAim(e.angle));g.restore();if(e.tier!=='normal'||e.ward>0){g.strokeStyle=e.ward>0?'#82e1e4':e.boss?'#e791f7':'#ffd877';g.beginPath();g.ellipse(x,y+5,e.radius*1.6,8,0,0,Math.PI*2);g.stroke();}if(e.tier!=='normal'){g.fillStyle='#ffe0a3';g.font='8px monospace';g.fillText(e.boss?e.name:'ELITE',x-25,y-size-5);}
-    g.fillStyle='#321b22';g.fillRect(x-17,y-43,34,4);g.fillStyle='#cd6958';g.fillRect(x-17,y-43,34*e.hp/e.maxHp,4);
+    if(!e.wildlife||e.alert||e.hp<e.maxHp){
+     const bar=e.colossal?112:34,top=e.colossal?y-size-15:y-43;
+     g.fillStyle='#321b22';g.fillRect(x-bar/2,top,bar,5);
+     g.fillStyle=e.colossal?'#f59d66':'#cd6958';g.fillRect(x-bar/2,top,bar*e.hp/e.maxHp,5);
+    }
+    if(e.telegraph){
+     const t=e.telegraph,alpha=.25+.3*(1-t.time/t.total);
+     g.fillStyle=e.attackColor||'#ffab65';g.strokeStyle=e.attackColor||'#ffab65';g.lineWidth=3;
+     g.save();g.globalAlpha=alpha;
+     g.beginPath();
+     if(t.type==='line'){
+      const ax=t.end.x-t.origin.x,ay=t.end.y-t.origin.y,len=Math.hypot(ax,ay)||1;
+      const px=-ay/len*34,py=ax/len*34;
+      g.moveTo(t.origin.x+ox+px,t.origin.y+oy+py);g.lineTo(t.end.x+ox+px,t.end.y+oy+py);
+      g.lineTo(t.end.x+ox-px,t.end.y+oy-py);g.lineTo(t.origin.x+ox-px,t.origin.y+oy-py);g.closePath();
+     }else g.arc(t.target.x+ox,t.target.y+oy,t.radius,0,Math.PI*2);
+     g.fill();g.restore();g.stroke();
+     g.fillStyle='#fff0d2';g.font='bold 10px monospace';g.fillText('DODGE!',x-23,y-size-26);
+    }
     if(e.state==='attack'){g.strokeStyle='#ffb769';g.lineWidth=2;g.beginPath();if(e.kind==='melee')g.arc(x,y,e.range+9,e.angle-.95,e.angle+.95);else{g.moveTo(x,y);g.lineTo(x+Math.cos(e.angle)*80,y+Math.sin(e.angle)*80);}g.stroke();g.fillStyle='#ffe0a3';g.font='bold 13px monospace';g.fillText('!',x-3,y-size-8);}
     for(const r of e.runes||[]){g.fillStyle=r.fired?'#d09bff88':'#7d469733';g.strokeStyle='#e0b2ff';g.beginPath();g.arc(r.x+ox,r.y+oy,r.radius,0,Math.PI*2);g.fill();g.stroke();if(!r.fired){g.beginPath();g.arc(r.x+ox,r.y+oy,r.radius*Math.max(0,r.time/r.total),0,Math.PI*2);g.stroke();}}
     if(e.mark){g.strokeStyle='#d497ff';g.beginPath();g.arc(e.mark.x+ox,e.mark.y+oy,e.mark.radius,0,Math.PI*2);g.stroke();}if(e.action==='lunge'){g.strokeStyle='#ffb769';g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.cos(e.angle)*(96+e.range),y+Math.sin(e.angle)*(96+e.range));g.stroke();}if(e.action){g.fillStyle='#e5c6ff';g.font='8px monospace';g.fillText(e.action.toUpperCase(),x-20,y-size-18);}
