@@ -1,6 +1,8 @@
 import {TILE} from './world.js?v=7.0';
 import {seedNumber} from './dungeon.js?v=7.0';
 export const CHUNK_SIZE=64;
+// Four connected, unlocked expedition regions radiate from the safe central outpost.
+export function expeditionBiome(x,y){const dx=x-128,dy=y-128;if(Math.hypot(dx,dy)<19)return 'outpost';if(Math.abs(dx)>Math.abs(dy))return dx<0?'volcanic':'jungle';return dy<0?'frozen':'coast';}
 export function createOverworld(seed='Dunbarrow',expedition=false){
  const numericSeed=seedNumber(seed);let state=numericSeed;
  const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};
@@ -14,7 +16,7 @@ export function createOverworld(seed='Dunbarrow',expedition=false){
   terrain[i]=lake?2:0;solid[i]=border||lake||hash(x,y)<.075;
  }
  const definitions=expedition?
-  [['camp','Expedition Outpost',128,128],['west','Western Wilds',76,128],['north','Northern Wilds',128,70],['east','Eastern Wilds',181,128],['south','Southern Wilds',128,181],['highlands','Broken Highlands',64,94],['thicket','Old Thicket',194,91],['frontier','Far Frontier',128,211]]:
+  [['camp','Expedition Outpost',128,128],['west','Volcanic Wastes',76,128],['north','Frozen Peaks',128,70],['east','Deep Jungle',181,128],['south','Drowned Coast',128,181],['highlands','Obsidian Ruins',64,94],['thicket','Ancient Jungle Shrine',194,91],['frontier','Wreckers Bay',128,211]]:
   [['camp','Dunbarrow Camp',128,128],['bandit','Bandit Road',76,128],['ridge','North Ridge',128,70],['grave','Grave Path',181,128],['approach','Sealed Stair Approach',128,181],['raider','The Raider Cellar',64,94],['chapel','The Bone Chapel',194,91],['underkeep','The Black Stair Underkeep',128,211]];
  const landmarks=definitions.map(([id,name,x,y])=>({id,name,tx:x+(id==='camp'?0:jitter()),ty:y+(id==='camp'?0:jitter())}));
  for(const l of landmarks){l.x=(l.tx+.5)*TILE;l.y=(l.ty+.5)*TILE;}
@@ -44,10 +46,28 @@ export function createOverworld(seed='Dunbarrow',expedition=false){
  landmarks.push(caravan);
  for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const tx=caravan.tx+dx,ty=caravan.ty+dy,i=ty*width+tx;terrain[i]=1;solid[i]=false;}
  // Keep the caravan clear of trees, rocks, and decorative camp buildings.
+ // Preserve every pre-carved route. Natural hazards never create artificial biome gates.
+ if(expedition)for(let y=2;y<height-2;y++)for(let x=2;x<width-2;x++){
+  const i=y*width+x,b=expeditionBiome(x,y),t=terrain[i],v=hash(x+229,y-107);
+  if(b==='volcanic'&&t===2){terrain[i]=4;solid[i]=true;} // Lava pools
+  else if(b==='frozen'&&t===2){terrain[i]=5;solid[i]=false;} // Crossable frozen lake
+  else if(b==='volcanic'&&t===0&&!solid[i]&&v>.989){terrain[i]=6;} // Scalding fissures
+  else if(b==='jungle'&&t===0&&!solid[i]&&v>.990){terrain[i]=7;} // Poison mire
+  else if(b==='coast'&&t===0&&!solid[i]&&v>.986){terrain[i]=8;} // Shallow tide pools
+ }
+ // All landmarks and their immediate approaches remain reachable and walkable.
+ if(expedition)for(const l of landmarks)for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){
+  const x=l.tx+dx,y=l.ty+dy;if(x<2||y<2||x>=width-2||y>=height-2)continue;
+  const i=y*width+x;if([4,6,7,8].includes(terrain[i])){terrain[i]=1;solid[i]=false;}
+ }
  for(const p of decorations)solid[p.ty*width+p.tx]=true;
  const enemySpawns=[];
- for(const l of landmarks.slice(1,7)){for(const [dx,dy,type] of [[-3,3,4],[3,3,0],[0,-3,1]]){const x=l.tx+dx,y=l.ty+dy;if(Math.hypot(x-camp.tx,y-camp.ty)>15){solid[y*width+x]=false;enemySpawns.push([x,y,type]);}}}
- const w={kind:'overworld',expedition,seed:String(seed),numericSeed,width,height,terrain,solid,landmarks,decorations,enemySpawns,spawn:{x:camp.x,y:camp.y},safeZone:{x:camp.x,y:camp.y,radius:11*TILE},explored:new Uint8Array(width*height),chunks:new Map(),props:[],doors:[],traps:[],chests:[],hash};
+ const biomeEnemies={volcanic:['fireImp','hellhound','magmaElemental'],jungle:['sporeling','jungleStalker','fungalMage'],frozen:['frostStalker','iceWraith','frostStalker'],coast:['coastRaider','drownedWraith','coastRaider']};
+ for(const l of landmarks.slice(1,7)){for(const [k,[dx,dy,type]] of [[-3,3,4],[3,3,0],[0,-3,1]].entries()){
+  const x=l.tx+dx,y=l.ty+dy;if(Math.hypot(x-camp.tx,y-camp.ty)>15){solid[y*width+x]=false;terrain[y*width+x]=1;
+   enemySpawns.push([x,y,expedition?biomeEnemies[expeditionBiome(x,y)]?.[k]||'coastRaider':type]);}
+ }}
+ const w={kind:'overworld',expedition,biomeAt:expedition?expeditionBiome:null,seed:String(seed),numericSeed,width,height,terrain,solid,landmarks,decorations,enemySpawns,spawn:{x:camp.x,y:camp.y},safeZone:{x:camp.x,y:camp.y,radius:11*TILE},explored:new Uint8Array(width*height),chunks:new Map(),props:[],doors:[],traps:[],chests:[],hash};
  const report=validateOverworld(w);if(!report.valid)throw new Error('Overworld has unreachable landmarks.');
  reveal(w,w.spawn);updateChunks(w,w.spawn);return w;
 }
@@ -62,9 +82,15 @@ export function updateChunks(w,p){
   const key=x+','+y;wanted.add(key);if(w.chunks.has(key))continue;
   const props=[];for(let ty=y*64;ty<(y+1)*64;ty++)for(let tx=x*64;tx<(x+1)*64;tx++)if(w.terrain[ty*256+tx]===0&&w.solid[ty*256+tx]){
    const v=w.hash(tx+73,ty-51);
-   const cell=v<.30?0:v<.47?1:v<.57?2:v<.68?4:v<.79?5:v<.88?8:v<.96?9:10;
-   const size=cell<=2?56:cell<=5?40:38;
-   props.push({tx,ty,sheet:'83',cell,size});
+   let cell=v<.30?0:v<.47?1:v<.57?2:v<.68?4:v<.79?5:v<.88?8:v<.96?9:10;
+   let sheet='83',size=cell<=2?56:cell<=5?40:38;
+   if(w.expedition){const biome=expeditionBiome(tx,ty);
+    if(biome==='volcanic'){sheet='104';cell=[0,1,3,4,8,9,14][Math.floor(v*7)];size=cell===8?62:42;}
+    else if(biome==='jungle'){sheet='105';cell=[3,7,11,12,13][Math.floor(v*5)];size=38;}
+    else if(biome==='frozen'){sheet='83';cell=[1,1,8,9,10][Math.floor(v*5)];size=cell===1?54:42;}
+    else if(biome==='coast'){sheet='111';cell=[0,1,3,5,9,10][Math.floor(v*6)];size=cell===1?46:34;}
+   }
+   props.push({tx,ty,sheet,cell,size});
   }
   props.push(...w.decorations.filter(p=>Math.floor(p.tx/64)===x&&Math.floor(p.ty/64)===y));w.chunks.set(key,{x,y,props});
  }
