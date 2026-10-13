@@ -26,9 +26,9 @@ export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
   sprites.push({depth:(prop.ty+1)*TILE,draw:()=>assets.draw(g,prop.sheet,prop.cell,(prop.tx+.5)*TILE+ox-prop.size/2,(prop.ty+1)*TILE+oy-prop.size,prop.size,prop.size)});
  }
  for(const l of w.landmarks){if(l.tx<minX-3||l.tx>maxX+3||l.ty<minY-3||l.ty>maxY+3)continue;
-  const camp=l.id==='camp',dungeon=['raider','chapel','underkeep'].includes(l.id),size=camp?48:dungeon?62:34;
+  const camp=l.id==='camp',caravan=l.id==='caravan',dungeon=['raider','chapel','underkeep'].includes(l.id),size=caravan?66:camp?48:dungeon?62:34;
   sprites.push({depth:l.y+12,draw:()=>{
-   assets.draw(g,camp?'84':dungeon?'85':'96',camp?8:dungeon?7:0,l.x+ox-size/2,l.y+oy-size+14,size,size);
+   assets.draw(g,caravan?'96':camp?'84':dungeon?'85':'96',caravan?5:camp?8:dungeon?7:0,l.x+ox-size/2,l.y+oy-size+14,size,size);
    g.font='9px monospace';g.textAlign='center';g.fillStyle='#0a1210df';g.fillRect(l.x+ox-80,l.y+oy+17,160,15);g.fillStyle=camp?'#efcf89':'#e0e6c9';g.fillText(l.name,l.x+ox,l.y+oy+28);g.textAlign='start';
   }});
  }
@@ -49,5 +49,5 @@ export function drawWorldMap(g,w,p,viewHeight){
  const size=Math.min(164,viewHeight*.42),scale=size/256,mx=12,my=viewHeight-size-35;
  g.fillStyle='#08100cee';g.fillRect(mx-4,my-17,size+8,size+21);g.drawImage(cache.canvas,mx,my,size,size);
  for(const l of w.landmarks)if(w.explored[l.ty*256+l.tx]){g.fillStyle=l.id==='camp'?'#ffe298':'#cc9df0';g.fillRect(mx+l.tx*scale-2,my+l.ty*scale-2,4,4);}
- g.fillStyle='#fff';g.fillRect(mx+p.x/TILE*scale-2,my+p.y/TILE*scale-2,4,4);g.font='8px monospace';g.fillText('DUNBARROW · M: hide map',mx,my-6);
+ g.fillStyle='#fff';g.fillRect(mx+p.x/TILE*scale-2,my+p.y/TILE*scale-2,4,4);g.font='8px monospace';g.fillText(w.expedition?'FRONTIER · M: hide map':'DUNBARROW · M: hide map',mx,my-6);
 }
