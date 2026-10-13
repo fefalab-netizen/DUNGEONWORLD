@@ -7,11 +7,11 @@ import {storyAction} from './story-dungeon.js?v=7.0';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
 import {Adventure} from './adventure.js?v=7.5a';
 import {reveal,nearbyLandmark} from './overworld.js?v=7.5a';
-import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5a';
+import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5a-roadfix';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.0';
 import {flipForAim} from './facing.js?v=7.0';
-import {AssetManager} from './assets.js?v=7.5a';
-import {classes,art} from './data.js?v=7.5a-audit';
+import {AssetManager} from './assets.js?v=7.5a-floorfix';
+import {classes,art} from './data.js?v=7.5a-floorfix';
 import {TILE,direction} from './world.js?v=7.0';
 import {Combat,weapons,lineClear} from './combat.js?v=7.0';
 import {Progression,xpNeeded,colors} from './progression.js?v=7.0';
@@ -113,8 +113,10 @@ function render(){
     const seed=(world.numericSeed||0)>>>0;
     const noise=(()=>{let h=(Math.imul(x+17,374761393)^Math.imul(y+29,668265263)^seed)>>>0;h=Math.imul(h^(h>>>13),1274126177);return (h>>>0)/4294967296;})();
     const ceremonial=world.theme==='chapel'||world.depth===3;
-    const mainFloor=world.floorSheet||(world.theme==='chapel'?'68':art.floor);
-    const generic=mainFloor===art.floor||mainFloor==='05';
+    // Only authored ground atlases may be used as floors. Sheet 03 contains props/torches.
+    const requestedFloor=world.floorSheet||(world.theme==='chapel'?'68':art.floor);
+    const mainFloor=requestedFloor==='03'?'05':requestedFloor;
+    const generic=mainFloor==='05';
     const floorSheet=!ceremonial&&generic&&noise>.56?'101':mainFloor;
     const floorCell=floorSheet==='101'?[0,1,2,4,5,8,9,14,15][Math.min(8,Math.floor(noise*9))]:noise>.9?1:0;
     assets.draw(g,floorSheet,floorCell,px,py,TILE,TILE);
