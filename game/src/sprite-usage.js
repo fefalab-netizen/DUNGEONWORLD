@@ -1,4 +1,4 @@
-import {monsters} from './monsters.js?v=7.0';
+import {monsters} from './monsters.js?v=7.5a-audit';
 // Zero-based cells, based on the user-reviewed 111-sheet visual audit.
 export const spriteUsage=[
  ...Object.values(monsters).flatMap(m=>m.frames.map(cell=>({sheet:m.sheet,cell,use:m.name,pair:true}))),
