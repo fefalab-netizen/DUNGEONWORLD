@@ -29,6 +29,43 @@ monsters.frostStalker=expeditionMonster('frostStalker','Frostbound Hunter','06',
 monsters.iceWraith=expeditionMonster('iceWraith','Icebound Specter','07',6,61,54,16,32,'ranged','frozen');
 monsters.coastRaider=expeditionMonster('coastRaider','Coast Marauder','02',8,76,67,17,32,'hunter','coast');
 monsters.drownedWraith=expeditionMonster('drownedWraith','Drowned Wraith','06',8,64,55,16,34,'ranged','coast');
+// 7.5D — Animals use the audited two-frame wildlife sheets. They aren't hostile
+// quest enemies, carry no equipment loot, and never block story progression.
+const animal=(id,name,sheet,frame,biome,behavior,hp=24,speed=60,damage=6)=>({
+ ...monsters.grunt,id,name,sheet,frame,frames:[frame,frame+1],
+ wildlife:true,behavior,biomes:[biome],faction:'wildlife',role:'animal',
+ kind:'melee',hp,speed,damage,xp:0,noLoot:true,
+ armor:0,range:26,detection:behavior==='predator'?220:115,
+ attackSpeed:.85,abilities:[],loot:{gold:0,rarity:0},cost:0
+});
+monsters.ashGecko=animal('ashGecko','Spotted Gecko','106',8,'volcanic','flee',22,72);
+monsters.jungleMacaw=animal('jungleMacaw','Red Macaw','106',0,'jungle','passive',18,55);
+monsters.jungleMonkey=animal('jungleMonkey','Jungle Monkey','106',12,'jungle','flee',30,80);
+monsters.jungleSnake=animal('jungleSnake','Green Jungle Snake','106',14,'jungle','territorial',46,65,10);
+monsters.jungleLizard=animal('jungleLizard','Green Tree Lizard','106',6,'jungle','passive',25,52);
+monsters.snowHare=animal('snowHare','Snow Hare','108',6,'frozen','flee',19,92);
+monsters.arcticFox=animal('arcticFox','Arctic Fox','108',4,'frozen','predator',52,85,12);
+monsters.walrus=animal('walrus','Walrus','108',10,'frozen','territorial',110,35,20);
+monsters.snowOwl=animal('snowOwl','Snowy Owl','108',12,'frozen','passive',25,49);
+monsters.shoreCrab=animal('shoreCrab','Red Shore Crab','110',0,'coast','territorial',35,40,8);
+monsters.seaTurtle=animal('seaTurtle','Sea Turtle Hatchling','110',6,'coast','flee',35,43);
+monsters.seagull=animal('seagull','Seagull','110',2,'coast','passive',22,57);
+monsters.pelican=animal('pelican','Pelican','110',8,'coast','passive',30,45);
+monsters.beachLizard=animal('beachLizard','Beach Lizard','110',14,'coast','flee',25,71);
+
+// The four optional roaming giants occupy specific, verified A/B pairs on 91.png:
+// Matron r2c1/2, Tyrant r2c3/4, Admiral r3c1/2, Juggernaut r4c3/4.
+const titan=(id,name,frame,biome,hp,damage,speed,attackColor)=>({
+ ...monsters.tank,id,name,sheet:'91',frame,frames:[frame,frame+1],
+ biome,biomes:[biome],faction:'colossal',colossal:true,boss:true,
+ noLoot:true,hp,damage,speed,xp:180,armor:8,kind:'melee',role:'colossal',
+ attackSpeed:.65,range:150,detection:175,resistance:.88,attackColor,
+ abilities:[],loot:{gold:0,rarity:0},cost:30
+});
+monsters.infernalJuggernaut=titan('infernalJuggernaut','Infernal Juggernaut',14,'volcanic',205,38,23,'#ff874a');
+monsters.rotwoodMatron=titan('rotwoodMatron','Rotwood Matron',4,'jungle',200,34,25,'#a0ce65');
+monsters.frostfangTyrant=titan('frostfangTyrant','Frostfang Tyrant',6,'frozen',225,40,21,'#9ddfff');
+monsters.drownedAdmiral=titan('drownedAdmiral','Drowned Admiral',8,'coast',195,36,24,'#8dcef0');
 monsters.brute={...monsters.tank,id:'brute',name:'Orc Clubber Brute',hp:100,damage:24,armor:5,speed:43,cost:6,xp:36,abilities:['lunge']};
 monsters.herald={...monsters.keeper,id:'herald',name:'The First Herald',finalBoss:true,hp:280,damage:24,armor:4,xp:180,abilities:['rune','summon'],loot:{gold:3,rarity:3}};
 export const legacyMonsters=['grunt','archer','tank','scavenger','bandit','cult'].map(id=>monsters[id]);
@@ -40,5 +77,5 @@ export function spawnMonster(species,id,x,y,seed,tier='normal'){
  const roll=hashSeed(`${seed}:${id}:${species}`)/4294967296,scale=tier==='boss'?2:tier==='elite'?1.4+roll*.3:.9+roll*.4;
  const delta=scale-1,c=variationCurves,mult=tier==='boss'?1.35:tier==='elite'?1.15:1;
  const hp=Math.round(m.hp*(1+delta*c.hp)*mult);
- return {...m,abilities:tier==='elite'&&m.kind==='melee'?[...m.abilities,'lunge']:m.abilities,attackSpeed:tier==='elite'?1.15:m.attackSpeed,species,scale,tier,hp,maxHp:hp,damage:Math.round(m.damage*(1+delta*c.damage)),speed:m.speed*Math.max(.75,1-delta*c.speed),range:m.range*(m.kind==='melee'?1+delta*c.reach:1),xp:Math.round(m.xp*(1+delta*c.reward)),reward:1+delta*c.reward,resistance:Math.min(.8,(m.resistance||0)+Math.max(0,delta)*.4),radius:Math.min(14,8*scale),id,x,y,post:{x,y},state:'idle',timer:0,cooldown:1,flash:0,slow:0,alert:false,angle:0,pathTimer:0,tacticalTimer:0,waypoint:null,abilityCooldown:3,stuck:0,ward:0};
+ return {...m,abilities:tier==='elite'&&m.kind==='melee'?[...m.abilities,'lunge']:m.abilities,attackSpeed:tier==='elite'?1.15:m.attackSpeed,species,scale:m.colossal?3.1:m.wildlife?Math.min(.9,scale):scale,tier,hp,maxHp:hp,damage:Math.round(m.damage*(1+delta*c.damage)),speed:m.speed*Math.max(.75,1-delta*c.speed),range:m.range*(m.kind==='melee'?1+delta*c.reach:1),xp:Math.round(m.xp*(1+delta*c.reward)),reward:1+delta*c.reward,resistance:Math.min(.8,(m.resistance||0)+Math.max(0,delta)*.4),radius:m.colossal?20:m.wildlife?6:Math.min(14,8*scale),id,x,y,post:{x,y},state:'idle',timer:0,cooldown:1,flash:0,slow:0,alert:false,angle:0,pathTimer:0,tacticalTimer:0,waypoint:null,abilityCooldown:3,stuck:0,ward:0};
 }
