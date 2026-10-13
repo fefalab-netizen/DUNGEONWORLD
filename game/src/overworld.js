@@ -1,7 +1,7 @@
 import {TILE} from './world.js?v=7.0';
 import {seedNumber} from './dungeon.js?v=7.0';
 export const CHUNK_SIZE=64;
-export function createOverworld(seed='Dunbarrow'){
+export function createOverworld(seed='Dunbarrow',expedition=false){
  const numericSeed=seedNumber(seed);let state=numericSeed;
  const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};
  const jitter=()=>Math.floor(random()*13)-6,width=256,height=256;
@@ -13,7 +13,9 @@ export function createOverworld(seed='Dunbarrow'){
   const lake=Math.sin(x*.053+numericSeed%19)+Math.cos(y*.061)+Math.sin((x+y)*.027)+(.32*(hash(Math.floor(x/6),Math.floor(y/6))-.5))>2.1;
   terrain[i]=lake?2:0;solid[i]=border||lake||hash(x,y)<.075;
  }
- const definitions=[['camp','Dunbarrow Camp',128,128],['bandit','Bandit Road',76,128],['ridge','North Ridge',128,70],['grave','Grave Path',181,128],['approach','Sealed Stair Approach',128,181],['raider','The Raider Cellar',64,94],['chapel','The Bone Chapel',194,91],['underkeep','The Black Stair Underkeep',128,211]];
+ const definitions=expedition?
+  [['camp','Expedition Outpost',128,128],['west','Western Wilds',76,128],['north','Northern Wilds',128,70],['east','Eastern Wilds',181,128],['south','Southern Wilds',128,181],['highlands','Broken Highlands',64,94],['thicket','Old Thicket',194,91],['frontier','Far Frontier',128,211]]:
+  [['camp','Dunbarrow Camp',128,128],['bandit','Bandit Road',76,128],['ridge','North Ridge',128,70],['grave','Grave Path',181,128],['approach','Sealed Stair Approach',128,181],['raider','The Raider Cellar',64,94],['chapel','The Bone Chapel',194,91],['underkeep','The Black Stair Underkeep',128,211]];
  const landmarks=definitions.map(([id,name,x,y])=>({id,name,tx:x+(id==='camp'?0:jitter()),ty:y+(id==='camp'?0:jitter())}));
  for(const l of landmarks){l.x=(l.tx+.5)*TILE;l.y=(l.ty+.5)*TILE;}
  const carve=(x,y,r=2)=>{for(let dy=-r-1;dy<=r+1;dy++)for(let dx=-r-1;dx<=r+1;dx++){const nx=x+dx,ny=y+dy;if(nx<2||nx>253||ny<2||ny>253)continue;const distance=Math.max(Math.abs(dx),Math.abs(dy)),edge=hash(nx+881,ny-319);if(distance>r&&edge<.70)continue;const i=ny*width+nx;terrain[i]=terrain[i]===2?3:1;solid[i]=false;}};
@@ -36,10 +38,16 @@ export function createOverworld(seed='Dunbarrow'){
  }
  for(const l of landmarks){const r=l.id==='camp'?10:5;for(let y=l.ty-r-1;y<=l.ty+r+1;y++)for(let x=l.tx-r-1;x<=l.tx+r+1;x++){const d=Math.hypot(x-l.tx,y-l.ty),edge=r-.8+hash(x+41,y+71)*2;if(d>edge&&Math.abs(x-l.tx)>2&&Math.abs(y-l.ty)>2)continue;terrain[y*width+x]=l.id==='camp'?1:0;solid[y*width+x]=false;}}
  const camp=landmarks[0],decorations=[{tx:camp.tx-5,ty:camp.ty-4,sheet:'84',cell:0,size:80},{tx:camp.tx+4,ty:camp.ty-4,sheet:'84',cell:1,size:86},{tx:camp.tx-5,ty:camp.ty+4,sheet:'84',cell:2,size:70},{tx:camp.tx+5,ty:camp.ty+4,sheet:'96',cell:11,size:58}];
+ // A single caravan at a clear roadside stop connects the two persistent overworld regions.
+ const caravan={id:'caravan',name:expedition?'Caravan · Return Free':'Expedition Caravan',tx:camp.tx+8,ty:camp.ty+1};
+ caravan.x=(caravan.tx+.5)*TILE;caravan.y=(caravan.ty+.5)*TILE;
+ landmarks.push(caravan);
+ for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const tx=caravan.tx+dx,ty=caravan.ty+dy,i=ty*width+tx;terrain[i]=1;solid[i]=false;}
+ // Keep the caravan clear of trees, rocks, and decorative camp buildings.
  for(const p of decorations)solid[p.ty*width+p.tx]=true;
  const enemySpawns=[];
  for(const l of landmarks.slice(1,7)){for(const [dx,dy,type] of [[-3,3,4],[3,3,0],[0,-3,1]]){const x=l.tx+dx,y=l.ty+dy;if(Math.hypot(x-camp.tx,y-camp.ty)>15){solid[y*width+x]=false;enemySpawns.push([x,y,type]);}}}
- const w={kind:'overworld',seed:String(seed),numericSeed,width,height,terrain,solid,landmarks,decorations,enemySpawns,spawn:{x:camp.x,y:camp.y},safeZone:{x:camp.x,y:camp.y,radius:10*TILE},explored:new Uint8Array(width*height),chunks:new Map(),props:[],doors:[],traps:[],chests:[],hash};
+ const w={kind:'overworld',expedition,seed:String(seed),numericSeed,width,height,terrain,solid,landmarks,decorations,enemySpawns,spawn:{x:camp.x,y:camp.y},safeZone:{x:camp.x,y:camp.y,radius:11*TILE},explored:new Uint8Array(width*height),chunks:new Map(),props:[],doors:[],traps:[],chests:[],hash};
  const report=validateOverworld(w);if(!report.valid)throw new Error('Overworld has unreachable landmarks.');
  reveal(w,w.spawn);updateChunks(w,w.spawn);return w;
 }
