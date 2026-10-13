@@ -10,9 +10,9 @@ export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
   const h=w.hash(x,y),h2=w.hash(x+417,y-223);
   let sheet='81',cell=0;
   if(t===2){
-   sheet='82';cell=h<.14?2:1;
-   const shore=[[0,-1,12],[1,0,13],[0,1,14],[-1,0,15]];
-   for(const [dx,dy,c] of shore){const nx=x+dx,ny=y+dy;if(nx>=0&&ny>=0&&nx<w.width&&ny<w.height&&w.terrain[ny*w.width+nx]!==2){sheet='93';cell=c;break;}}
+   // Open water always uses a full water tile. Transition sheets 93.r4c1–r4c4
+   // contain grass and cannot be substituted for an entire water cell.
+   sheet='82';cell=h<.07?2:1;
   }else if(t===3){sheet='82';cell=8;}
   else if(t===1){sheet='81';cell=h<.94?4:5;}
   else {
@@ -21,6 +21,16 @@ export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
   }
   g.fillStyle=t===2?'#154d78':t===1||t===3?'#876038':'#456228';g.fillRect(px,py,TILE,TILE);
   assets.draw(g,sheet,cell,px,py,TILE,TILE);
+  if(t===2){
+   // Pixel-thin foam follows the actual land/water border, including corners.
+   // Neighbor checks never insert grass sprites inside the lake.
+   const land=(dx,dy)=>{const nx=x+dx,ny=y+dy;return nx>=0&&ny>=0&&nx<w.width&&ny<w.height&&![2,3].includes(w.terrain[ny*w.width+nx]);};
+   g.fillStyle='#93c1b8';
+   if(land(0,-1))g.fillRect(px,py,TILE,2);
+   if(land(1,0))g.fillRect(px+TILE-2,py,2,TILE);
+   if(land(0,1))g.fillRect(px,py+TILE-2,TILE,2);
+   if(land(-1,0))g.fillRect(px,py,2,TILE);
+  }
  }
  for(const chunk of w.chunks.values())for(const prop of chunk.props){if(prop.tx<minX-2||prop.tx>maxX+2||prop.ty<minY-2||prop.ty>maxY+2)continue;
   sprites.push({depth:(prop.ty+1)*TILE,draw:()=>assets.draw(g,prop.sheet,prop.cell,(prop.tx+.5)*TILE+ox-prop.size/2,(prop.ty+1)*TILE+oy-prop.size,prop.size,prop.size)});
