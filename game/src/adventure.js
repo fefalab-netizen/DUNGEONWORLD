@@ -10,7 +10,7 @@ import {Progression} from './progression.js?v=7.0';
 export class Adventure {
  constructor(seed,hero,player,onNotice=()=>{}){
   this.elapsed=0;this.seed=seed;this.player=player;this.onNotice=onNotice;this.progression=new Progression(hero,player);this.regions=new Map();this.quests=new Quests();this.shop=['weapon','armor','trinket'].map(slot=>this.progression.makeItem(slot,true));
-  this.overworld=createOverworld(seed);this.npcs=campNPCs(this.overworld);this.progression.seed=this.overworld.numericSeed;this.travel('overworld',this.overworld,this.overworld.spawn,true);
+  this.overworld=createOverworld(seed);this.expedition=null;this.expeditionTrips=0;this.npcs=campNPCs(this.overworld);this.progression.seed=this.overworld.numericSeed;this.travel('overworld',this.overworld,this.overworld.spawn,true);
  }
  travel(id,world,position,first=false){
   const p=this.player,pr=this.progression,hp=p.hp,xp=p.xp||0;
@@ -37,7 +37,20 @@ export class Adventure {
  interact(){
   const p=this.player,w=this.world,pr=this.progression;
   if(w.kind==='overworld'){
-   const l=nearbyLandmark(w,p);if(!l)return 'Follow the roads to explore Dunbarrow.';
+   const l=nearbyLandmark(w,p);if(!l)return w.expedition?'Explore the frontier or return to the caravan.':'Follow the roads to explore Dunbarrow.';
+   if(l.id==='caravan'){
+    if(w.expedition){this.travel('overworld',this.overworld,this.overworld.landmarks.find(x=>x.id==='caravan'));return 'Returned to Dunbarrow by caravan. Return journey is free.';}
+    const fare=this.expeditionTrips===0?40:20;
+    if(pr.gold<fare)return `The expedition caravan costs ${fare} gold. You have ${pr.gold}. Earn gold in Dunbarrow before departing.`;
+    if(!this.expedition)this.expedition=createOverworld(this.seed+':expedition',true);
+    pr.gold-=fare;this.expeditionTrips++;
+    this.travel('expedition',this.expedition,this.expedition.landmarks.find(x=>x.id==='caravan'));
+    return `Caravan expedition: ${fare} gold paid. Explore the frontier; return to the caravan for a free ride home.`;
+   }
+   if(w.expedition){
+    if(l.id==='camp'){p.hp=pr.stats.hp;pr.potions=Math.max(2,pr.potions);return 'Rested at the expedition outpost. Health restored and emergency potions replenished. Caravan travel home is free.';}
+    return `${l.name}. The frontier is open for exploration. Return to the caravan when ready.`;
+   }
    if(l.id==='camp'){p.hp=pr.stats.hp;pr.potions=Math.max(2,pr.potions);return 'Rested at camp. Health restored; at least two potions supplied. West: Raider Cellar. East: Bone Chapel.';}
    if(['raider','chapel'].includes(l.id)){this.returnPosition={x:l.x,y:l.y+64};const dungeon=this.regions.get(l.id)?.world||createStoryDungeon(this.seed+':'+l.id,l.id,pr.level,this.quests.artifacts.size);dungeon.name=l.name;this.travel(l.id,dungeon,dungeon.spawn);return `Entered ${l.name}. Use the entrance stairs to return anytime.`;}
    if(l.id==='underkeep'){if(!this.quests.ready)return 'The Black Stair is sealed. Recover the Iron Seal Key and Rune of Opening.';this.underkeepReturn={x:l.x,y:l.y+64};return this.enterUnderkeep(1);}
