@@ -14,12 +14,24 @@ export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
    // contain grass and cannot be substituted for an entire water cell.
    sheet='82';cell=h<.07?2:1;
   }else if(t===3){sheet='82';cell=8;}
-  else if(t===1){sheet='81';cell=h<.94?4:5;}
+  else if(w.expedition&&t===4){sheet='103';cell=h<.7?8:9;} // Liquid lava, never a false bridge
+  else if(w.expedition&&t===5){sheet='107';cell=h<.7?6:5;} // Walkable frozen lake
+  else if(w.expedition&&t===6){sheet='103';cell=14;} // Scalding ground fissure
+  else if(w.expedition&&t===7){sheet='105';cell=14;} // Jungle bog
+  else if(w.expedition&&t===8){sheet='109';cell=14;} // Tide pool
+  else if(w.expedition){
+   const biome=w.biomeAt(x,y),road=t===1;
+   if(biome==='volcanic'){sheet='103';cell=road?3:h<.38?0:h<.62?2:h<.83?4:h<.95?6:7;}
+   else if(biome==='jungle'){sheet='105';cell=road?4:h<.46?0:h<.70?1:h<.84?2:h<.95?13:3;}
+   else if(biome==='frozen'){sheet='107';cell=road?7:h<.48?0:h<.72?1:h<.88?2:h<.95?13:3;}
+   else if(biome==='coast'){sheet='109';cell=road?1:h<.44?0:h<.68?1:h<.85?15:h<.96?12:13;}
+   else {sheet='81';cell=road?4:h<.6?0:1;}
+  }else if(t===1){sheet='81';cell=h<.94?4:5;}
   else {
    cell=h<.40?0:h<.66?1:h<.78?2:h<.86?3:h<.93?12:h<.97?14:13;
    if(h2>.986){sheet='101';cell=3;}
   }
-  g.fillStyle=t===2?'#154d78':t===1||t===3?'#876038':'#456228';g.fillRect(px,py,TILE,TILE);
+  g.fillStyle=t===2?'#154d78':t===4?'#b74a19':t===5?'#8ab4cf':t===1||t===3?'#876038':'#456228';g.fillRect(px,py,TILE,TILE);
   assets.draw(g,sheet,cell,px,py,TILE,TILE);
   if(t===2){
    // Pixel-thin foam follows the actual land/water border, including corners.
