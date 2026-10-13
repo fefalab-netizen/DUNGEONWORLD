@@ -38,23 +38,23 @@ BATCH 01 | SET 002 | Dungeon Denizens | FILE: PRESENT
   r4c3: Cult Initiate [A]
   r4c4: Cult Initiate [B]
 
-BATCH 01 | SET 003 | Stone Dungeon Floors | FILE: PRESENT
-  r1c1: Clean Flagstone
-  r1c2: Cracked Flagstone
-  r1c3: Chipped Flagstone
-  r1c4: Mossy Flagstone
-  r2c1: Damp Flagstone
-  r2c2: Dusty Stone
-  r2c3: Gravel Scatter
-  r2c4: Bloodstained Stone
-  r3c1: Scratched Flagstone
-  r3c2: Bone-Strewn Floor
-  r3c3: Faint Rune Floor
-  r3c4: Pressure Plate Up
-  r4c1: Pressure Plate Down
-  r4c2: Closed Trapdoor
-  r4c3: Open Pit
-  r4c4: Exit Marker Floor
+BATCH 01 | SET 003 | Dungeon Entrance Props, Traps & Supplies | FILE: PRESENT
+  r1c1: Wall-Mounted Torch
+  r1c2: Standing Fire Brazier
+  r1c3: Wooden Barrel
+  r1c4: Wooden Crate
+  r2c1: Treasure Chest Closed
+  r2c2: Treasure Chest Open
+  r2c3: Raised Spike Trap
+  r2c4: Open Iron Bear Trap
+  r3c1: Red-Handle Lever
+  r3c2: Hanging Metal Hook
+  r3c3: Coiled Rope
+  r3c4: Wooden Directional Signpost
+  r4c1: Golden Key
+  r4c2: Red Health Potion
+  r4c3: Leather Adventurer Satchel
+  r4c4: Mossy Stone Bust Statue
 
 BATCH 01 | SET 004 | Stone Walls and Doors | FILE: PRESENT
   r1c1: North Wall
