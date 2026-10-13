@@ -61,6 +61,16 @@ export function createOverworld(seed='Dunbarrow',expedition=false){
   const i=y*width+x;if([4,6,7,8].includes(terrain[i])){terrain[i]=1;solid[i]=false;}
  }
  for(const p of decorations)solid[p.ty*width+p.tx]=true;
+ if(expedition){
+  // Scenic, non-blocking ruins signal the frontier's history without gating routes.
+  for(const [id,sheet,cell] of [
+   ['highlands','104',9],['thicket','85',7],['frontier','111',2],
+   ['west','104',12],['north','85',4],['east','85',6],['south','111',1]
+  ]){
+   const l=landmarks.find(l=>l.id===id);
+   if(l)decorations.push({tx:l.tx+5,ty:l.ty-4,sheet,cell,size:52});
+  }
+ }
  const enemySpawns=[];
  const biomeEnemies={volcanic:['fireImp','hellhound','magmaElemental'],jungle:['sporeling','jungleStalker','fungalMage'],frozen:['frostStalker','iceWraith','frostStalker'],coast:['coastRaider','drownedWraith','coastRaider']};
  for(const l of landmarks.slice(1,7)){for(const [k,[dx,dy,type]] of [[-3,3,4],[3,3,0],[0,-3,1]].entries()){
@@ -86,7 +96,7 @@ export function updateChunks(w,p){
    let sheet='83',size=cell<=2?56:cell<=5?40:38;
    if(w.expedition){const biome=expeditionBiome(tx,ty);
     if(biome==='volcanic'){sheet='104';cell=[0,1,3,4,8,9,14][Math.floor(v*7)];size=cell===8?62:42;}
-    else if(biome==='jungle'){sheet='105';cell=[3,7,11,12,13][Math.floor(v*5)];size=38;}
+    else if(biome==='jungle'){sheet='83';cell=[0,0,4,5,6,12][Math.floor(v*6)];size=cell===0?64:cell===12?48:44;}
     else if(biome==='frozen'){sheet='83';cell=[1,1,8,9,10][Math.floor(v*5)];size=cell===1?54:42;}
     else if(biome==='coast'){sheet='111';cell=[0,1,3,5,9,10][Math.floor(v*6)];size=cell===1?46:34;}
    }
