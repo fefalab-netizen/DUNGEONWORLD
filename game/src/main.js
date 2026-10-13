@@ -82,7 +82,7 @@ addEventListener('blur',blur);document.addEventListener('visibilitychange',()=>{
 $('closeInfo').onclick=()=>$('info').close();
 $('helpButton').onclick=()=>{$('infoBody').innerHTML='<h2>Explore Dunbarrow</h2><p>Start in a safe camp. Follow roads west to the Raider Cellar or east to the Bone Chapel. E at the campfire restores health and supplies at least two potions. M toggles the exploration map. Trees, rocks and water block travel; roads and bridges connect all landmarks. Unknown terrain is hidden by fog.</p><p>WASD / arrows: walk and face movement. Moving the mouse aims; hold left click to attack in that direction. Space: dodge. E: open a nearby door or chest, pick up the golden key, or use stairs. I: inventory. C: statistics. 1: potion. M: toggle map. Escape: pause.</p><p>Recover each dungeon’s gate key or complete its ritual, defeat its miniboss, then use the violet exit stairs. Optional rooms are not required. J opens the quest journal. Talk to camp NPCs with E. Brunna buys and sells gear. Developer controls: F4 toggles movement speed; Shift+F4 cycles 1× / 2× / 4× / 8×. The Black Stair opens after both artifacts. Its three floors retain their state when you backtrack. Cyan stairs ascend; violet stairs descend. Defeat the First Herald, take the exit home and speak to Aldric for the ending. Equipment, health, enemies, doors and opened chests persist when travelling between regions during this run. Spike traps pulse amber before firing. Chests give equipment and a potion. Enter a seed to replay its layout, or choose Random seed for another dungeon.</p>';$('info').showModal();};
 $('assetsButton').onclick=()=>{
-  $('infoBody').innerHTML='<h2>Supplied asset report</h2><p>All 100 original PNGs are registered. Only core and visited-region sheets are loaded. Every cell has a stable physical ID (for example 05.r1c1). The planned labels differ from the pictures; the foundation uses visually verified mappings.</p><p>03.png = props · 04.png = walls · 05.png = floors. A/B character pairs share crop bounds and scale. Dimensions and alpha are inspected when loaded.</p><table><thead><tr><th>File</th><th>Actual dimensions</th><th>Transparency</th></tr></thead><tbody>'+[...assets.atlases].sort().map(([id,a])=>`<tr><td>${id}.png</td><td>${a.width} × ${a.height}</td><td>${a.transparent?'Present':'Absent'}</td></tr>`).join('')+'</tbody></table>';
+  $('infoBody').innerHTML='<h2>Supplied asset report</h2><p>All 111 numbered PNGs are registered. Only core and visited-region sheets are loaded. Every cell has a stable physical ID (for example 05.r1c1). The sprite catalog has been audited against all 111 numbered PNGs.</p><p>03.png = props · 04.png = walls · 05.png = floors. A/B character pairs share crop bounds and scale. Dimensions and alpha are inspected when loaded.</p><table><thead><tr><th>File</th><th>Actual dimensions</th><th>Transparency</th></tr></thead><tbody>'+[...assets.atlases].sort().map(([id,a])=>`<tr><td>${id}.png</td><td>${a.width} × ${a.height}</td><td>${a.transparent?'Present':'Absent'}</td></tr>`).join('')+'</tbody></table>';
   $('infoBody').innerHTML+='<h3>Verified cell uses (zero-based)</h3><p>'+spriteUsage.map(u=>`${u.sheet}.${u.cell}: ${u.use}`).join('<br>')+'</p>';
   for(const error of assets.errors){const p=document.createElement('p');p.textContent=error;$('infoBody').append(p);}$('info').showModal();
 };
@@ -114,7 +114,7 @@ function render(){
     const noise=(()=>{let h=(Math.imul(x+17,374761393)^Math.imul(y+29,668265263)^seed)>>>0;h=Math.imul(h^(h>>>13),1274126177);return (h>>>0)/4294967296;})();
     const ceremonial=world.theme==='chapel'||world.depth===3;
     const mainFloor=world.floorSheet||(world.theme==='chapel'?'68':art.floor);
-    const generic=mainFloor===art.floor||mainFloor==='05'||mainFloor==='03';
+    const generic=mainFloor===art.floor||mainFloor==='05';
     const floorSheet=!ceremonial&&generic&&noise>.56?'101':mainFloor;
     const floorCell=floorSheet==='101'?[0,1,2,4,5,8,9,14,15][Math.min(8,Math.floor(noise*9))]:noise>.9?1:0;
     assets.draw(g,floorSheet,floorCell,px,py,TILE,TILE);
@@ -122,7 +122,7 @@ function render(){
     g.fillStyle='#07101735';g.fillRect(px,py,TILE,TILE);
     if(wall)sprites.push({depth:(y+1)*TILE,draw:()=>{g.fillStyle='#070b0b88';g.fillRect(px+3,py+12,32,23);const standardWall=!world.wallSheet||world.wallSheet==='04';
       const wallSheet=standardWall&&noise>.68?'102':world.wallSheet||(world.theme==='chapel'?'69':art.walls);
-      const wallCell=wallSheet==='102'?(noise>.93?5:noise>.83?1:0):noise>.91?11:0;
+      const wallCell=wallSheet==='102'?(noise>.93?5:noise>.83?1:0):noise>.91?2:noise>.84?1:0;
       assets.draw(g,wallSheet,wallCell,px,py-12,32,44);}});
     if(debug&&world.solid[y*world.width+x]){g.strokeStyle='#e79462';g.strokeRect(px+.5,py+.5,31,31);}
   }
@@ -132,12 +132,12 @@ function render(){
    assets.draw(g,'102',cell,p.x+ox-16,p.y+oy-20,32,32);
    g.fillStyle=color;g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);
   }
-  for(const d of world.doors)if(!d.open)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,d.lock==='treasure'?'04':'102',d.lock==='treasure'?14:3,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
-  for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'05',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
+  for(const d of world.doors)if(!d.open)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,d.lock==='treasure'?'04':'102',d.lock==='treasure'?10:3,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
+  for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'03',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
   if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'98',4,world.key.x+ox-10,world.key.y+oy-16,20,24)});
   if(outdoors&&adventure)for(const n of adventure.npcs)sprites.push({depth:n.y+8,draw:()=>{assets.draw(g,n.sheet,n.frame+Math.floor(animation/.42)%2,n.x+ox-20,n.y+oy-34,40,42);g.fillStyle='#f4d992';g.font='8px monospace';g.fillText(n.name,n.x+ox-28,n.y+oy-43);}});
-  for(const o of world.objects||[]){if(o.kind==='plate')assets.draw(g,'68',4,o.x+ox-15,o.y+oy-10,30,22);else if(o.kind==='lever')assets.draw(g,'64',5,o.x+ox-16,o.y+oy-28,32,36,o.active);else assets.draw(g,'03',o.kind==='supply'?2:13,o.x+ox-12,o.y+oy-20,24,28);g.fillStyle=o.active?'#8fdfb1':'#e3ce9b';g.font='7px monospace';g.fillText(o.kind.toUpperCase(),o.x+ox-18,o.y+oy+18);}
-  if(world.theme==='chapel'&&!world.key.taken)assets.draw(g,'70',3,world.key.x+ox-22,world.key.y+oy-40,44,50);
+  for(const o of world.objects||[]){if(o.kind==='plate')assets.draw(g,'95',o.active?3:2,o.x+ox-15,o.y+oy-10,30,22);else if(o.kind==='lever')assets.draw(g,'95',o.active?1:0,o.x+ox-16,o.y+oy-28,32,36);else assets.draw(g,o.kind==='supply'?'03':'90',o.kind==='supply'?2:0,o.x+ox-12,o.y+oy-20,24,28);g.fillStyle=o.active?'#8fdfb1':'#e3ce9b';g.font='7px monospace';g.fillText(o.kind.toUpperCase(),o.x+ox-18,o.y+oy+18);}
+  if(world.theme==='chapel'&&!world.key.taken)assets.draw(g,'90',0,world.key.x+ox-22,world.key.y+oy-40,44,50);
   sprites.push({depth:player.y+8,draw:()=>{g.fillStyle='#050b0bb0';g.beginPath();g.ellipse(Math.round(player.x+ox),Math.round(player.y+oy+5),12,5,0,0,Math.PI*2);g.fill();g.save();if(player.flash>0)g.globalAlpha=.5;assets.character(g,classes[selected].frames[Math.floor(animation/.42)%2],player.x+ox,player.y+oy+8,42,player.flip);g.restore();}});
   for(const e of combat.enemies){if(e.hp<=0||Math.abs(e.x-player.x)>viewWidth/2+100||Math.abs(e.y-player.y)>viewHeight/2+100)continue;sprites.push({depth:e.y+8,draw:()=>{
     const x=Math.round(e.x+ox),y=Math.round(e.y+oy),a=assets.atlases.get(e.sheet),b=a?.frames[e.frame].bounds,ratio=b?(b.right-b.left+1)/(b.bottom-b.top+1):1;
