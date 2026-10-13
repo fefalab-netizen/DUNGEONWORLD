@@ -8,7 +8,7 @@ export function createUnderkeep(seed,depth){
  // Retain the established three-wide corridors, optional branches and gated spine.
  const w=createStoryDungeon(`${seed}:underkeep:${depth}`,depth===2?'chapel':'raider',4,2);
  w.theme='underkeep';w.depth=depth;w.name=`Black Stair ${depth} / 3 · ${floorNames[depth-1]}`;
- w.floorSheet=depth===3?'68':'05';w.wallSheet=depth===3?'69':'04';w.requiredSheets=underkeepSheets;
+ w.floorSheet=depth===3?'68':'03';w.wallSheet=depth===3?'69':'04';w.requiredSheets=underkeepSheets;
  w.key.taken=false;w.hasKey=false;w.objects=[];w.traps=[];w.props=[];
  const objective=w.rooms[w.mainCount-2],arena=w.rooms[w.mainCount-1];
  w.arena={left:arena.x*32,top:arena.y*32,right:(arena.x+arena.w)*32,bottom:(arena.y+arena.h)*32,...center(arena)};
