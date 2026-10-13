@@ -2,7 +2,7 @@ import {TILE} from './world.js?v=7.0';
 import {seedNumber} from './dungeon.js?v=7.0';
 export const CHUNK_SIZE=64;
 // Four connected, unlocked expedition regions radiate from the safe central outpost.
-export function expeditionBiome(x,y){const dx=x-128,dy=y-128;if(Math.hypot(dx,dy)<19)return 'outpost';if(Math.abs(dx)>Math.abs(dy))return dx<0?'volcanic':'jungle';return dy<0?'frozen':'coast';}
+export function expeditionBiome(x,y){const dx=x-128+7*Math.sin(y*.071),dy=y-128+7*Math.sin(x*.059);if(Math.hypot(x-128,y-128)<19)return 'outpost';if(Math.abs(dx)>Math.abs(dy))return dx<0?'volcanic':'jungle';return dy<0?'frozen':'coast';}
 export function createOverworld(seed='Dunbarrow',expedition=false){
  const numericSeed=seedNumber(seed);let state=numericSeed;
  const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};
