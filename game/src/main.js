@@ -109,18 +109,32 @@ function render(){
   for(const drop of progression.drops)sprites.push({depth:drop.y-1,draw:()=>{g.strokeStyle=colors[drop.item.rarity];g.strokeRect(Math.round(drop.x+ox-11),Math.round(drop.y+oy-11),22,22);assets.draw(g,drop.item.sheet,drop.item.cell,drop.x+ox-9,drop.y+oy-9,18,18);}});
   if(!outdoors)for(let y=minY;y<maxY;y++)for(let x=minX;x<maxX;x++){
     const px=x*TILE+ox,py=y*TILE+oy,isProp=world.props.some(p=>p.x===x&&p.y===y),wall=world.solid[y*world.width+x]&&!isProp&&!world.doors.some(d=>d.x===x&&d.y===y);
-    assets.draw(g,world.floorSheet||(world.theme==='chapel'?'68':art.floor),(x*13+y*7)%19===0?1:0,px,py,TILE,TILE);
+    // Region-aware, deterministic authored floor variation; respect specialized story floors.
+    const seed=(world.numericSeed||0)>>>0;
+    const noise=(()=>{let h=(Math.imul(x+17,374761393)^Math.imul(y+29,668265263)^seed)>>>0;h=Math.imul(h^(h>>>13),1274126177);return (h>>>0)/4294967296;})();
+    const ceremonial=world.theme==='chapel'||world.depth===3;
+    const mainFloor=world.floorSheet||(world.theme==='chapel'?'68':art.floor);
+    const generic=mainFloor===art.floor||mainFloor==='05'||mainFloor==='03';
+    const floorSheet=!ceremonial&&generic&&noise>.56?'101':mainFloor;
+    const floorCell=floorSheet==='101'?[0,1,2,4,5,8,9,14,15][Math.min(8,Math.floor(noise*9))]:noise>.9?1:0;
+    assets.draw(g,floorSheet,floorCell,px,py,TILE,TILE);
     // Subtle ground shading keeps characters and collision silhouettes legible.
     g.fillStyle='#07101735';g.fillRect(px,py,TILE,TILE);
-    if(wall)sprites.push({depth:(y+1)*TILE,draw:()=>{g.fillStyle='#070b0b88';g.fillRect(px+3,py+12,32,23);assets.draw(g,world.wallSheet||(world.theme==='chapel'?'69':art.walls),[10,28].includes(x)&&[9,18].includes(y)?13:0,px,py-12,32,44);}});
+    if(wall)sprites.push({depth:(y+1)*TILE,draw:()=>{g.fillStyle='#070b0b88';g.fillRect(px+3,py+12,32,23);const standardWall=!world.wallSheet||world.wallSheet==='04';
+      const wallSheet=standardWall&&noise>.68?'102':world.wallSheet||(world.theme==='chapel'?'69':art.walls);
+      const wallCell=wallSheet==='102'?(noise>.93?5:noise>.83?1:0):noise>.91?11:0;
+      assets.draw(g,wallSheet,wallCell,px,py-12,32,44);}});
     if(debug&&world.solid[y*world.width+x]){g.strokeStyle='#e79462';g.strokeRect(px+.5,py+.5,31,31);}
   }
   for(const p of world.props)sprites.push({depth:(p.y+1)*TILE,draw:()=>assets.draw(g,p.sheet||art.props,p.cell,p.x*TILE+ox,p.y*TILE+oy-6,32,38)});
   for(const trap of world.traps){const active=trapActive(trap,combat.time),warning=(combat.time+trap.phase)%3>1.3;g.fillStyle=active?'#df714477':warning?(Math.sin(combat.time*20)>0?'#ffd45899':'#ffd45833'):'#c9a45822';g.fillRect(trap.x+ox-15,trap.y+oy-15,30,30);assets.draw(g,'95',active?7:6,trap.x+ox-14,trap.y+oy-12,28,24);}
-  if(!outdoors)for(const [p,color,label] of [[world.spawn,'#80dcdb',world.depth?'ASCEND':'ENTRANCE'],[world.exit,(world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee',world.depth?(world.depth===3?'WAY HOME':'DESCEND'):'EXIT']]){g.fillStyle=color;for(let i=0;i<4;i++)g.fillRect(p.x+ox-13+i*2,p.y+oy-12+i*6,26-i*4,4);g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);}
-  for(const d of world.doors)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,'95',d.open?5:4,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
-  for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'03',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
-  if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'03',12,world.key.x+ox-10,world.key.y+oy-16,20,24)});
+  if(!outdoors)for(const [p,color,label,cell] of [[world.spawn,'#80dcdb',world.depth?'ASCEND':'ENTRANCE',9],[world.exit,(world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee',world.depth?(world.depth===3?'WAY HOME':'DESCEND'):'EXIT',10]]){
+   assets.draw(g,'102',cell,p.x+ox-16,p.y+oy-20,32,32);
+   g.fillStyle=color;g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);
+  }
+  for(const d of world.doors)if(!d.open)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,d.lock==='treasure'?'04':'102',d.lock==='treasure'?14:3,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
+  for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'05',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
+  if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'98',4,world.key.x+ox-10,world.key.y+oy-16,20,24)});
   if(outdoors&&adventure)for(const n of adventure.npcs)sprites.push({depth:n.y+8,draw:()=>{assets.draw(g,n.sheet,n.frame+Math.floor(animation/.42)%2,n.x+ox-20,n.y+oy-34,40,42);g.fillStyle='#f4d992';g.font='8px monospace';g.fillText(n.name,n.x+ox-28,n.y+oy-43);}});
   for(const o of world.objects||[]){if(o.kind==='plate')assets.draw(g,'68',4,o.x+ox-15,o.y+oy-10,30,22);else if(o.kind==='lever')assets.draw(g,'64',5,o.x+ox-16,o.y+oy-28,32,36,o.active);else assets.draw(g,'03',o.kind==='supply'?2:13,o.x+ox-12,o.y+oy-20,24,28);g.fillStyle=o.active?'#8fdfb1':'#e3ce9b';g.font='7px monospace';g.fillText(o.kind.toUpperCase(),o.x+ox-18,o.y+oy+18);}
   if(world.theme==='chapel'&&!world.key.taken)assets.draw(g,'70',3,world.key.x+ox-22,world.key.y+oy-40,44,50);
@@ -151,7 +165,7 @@ try {
   for(const c of classes){const b=document.createElement('button');b.className='character';b.setAttribute('aria-label',c.name);b.innerHTML=`<span class="number">0${c.id+1}</span><canvas width="96" height="96"></canvas><span class="name">${c.name}</span>`;b.onclick=()=>select(c.id);$('characters').append(b);}
   select(0);
   const ready=coreSheets.every(id=>assets.atlases.has(id));$('begin').disabled=!ready;
-  $('loading').textContent=assets.errors.length?`${assets.errors.length} sheet(s) unavailable — open Asset report${ready?'':'. Required combat art is missing.'}`:'Core artwork loaded · 100 sheets registered · Regions load on demand';
+  $('loading').textContent=assets.errors.length?`${assets.errors.length} sheet(s) unavailable — open Asset report${ready?'':'. Required combat art is missing.'}`:'Core artwork loaded · 111 sheets registered · Regions load on demand';
   requestAnimationFrame(frame);
 }catch(error){$('fatal').hidden=false;$('fatal').textContent=`Unable to start: ${error.message}. Run the local server and open /game/.`;}
 // Read-only inspection for acceptance tests and future development tools.

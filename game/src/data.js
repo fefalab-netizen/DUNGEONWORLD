@@ -10,9 +10,9 @@ export const classes = [
 ].map(([name,title,style,hp,speed,attack,defense],index)=>({id:index,name,title,style,hp,speed,attack,defense,frames:[index*2,index*2+1]}));
 
 // Physical file IDs are deliberately independent of the planned semantic set numbers.
-export const sheets = Array.from({length:100},(_,i)=>i+1).map(n=>({id:String(n).padStart(2,'0'),path:`assets/${String(n).padStart(2,'0')}.png`,character:[1,2,6,7,11,12,16,17,51,53,66,67,89,91,97,99,100].includes(n)}));
+export const sheets = Array.from({length:111},(_,i)=>i+1).map(n=>({id:String(n).padStart(2,'0'),path:`assets/${String(n).padStart(2,'0')}.png`,character:[1,2,6,7,11,12,16,17,51,53,66,67,89,91,97,99,100,106,108,110].includes(n)}));
 export const spriteRegistry = Object.fromEntries(sheets.flatMap(s=>Array.from({length:16},(_,cell)=>[
   `${s.id}.r${Math.floor(cell/4)+1}c${cell%4+1}`,{sheet:s.id,cell}
 ])));
-export const art = {adventurers:'01',floor:'05',walls:'04',props:'03'};
+export const art = {adventurers:'01',floor:'03',walls:'04',props:'05'};
 

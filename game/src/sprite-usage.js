@@ -6,4 +6,6 @@ export const spriteUsage=[
  {sheet:'68',cell:0,use:'Chapel bone floor'},{sheet:'69',cell:0,use:'Chapel rib wall'},{sheet:'70',cell:9,use:'Chapel ossuary urns'},
  {sheet:'70',cell:3,use:'Ritual altar'},{sheet:'64',cell:5,use:'Ritual lever'},{sheet:'68',cell:4,use:'Pressure plate'},
 ];
-export const coreSheets=['01','02','03','04','05','51','53','81','82','83','84','85','86','87','88','89','95','96','98','99','100'];
+// Keep common exterior transitions and authored masonry/ground loaded during normal play.
+// Biome wildlife and other extended sheets remain on-demand.
+export const coreSheets=['01','02','03','04','05','51','53','81','82','83','84','85','86','87','88','89','93','95','96','98','99','100','101','102'];
