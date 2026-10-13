@@ -5,15 +5,15 @@ import {nearbyNPC} from './quests.js?v=7.5b';
 import {openStory} from './story-ui.js?v=7.0';
 import {storyAction} from './story-dungeon.js?v=7.0';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
-import {Adventure} from './adventure.js?v=7.5b';
+import {Adventure} from './adventure.js?v=7.5c';
 import {reveal,nearbyLandmark} from './overworld.js?v=7.5a';
-import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5b';
+import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5c';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.0';
 import {flipForAim} from './facing.js?v=7.0';
 import {AssetManager} from './assets.js?v=7.5a-floorfix';
 import {classes,art} from './data.js?v=7.5a-floorfix';
 import {TILE,direction} from './world.js?v=7.0';
-import {Combat,weapons,lineClear} from './combat.js?v=7.0';
+import {Combat,weapons,lineClear} from './combat.js?v=7.5c';
 import {Progression,xpNeeded,colors} from './progression.js?v=7.0';
 import {openInventory} from './inventory.js?v=7.0';
 
@@ -35,6 +35,14 @@ async function encounter(){
  if(mode!=='playing'||!adventure)return;const npc=nearbyNPC(adventure);if(npc){if(npc.id==='aldric'&&adventure.quests.heraldDefeated){adventure.quests.finished=true;presentEnding(adventure,$('completeSummary'));setMode('complete');return;}showStory(npc);return;}
  const destination=world.kind==='overworld'?nearbyLandmark(world,player):null;
  if((destination?.id==='chapel'||(destination?.id==='underkeep'&&adventure.quests.ready))&&!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('loading');notifyLoot('Loading dungeon artwork…');await assets.load(()=>{},['64','66','67','68','69','70']);if(!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('playing');notifyLoot('Dungeon artwork missing. Check 64.png and 66–70.png in game/assets, then retry.');return;}setMode('playing');}
+ if(destination?.id==='caravan'&&!world.expedition&&adventure.progression.gold>=(adventure.expeditionTrips?20:40)){
+  const frontierSheets=['06','07','12','16','103','104','105','107','109','111'];
+  if(frontierSheets.some(id=>!assets.atlases.has(id))){
+   setMode('loading');await assets.load(()=>{},frontierSheets);
+   if(frontierSheets.some(id=>!assets.atlases.has(id))){setMode('playing');notifyLoot('Expedition art is unavailable. Verify the biome PNG files in game/assets.');return;}
+   setMode('playing');
+  }
+ }
  const oldWorld=world,message=adventure.interact();world=adventure.world;combat=adventure.combat;
  if(world!==oldWorld){Object.assign(camera,player);keys.clear();attacking=false;aimUntil=0;}
  notifyLoot(message);canvas.focus();
@@ -86,7 +94,15 @@ $('assetsButton').onclick=()=>{
   $('infoBody').innerHTML+='<h3>Verified cell uses (zero-based)</h3><p>'+spriteUsage.map(u=>`${u.sheet}.${u.cell}: ${u.use}`).join('<br>')+'</p>';
   for(const error of assets.errors){const p=document.createElement('p');p.textContent=error;$('infoBody').append(p);}$('info').showModal();
 };
-function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});dodgeRequested=false;if(world.kind==='overworld')reveal(world,player);else if(world.theme){world.explored??=new Set();const tx=Math.floor(player.x/32),ty=Math.floor(player.y/32);for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=tx+dx,y=ty+dy;if(x>=0&&y>=0&&x<world.width&&y<world.height)world.explored.add(y*world.width+x);}const plate=world.objects.find(o=>o.kind==='plate'&&Math.hypot(o.x-player.x,o.y-player.y)<20);if(plate&&!plate.active){plate.active=true;world.ritual.plate=true;notifyLoot('Pressure plate latched. Find the lever next.');}} for(const trap of world.traps)if(trapActive(trap,combat.time)&&Math.hypot(player.x-trap.x,player.y-trap.y)<17)combat.hurt(15,trap);const blend=1-Math.exp(-9*dt);camera.x+=(player.x-camera.x)*blend;camera.y+=(player.y-camera.y)*blend;animation+=dt;
+function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});
+ if(world.expedition){
+  const tx=Math.floor(player.x/TILE),ty=Math.floor(player.y/TILE),terrain=world.terrain[ty*world.width+tx];
+  if(terrain===5||terrain===7)player.slow=Math.max(player.slow||0,.16);
+  if((terrain===6||terrain===7||terrain===8)&&adventure.elapsed-(world.lastHazardAt||0)>1.25){
+   world.lastHazardAt=adventure.elapsed;combat.hurt(terrain===6?14:terrain===7?8:5,{x:player.x-1,y:player.y-1});
+  }
+ }
+ dodgeRequested=false;if(world.kind==='overworld')reveal(world,player);else if(world.theme){world.explored??=new Set();const tx=Math.floor(player.x/32),ty=Math.floor(player.y/32);for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=tx+dx,y=ty+dy;if(x>=0&&y>=0&&x<world.width&&y<world.height)world.explored.add(y*world.width+x);}const plate=world.objects.find(o=>o.kind==='plate'&&Math.hypot(o.x-player.x,o.y-player.y)<20);if(plate&&!plate.active){plate.active=true;world.ritual.plate=true;notifyLoot('Pressure plate latched. Find the lever next.');}} for(const trap of world.traps)if(trapActive(trap,combat.time)&&Math.hypot(player.x-trap.x,player.y-trap.y)<17)combat.hurt(15,trap);const blend=1-Math.exp(-9*dt);camera.x+=(player.x-camera.x)*blend;camera.y+=(player.y-camera.y)*blend;animation+=dt;
  const picked=progression.collect(player,(a,b)=>lineClear(world,a,b));if(picked.length)notifyLoot(`Collected ${picked.map(i=>i.name).join(', ')} · I to equip${progression.points?' · C: improvement available':''}`);
  toastTime-=dt;if(toastTime<=0)$('toast').hidden=true;
  $('healthText').textContent=`${player.hp} / ${progression.stats.hp} HP`;document.querySelector('.health span').style.width=`${player.hp/progression.stats.hp*100}%`;
@@ -95,7 +111,7 @@ function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=poi
  const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.depth?underkeepAction(world,player):world.theme?storyAction(world,player):nearbyInteraction(world,player);
  $('questObjective').textContent=adventure.quests.objective;
  $('debugSpeed').hidden=!debugSpeed.enabled;$('debugSpeed').textContent=`DEV SPEED ${debugSpeed.value}× · F4 off · Shift+F4 change`;
- $('combatStatus').textContent=outdoors?world.expedition?`${landmark?.name||'Expedition frontier'} · Caravan: free return`:`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
+ $('combatStatus').textContent=outdoors?world.expedition?`${landmark?.name||({volcanic:'Volcanic Wastes',jungle:'Deep Jungle',frozen:'Frozen Peaks',coast:'Drowned Coast',outpost:'Expedition Outpost'}[world.biomeAt(Math.floor(player.x/TILE),Math.floor(player.y/TILE))])} · Caravan: free return`:`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
  $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='caravan'?(world.expedition?'Return to Dunbarrow · FREE':`Travel to frontier · ${adventure.expeditionTrips?20:40} gold`):landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:'Open door',key:'Take key',chest:'Open chest',exit:world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
  if(player.hp<=0){$('resultSummary').textContent=`${classes[selected].name} · ${combat.kills} enemies defeated · ${player.xp} XP · ${Math.floor(combat.time)} seconds`;setMode('dead');}
 }
