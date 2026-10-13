@@ -52,7 +52,12 @@ export function updateChunks(w,p){
  const cx=Math.floor(p.x/TILE/CHUNK_SIZE),cy=Math.floor(p.y/TILE/CHUNK_SIZE),wanted=new Set();
  for(let y=Math.max(0,cy-1);y<=Math.min(3,cy+1);y++)for(let x=Math.max(0,cx-1);x<=Math.min(3,cx+1);x++){
   const key=x+','+y;wanted.add(key);if(w.chunks.has(key))continue;
-  const props=[];for(let ty=y*64;ty<(y+1)*64;ty++)for(let tx=x*64;tx<(x+1)*64;tx++)if(w.terrain[ty*256+tx]===0&&w.solid[ty*256+tx])props.push({tx,ty,sheet:'83',cell:w.hash(tx,ty)>.04?9:1,size:48});
+  const props=[];for(let ty=y*64;ty<(y+1)*64;ty++)for(let tx=x*64;tx<(x+1)*64;tx++)if(w.terrain[ty*256+tx]===0&&w.solid[ty*256+tx]){
+   const v=w.hash(tx+73,ty-51);
+   const cell=v<.30?0:v<.47?1:v<.57?2:v<.68?4:v<.79?5:v<.88?8:v<.96?9:10;
+   const size=cell<=2?56:cell<=5?40:38;
+   props.push({tx,ty,sheet:'83',cell,size});
+  }
   props.push(...w.decorations.filter(p=>Math.floor(p.tx/64)===x&&Math.floor(p.ty/64)===y));w.chunks.set(key,{x,y,props});
  }
  for(const key of w.chunks.keys())if(!wanted.has(key))w.chunks.delete(key);
