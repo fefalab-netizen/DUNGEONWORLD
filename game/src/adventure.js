@@ -4,7 +4,7 @@ import {Quests,campNPCs} from './quests.js?v=7.5b';
 import {createOverworld,nearbyLandmark} from './overworld.js?v=7.5d';
 import {createDungeon,interactDungeon} from './dungeon.js?v=7.5e-room-layout';
 import {Combat} from './combat.js?v=7.5d';
-import {Progression} from './progression.js?v=7.0';
+import {Progression} from './progression.js?v=7.5e-lootbalance';
 
 // Region state survives travel: enemies, doors, loot and chests are not regenerated.
 export class Adventure {
@@ -17,7 +17,7 @@ export class Adventure {
   if(this.current)this.current.drops=pr.drops;
   let region=this.regions.get(id);
   if(!region){const combat=new Combat(world,p,pr.stats);combat.randomState=world.numericSeed||1;combat.start();combat.onNotice=this.onNotice;if(world.depth===2)for(const e of combat.enemies)e.faction='underkeep';region={world,combat,drops:[]};this.regions.set(id,region);
-   combat.onDefeat=(enemy)=>{if(!enemy.wildlife)this.totalKills=(this.totalKills||0)+1;if(!enemy.noLoot)pr.drop(enemy,this.totalKills||1);if(enemy.colossal){
+   combat.onDefeat=(enemy)=>{if(!enemy.wildlife)this.totalKills=(this.totalKills||0)+1;if(!enemy.noLoot)pr.drop(enemy);if(enemy.colossal){
     // Expedition bosses are optional; never satisfy story artifact or dungeon boss conditions.
     world.colossiDefeated??=new Set();world.colossiDefeated.add(enemy.species);
     const reward=pr.makeItem('weapon',true);
