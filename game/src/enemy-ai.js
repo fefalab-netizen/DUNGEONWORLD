@@ -25,11 +25,22 @@ export function updateEnemy(c,e,dt,clear){
  if(w.kind==='overworld'&&(d>640||dist(p,w.safeZone)<w.safeZone.radius)){e.state='idle';e.alert=false;return;}
  for(const k of ['cooldown','flash','slow','ward','abilityCooldown'])e[k]=Math.max(0,(e[k]||0)-dt);
  e.pathTimer-=dt;e.tacticalTimer-=dt;
- if(e.tacticalTimer<=0){e.tactics=tactics(e,c.enemies);e.tacticalTimer=.5;}
+ if(e.tacticalTimer<=0){e.tactics=tactics(e,c.enemies);e.tacticalTimer=.45;}
+ // Dungeon fights intensify when enemies are allowed to fight together.
+ // Outdoor creatures retain their original, introductory difficulty.
+ const dangerous=w.kind!=='overworld';
+ e.pressure=Math.max(0,Math.min(1,(e.pressure||0)+(dangerous&&e.alert?dt*.09:-dt*.2)));
+ if(e.boss&&!e.enraged&&e.hp<=e.maxHp*.48){
+  e.enraged=true;e.attackSpeed*=1.2;e.speed*=1.08;
+  e.abilityCooldown=Math.max(e.abilityCooldown,1.5);
+  c.number('ENRAGED',e.x,e.y-70,'#ff9b6e');
+  c.effect('100',14,e.x,e.y-20,58,0,.45);
+  c.onNotice?.(e.name+' is enraged! Watch for faster follow-up attacks.');
+ }
  const visible=clear(w,e,p),notice=e.role==='ambusher'?105:e.detection;
  if(d<notice&&visible)e.alert=true;
  if(!e.alert&&c.noise&&dist(e,c.noise)<210&&c.noise.until>c.time){e.state='investigate';e.investigate={x:c.noise.x,y:c.noise.y};e.timer=3;}
- if(!e.alert&&e.tactics.allies.some(a=>a.alert&&dist(a,e)<140)&&d<340){e.state='alert';e.alert=true;}
+ if(!e.alert&&e.tactics.allies.some(a=>a.alert&&dist(a,e)<(dangerous?200:140))&&d<(dangerous?390:340)){e.state='alert';e.alert=true;}
  if(e.alert&&d>520){e.alert=false;e.state='return';}
  if(!e.alert){
   if(e.state==='investigate'){e.timer-=dt;if(visible&&d<320)e.alert=true;if(e.timer<=0)e.state='return';}
@@ -51,8 +62,12 @@ export function updateEnemy(c,e,dt,clear){
    // Locked direction; collision substeps and the long windup make this avoidable.
    for(let i=0;i<16;i++){move(w,e,Math.cos(e.angle)*6,Math.sin(e.angle)*6);if(dist(e,p)<e.range+8&&clear(w,e,p))c.hurt(e.damage,e);}
   }else if(e.kind==='melee'){const a=Math.atan2(p.y-e.y,p.x-e.x);if(dist(e,p)<e.range+9&&Math.cos(a-e.angle)>.35&&clear(w,e,p))c.hurt(e.damage,e);}
-  else {c.shoot(e,e.angle,e.kind,e.damage,'enemy',e.kind==='arrow'?190:135,false,e.statuses);if(e.tier==='elite')for(const offset of [-.18,.18])c.shoot(e,e.angle+offset,e.kind,e.damage*.7,'enemy',135);}
-  e.state='recover';e.timer=.42;e.cooldown=(e.kind==='melee'?.7:1.4)/e.attackSpeed;return;
+  else {
+   c.shoot(e,e.angle,e.kind,e.damage,'enemy',e.kind==='arrow'?190:135,false,e.statuses);
+   if(e.tier==='elite')for(const offset of [-.18,.18])c.shoot(e,e.angle+offset,e.kind,e.damage*.7,'enemy',135);
+   if(dangerous)e.repositionUntil=c.time+1.25;
+  }
+  e.state='recover';e.timer=.42;e.cooldown=(e.kind==='melee'?.7:1.4)/e.attackSpeed/(1+e.pressure*.18);return;
  }
  if(e.state==='recover'){e.timer-=dt;if(e.timer<=0)e.state='chase';return;}
  if(e.abilityCooldown===0&&visible&&d<280){
@@ -71,7 +86,23 @@ export function updateEnemy(c,e,dt,clear){
   const front=e.tactics.frontline;
   if(front?.hp>0&&d>150){const a=Math.atan2(front.y-p.y,front.x-p.x);target={x:front.x+Math.cos(a)*60,y:front.y+Math.sin(a)*60};if(!canOccupy(w,target.x,target.y,e.radius))target=p;}
   if(d<110){const a=Math.atan2(e.y-p.y,e.x-p.x);const choices=[a,a+1.2,a-1.2].map(v=>({x:e.x+Math.cos(v)*50,y:e.y+Math.sin(v)*50}));target=choices.find(t=>canOccupy(w,t.x,t.y,e.radius)&&clear(w,e,t,e.radius));if(!target){e.tactics.mode='cornered';if(e.cooldown===0)windup(e,p,.55);return;}e.state='retreat';}
-  else if(d<e.range*.85)return;
+  else if(d<e.range*.85&&!(dangerous&&e.repositionUntil>c.time))return;
+  // Ranged units sidestep between volleys instead of becoming static turrets.
+  if(dangerous&&e.repositionUntil>c.time&&d>105&&d<260){
+   const angle=Math.atan2(e.y-p.y,e.x-p.x),side=(e.id%2?1:-1);
+   const flank={x:e.x+Math.cos(angle+side*Math.PI/2)*76,y:e.y+Math.sin(angle+side*Math.PI/2)*76};
+   if(canOccupy(w,flank.x,flank.y,e.radius))target=flank;
+  }
+ }
+ // Second-line melee fighters circle a frontline ally, pressuring dodge decisions.
+ if(dangerous&&e.kind==='melee'&&!e.boss&&d>e.range+22&&d<255){
+  const lead=e.tactics.allies.find(a=>a.kind==='melee'&&dist(a,p)+23<d&&dist(a,p)<115);
+  if(lead){
+   const bearing=Math.atan2(p.y-lead.y,p.x-lead.x),side=e.id%2?1:-1;
+   const flank={x:p.x-Math.cos(bearing)*24+Math.cos(bearing+side*Math.PI/2)*68,
+                y:p.y-Math.sin(bearing)*24+Math.sin(bearing+side*Math.PI/2)*68};
+   if(canOccupy(w,flank.x,flank.y,e.radius)){target=flank;e.state='flank';}
+  }
  }
  if(e.abilities.includes('coward')&&e.hp<e.maxHp*.3&&e.tactics.allies.length){target=e.tactics.allies[0];e.state='retreat';}
  navigate(c,e,target,dt,clear,speed);
@@ -86,7 +117,7 @@ function navigate(c,e,target,dt,clear,factor){
   aim=e.waypoint;if(!aim){e.state='recover';e.timer=.35;return;}
  }
  const a=Math.atan2(aim.y-e.y,aim.x-e.x),x=e.x,y=e.y;e.angle=a;
- const speed=e.speed*(e.slow>0?.5:1)*factor;move(c.world,e,Math.cos(a)*speed*dt,Math.sin(a)*speed*dt);
+ const speed=e.speed*(e.slow>0?.5:1)*factor*(1+(e.pressure||0)*.12);move(c.world,e,Math.cos(a)*speed*dt,Math.sin(a)*speed*dt);
  e.stuck=dist(e,{x,y})<speed*dt*.1?e.stuck+dt:0;
  if(e.stuck>1){e.waypoint=null;e.pathTimer=0;e.state='recover';e.timer=.3;e.stuck=0;}
 }
