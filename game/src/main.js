@@ -1,14 +1,15 @@
 import {underkeepAction,underkeepSheets} from './underkeep.js?v=7.5a-audit';
 import {grandHallAction,updateGrandHall} from './grand-hall.js?v=7.5e-grand-hall';
+import {legendaryAction,legendaryObjective} from './legendary-dungeons.js?v=7.5e-complete';
 import {presentEnding} from './ending.js?v=7.0';
 import {DebugSpeed} from './debug-speed.js?v=7.0';
 import {nearbyNPC} from './quests.js?v=7.5b';
 import {openStory} from './story-ui.js?v=7.0';
 import {storyAction} from './story-dungeon.js?v=7.5e-room-layout';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
-import {Adventure} from './adventure.js?v=7.5e-grand-hall';
-import {reveal,nearbyLandmark} from './overworld.js?v=7.5e-grand-hall';
-import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5e-grand-hall';
+import {Adventure} from './adventure.js?v=7.5e-complete';
+import {reveal,nearbyLandmark} from './overworld.js?v=7.5e-complete';
+import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5e-complete';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.5e-room-layout';
 import {flipForAim} from './facing.js?v=7.0';
 import {AssetManager} from './assets.js?v=7.5a-floorfix';
@@ -110,11 +111,11 @@ function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=poi
  $('healthText').textContent=`${player.hp} / ${progression.stats.hp} HP`;document.querySelector('.health span').style.width=`${player.hp/progression.stats.hp*100}%`;
  $('xpText').textContent=`LEVEL ${progression.level} · ${progression.xp} / ${xpNeeded(progression.level)} XP`;$('xpFill').style.width=`${progression.xp/xpNeeded(progression.level)*100}%`;
  $('supplies').textContent=`Gold ${progression.gold} · Potions ${progression.potions} · 1 to heal${progression.points?' · C: '+progression.points+' improvement(s)':''}`;
- const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.depth?underkeepAction(world,player):world.layout==='grandHall'?grandHallAction(world,player):world.theme?storyAction(world,player):nearbyInteraction(world,player);
- $('questObjective').textContent=world.layout==='grandHall'?(world.hall.phase==='cleared'?'Grand Hall cleared · Exit or challenge the Hallbreaker':'Grand Hall · '+(world.hall.phase==='waiting'?'Reach the Great Hall through two chambers':`Survive wave ${Math.min(3,world.hall.wave+Number(world.hall.phase==='intermission'))} / 3`)):adventure.quests.objective;
+ const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.depth?underkeepAction(world,player):world.layout==='grandHall'?grandHallAction(world,player):['labyrinth','threeWings'].includes(world.layout)?legendaryAction(world,player):world.theme?storyAction(world,player):nearbyInteraction(world,player);
+ $('questObjective').textContent=['labyrinth','threeWings'].includes(world.layout)?legendaryObjective(world,combat):world.layout==='grandHall'?(world.hall.phase==='cleared'?'Grand Hall cleared · Exit or challenge the Hallbreaker':'Grand Hall · '+(world.hall.phase==='waiting'?'Reach the Great Hall through two chambers':`Survive wave ${Math.min(3,world.hall.wave+Number(world.hall.phase==='intermission'))} / 3`)):adventure.quests.objective;
  $('debugSpeed').hidden=!debugSpeed.enabled;$('debugSpeed').textContent=`DEV SPEED ${debugSpeed.value}× · F4 off · Shift+F4 change`;
- $('combatStatus').textContent=world.layout==='grandHall'?`Grand Hall · ${world.hall.phase==='cleared'?'Exit unlocked · Optional boss to the east':world.hall.phase==='waiting'?'Approach chambers · Great Hall ahead':`Wave ${world.hall.wave} / 3 · ${combat.enemies.filter(e=>e.hp>0&&e.grandHallWave).length} challengers remaining`}`:outdoors?world.expedition?`${landmark?.name||({volcanic:'Volcanic Wastes',jungle:'Deep Jungle',frozen:'Frozen Peaks',coast:'Drowned Coast',outpost:'Expedition Outpost'}[world.biomeAt(Math.floor(player.x/TILE),Math.floor(player.y/TILE))])} · Caravan: free return`:`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
- $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='grandhall'?'Enter the Grand Hall':landmark?.id==='caravan'?(world.expedition?'Return to Dunbarrow · FREE':`Travel to frontier · ${adventure.expeditionTrips?20:40} gold`):landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:world.layout==='grandHall'?'Open optional boss arena':'Open door',key:'Take key',chest:'Open chest',exit:world.layout==='grandHall'?'Leave Grand Hall':world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:world.layout==='grandHall'?'Return to expedition':world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
+ $('combatStatus').textContent=['labyrinth','threeWings'].includes(world.layout)?`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.hasKey?'Exit accessible':'Objectives remaining'}`:world.layout==='grandHall'?`Grand Hall · ${world.hall.phase==='cleared'?'Exit unlocked · Optional boss to the east':world.hall.phase==='waiting'?'Approach chambers · Great Hall ahead':`Wave ${world.hall.wave} / 3 · ${combat.enemies.filter(e=>e.hp>0&&e.grandHallWave).length} challengers remaining`}`:outdoors?world.expedition?`${landmark?.name||({volcanic:'Volcanic Wastes',jungle:'Deep Jungle',frozen:'Frozen Peaks',coast:'Drowned Coast',outpost:'Expedition Outpost'}[world.biomeAt(Math.floor(player.x/TILE),Math.floor(player.y/TILE))])} · Caravan: free return`:`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
+ $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='labyrinth'?'Enter the Labyrinth':landmark?.id==='threeWings'?'Enter the Three Wings':landmark?.id==='grandhall'?'Enter the Grand Hall':landmark?.id==='caravan'?(world.expedition?'Return to Dunbarrow · FREE':`Travel to frontier · ${adventure.expeditionTrips?20:40} gold`):landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:world.layout==='grandHall'?'Open optional boss arena':'Open door',key:world.layout==='labyrinth'?'Take Wayfinder Sigil':'Take key',wingSeal:'Claim wing seal',chest:'Open chest',exit:['labyrinth','threeWings'].includes(world.layout)?'Complete legendary dungeon':world.layout==='grandHall'?'Leave Grand Hall':world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:['labyrinth','threeWings'].includes(world.layout)?'Return to expedition':world.layout==='grandHall'?'Return to expedition':world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
  if(player.hp<=0){$('resultSummary').textContent=`${classes[selected].name} · ${combat.kills} enemies defeated · ${player.xp} XP · ${Math.floor(combat.time)} seconds`;setMode('dead');}
 }
 function render(){
@@ -175,13 +176,25 @@ function render(){
   }
   for(const p of world.props)sprites.push({depth:(p.y+1)*TILE,draw:()=>assets.draw(g,p.sheet||art.props,p.cell,p.x*TILE+ox,p.y*TILE+oy-6,32,38)});
   for(const trap of world.traps){const active=trapActive(trap,combat.time),warning=(combat.time+trap.phase)%3>1.3;g.fillStyle=active?'#df714477':warning?(Math.sin(combat.time*20)>0?'#ffd45899':'#ffd45833'):'#c9a45822';g.fillRect(trap.x+ox-15,trap.y+oy-15,30,30);assets.draw(g,'95',active?7:6,trap.x+ox-14,trap.y+oy-12,28,24);}
-  if(!outdoors)for(const [p,color,label,cell] of [[world.spawn,'#80dcdb',world.depth?'ASCEND':'ENTRANCE',9],[world.exit,(world.layout==='grandHall'?world.hall.phase==='cleared':world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee',world.depth?(world.depth===3?'WAY HOME':'DESCEND'):'EXIT',10]]){
+  if(!outdoors)for(const [p,color,label,cell] of [[world.spawn,'#80dcdb',world.depth?'ASCEND':'ENTRANCE',9],[world.exit,(world.layout==='grandHall'?world.hall.phase==='cleared':['labyrinth','threeWings'].includes(world.layout)?world.hasKey:world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee',world.depth?(world.depth===3?'WAY HOME':'DESCEND'):'EXIT',10]]){
    assets.draw(g,'102',cell,p.x+ox-16,p.y+oy-20,32,32);
    g.fillStyle=color;g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);
   }
   for(const d of world.doors)if(!d.open)sprites.push({depth:(d.y+1)*TILE,draw:()=>assets.draw(g,d.lock==='treasure'?'04':'102',d.lock==='treasure'?10:3,d.x*TILE+ox,d.y*TILE+oy-12,32,44)});
   for(const c of world.chests)sprites.push({depth:c.y+8,draw:()=>assets.draw(g,'03',c.open?5:4,c.x+ox-15,c.y+oy-22,30,30)});
   if(!outdoors&&!world.key.taken)sprites.push({depth:world.key.y,draw:()=>assets.draw(g,'98',4,world.key.x+ox-10,world.key.y+oy-16,20,24)});
+  if(world.layout==='threeWings')for(const seal of world.legendary.wings){
+   sprites.push({depth:seal.y+4,draw:()=>{
+    const x=seal.x+ox,y=seal.y+oy,glow=['#91caf2','#e6bd79','#bf9de9'][seal.cell];
+    if(!seal.claimed){
+     const halo=g.createRadialGradient(x,y,2,x,y,25);
+     halo.addColorStop(0,glow+'aa');halo.addColorStop(1,glow+'00');
+     g.fillStyle=halo;g.fillRect(x-25,y-25,50,50);
+     assets.draw(g,'98',seal.cell,x-13,y-20,26,29);
+     g.font='8px monospace';g.fillStyle='#f0e5c7';g.textAlign='center';g.fillText('SEAL',x,y+19);g.textAlign='start';
+    }else{g.fillStyle='#90c8a4';g.font='8px monospace';g.fillText('CLEARED',x-19,y+10);}
+   }});
+  }
   if(outdoors&&!world.expedition&&adventure)for(const n of adventure.npcs)sprites.push({depth:n.y+8,draw:()=>{assets.draw(g,n.sheet,n.frame+Math.floor(animation/.42)%2,n.x+ox-20,n.y+oy-34,40,42);g.fillStyle='#f4d992';g.font='8px monospace';g.fillText(n.name,n.x+ox-28,n.y+oy-43);}});
   for(const o of world.objects||[]){if(o.kind==='plate')assets.draw(g,'95',o.active?3:2,o.x+ox-15,o.y+oy-10,30,22);else if(o.kind==='lever')assets.draw(g,'95',o.active?1:0,o.x+ox-16,o.y+oy-28,32,36);else assets.draw(g,o.kind==='supply'?'03':'90',o.kind==='supply'?2:0,o.x+ox-12,o.y+oy-20,24,28);g.fillStyle=o.active?'#8fdfb1':'#e3ce9b';g.font='7px monospace';g.fillText(o.kind.toUpperCase(),o.x+ox-18,o.y+oy+18);}
   if(world.theme==='chapel'&&!world.key.taken)assets.draw(g,'90',0,world.key.x+ox-22,world.key.y+oy-40,44,50);
