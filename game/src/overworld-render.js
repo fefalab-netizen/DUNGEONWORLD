@@ -24,7 +24,8 @@ export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
    if(biome==='volcanic'){sheet='103';cell=road?3:h<.38?0:h<.62?2:h<.83?4:h<.95?6:7;}
    else if(biome==='jungle'){sheet='105';cell=road?4:h<.46?0:h<.70?1:h<.84?2:h<.95?13:3;}
    else if(biome==='frozen'){sheet='107';cell=road?7:h<.48?0:h<.72?1:h<.88?2:h<.95?13:3;}
-   else if(biome==='coast'){sheet='109';cell=road?1:h<.44?0:h<.68?1:h<.85?15:h<.96?12:13;}
+   // Keep beaches predominantly sandy. Rare wet sand and pebble patches add subtle variation.
+    else if(biome==='coast'){sheet='109';cell=road?1:h<.95?0:h<.99?1:15;}
    else {sheet='81';cell=road?4:h<.6?0:1;}
   }else if(t===1){sheet='81';cell=h<.94?4:5;}
   else {
