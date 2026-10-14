@@ -48,6 +48,8 @@ export function createGrandHall(seed,level=1){
   spawn:center(rooms[0]),exit:{x:(hall.cx+1.5)*TILE,y:(hall.y+5.5)*TILE},
   key:{...center(rooms[0]),taken:true},objects:[],chests:[],ritual:{plate:false,lever:false},
   completed:false,bossDefeated:false,hasKey:false,
+  // Colossal AI expects a safe-zone descriptor; the dungeon intentionally has none.
+  safeZone:{x:-100000,y:-100000,radius:0},
   requiredSheets:['91'],
   hall:{roomId:3,bossRoomId:4,phase:'waiting',wave:0,delay:0,level,bossStarted:false,bossDefeated:false}
  };
