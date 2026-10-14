@@ -1,12 +1,13 @@
 import {underkeepAction,underkeepSheets} from './underkeep.js?v=7.5a-audit';
+import {grandHallAction,updateGrandHall} from './grand-hall.js?v=7.5e-grand-hall';
 import {presentEnding} from './ending.js?v=7.0';
 import {DebugSpeed} from './debug-speed.js?v=7.0';
 import {nearbyNPC} from './quests.js?v=7.5b';
 import {openStory} from './story-ui.js?v=7.0';
 import {storyAction} from './story-dungeon.js?v=7.5e-room-layout';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
-import {Adventure} from './adventure.js?v=7.5e-room-layout';
-import {reveal,nearbyLandmark} from './overworld.js?v=7.5d';
+import {Adventure} from './adventure.js?v=7.5e-grand-hall';
+import {reveal,nearbyLandmark} from './overworld.js?v=7.5e-grand-hall';
 import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5e-beach-sand';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.5e-room-layout';
 import {flipForAim} from './facing.js?v=7.0';
@@ -103,16 +104,17 @@ function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=poi
   }
  }
  dodgeRequested=false;if(world.kind==='overworld')reveal(world,player);else if(world.theme){world.explored??=new Set();const tx=Math.floor(player.x/32),ty=Math.floor(player.y/32);for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=tx+dx,y=ty+dy;if(x>=0&&y>=0&&x<world.width&&y<world.height)world.explored.add(y*world.width+x);}const plate=world.objects.find(o=>o.kind==='plate'&&Math.hypot(o.x-player.x,o.y-player.y)<20);if(plate&&!plate.active){plate.active=true;world.ritual.plate=true;notifyLoot('Pressure plate latched. Find the lever next.');}} for(const trap of world.traps)if(trapActive(trap,combat.time)&&Math.hypot(player.x-trap.x,player.y-trap.y)<17)combat.hurt(15,trap);const blend=1-Math.exp(-9*dt);camera.x+=(player.x-camera.x)*blend;camera.y+=(player.y-camera.y)*blend;animation+=dt;
- const picked=progression.collect(player,(a,b)=>lineClear(world,a,b));if(picked.length)notifyLoot(`Collected ${picked.map(i=>i.name).join(', ')} · I to equip${progression.points?' · C: improvement available':''}`);
+ if(world.layout==='grandHall')updateGrandHall(world,combat,player,dt,progression,notifyLoot);
+  const picked=progression.collect(player,(a,b)=>lineClear(world,a,b));if(picked.length)notifyLoot(`Collected ${picked.map(i=>i.name).join(', ')} · I to equip${progression.points?' · C: improvement available':''}`);
  toastTime-=dt;if(toastTime<=0)$('toast').hidden=true;
  $('healthText').textContent=`${player.hp} / ${progression.stats.hp} HP`;document.querySelector('.health span').style.width=`${player.hp/progression.stats.hp*100}%`;
  $('xpText').textContent=`LEVEL ${progression.level} · ${progression.xp} / ${xpNeeded(progression.level)} XP`;$('xpFill').style.width=`${progression.xp/xpNeeded(progression.level)*100}%`;
  $('supplies').textContent=`Gold ${progression.gold} · Potions ${progression.potions} · 1 to heal${progression.points?' · C: '+progression.points+' improvement(s)':''}`;
- const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.depth?underkeepAction(world,player):world.theme?storyAction(world,player):nearbyInteraction(world,player);
- $('questObjective').textContent=adventure.quests.objective;
+ const outdoors=world.kind==='overworld',landmark=outdoors?nearbyLandmark(world,player):null,npc=nearbyNPC(adventure),action=npc?{kind:'npc'}:outdoors?(landmark?{kind:'landmark'}:null):world.depth?underkeepAction(world,player):world.layout==='grandHall'?grandHallAction(world,player):world.theme?storyAction(world,player):nearbyInteraction(world,player);
+ $('questObjective').textContent=world.layout==='grandHall'?(world.hall.phase==='cleared'?'Grand Hall cleared · Exit or challenge the Hallbreaker':'Grand Hall · '+(world.hall.phase==='waiting'?'Reach the Great Hall through two chambers':`Survive wave ${Math.min(3,world.hall.wave+Number(world.hall.phase==='intermission'))} / 3`)):adventure.quests.objective;
  $('debugSpeed').hidden=!debugSpeed.enabled;$('debugSpeed').textContent=`DEV SPEED ${debugSpeed.value}× · F4 off · Shift+F4 change`;
- $('combatStatus').textContent=outdoors?world.expedition?`${landmark?.name||({volcanic:'Volcanic Wastes',jungle:'Deep Jungle',frozen:'Frozen Peaks',coast:'Drowned Coast',outpost:'Expedition Outpost'}[world.biomeAt(Math.floor(player.x/TILE),Math.floor(player.y/TILE))])} · Caravan: free return`:`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
- $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='caravan'?(world.expedition?'Return to Dunbarrow · FREE':`Travel to frontier · ${adventure.expeditionTrips?20:40} gold`):landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:'Open door',key:'Take key',chest:'Open chest',exit:world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
+ $('combatStatus').textContent=world.layout==='grandHall'?`Grand Hall · ${world.hall.phase==='cleared'?'Exit unlocked · Optional boss to the east':world.hall.phase==='waiting'?'Approach chambers · Great Hall ahead':`Wave ${world.hall.wave} / 3 · ${combat.enemies.filter(e=>e.hp>0&&e.grandHallWave).length} challengers remaining`}`:outdoors?world.expedition?`${landmark?.name||({volcanic:'Volcanic Wastes',jungle:'Deep Jungle',frozen:'Frozen Peaks',coast:'Drowned Coast',outpost:'Expedition Outpost'}[world.biomeAt(Math.floor(player.x/TILE),Math.floor(player.y/TILE))])} · Caravan: free return`:`${landmark?.name||'Dunbarrow wilderness'} · West: Cellar / East: Chapel`:`${world.name} · ${combat.enemies.filter(e=>e.hp>0).length} enemies · ${world.depth===3?(world.bossDefeated?'Heart recovered':'Seek the Herald'):'Gate: '+(world.hasKey?'unlocked':'sealed')}`;
+ $('encounter').hidden=false;$('encounter').disabled=!action;$('encounter').textContent=action?({npc:'Talk to '+npc?.name,altar:'Awaken altar',plate:'Press plate',lever:'Raise lever',supply:'Search supplies',lore:'Read inscription',break:'Break barricade','locked door':'Unlock treasury',landmark:landmark?.id==='grandhall'?'Enter the Grand Hall':landmark?.id==='caravan'?(world.expedition?'Return to Dunbarrow · FREE':`Travel to frontier · ${adventure.expeditionTrips?20:40} gold`):landmark?.id==='camp'?'Rest at camp':landmark?.id==='raider'||landmark?.id==='chapel'||landmark?.id==='underkeep'?'Enter dungeon':'Read sign',door:world.layout==='grandHall'?'Open optional boss arena':'Open door',key:'Take key',chest:'Open chest',exit:world.layout==='grandHall'?'Leave Grand Hall':world.depth?(world.depth===3?'Return to camp':'Descend to floor '+(world.depth+1)):'Use exit',entrance:world.layout==='grandHall'?'Return to expedition':world.depth?(world.depth===1?'Return outdoors':'Ascend to floor '+(world.depth-1)):'Return outdoors'}[action.kind]+' · E'):'Explore · E to interact';
  if(player.hp<=0){$('resultSummary').textContent=`${classes[selected].name} · ${combat.kills} enemies defeated · ${player.xp} XP · ${Math.floor(combat.time)} seconds`;setMode('dead');}
 }
 function render(){
@@ -173,7 +175,7 @@ function render(){
   }
   for(const p of world.props)sprites.push({depth:(p.y+1)*TILE,draw:()=>assets.draw(g,p.sheet||art.props,p.cell,p.x*TILE+ox,p.y*TILE+oy-6,32,38)});
   for(const trap of world.traps){const active=trapActive(trap,combat.time),warning=(combat.time+trap.phase)%3>1.3;g.fillStyle=active?'#df714477':warning?(Math.sin(combat.time*20)>0?'#ffd45899':'#ffd45833'):'#c9a45822';g.fillRect(trap.x+ox-15,trap.y+oy-15,30,30);assets.draw(g,'95',active?7:6,trap.x+ox-14,trap.y+oy-12,28,24);}
-  if(!outdoors)for(const [p,color,label,cell] of [[world.spawn,'#80dcdb',world.depth?'ASCEND':'ENTRANCE',9],[world.exit,(world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee',world.depth?(world.depth===3?'WAY HOME':'DESCEND'):'EXIT',10]]){
+  if(!outdoors)for(const [p,color,label,cell] of [[world.spawn,'#80dcdb',world.depth?'ASCEND':'ENTRANCE',9],[world.exit,(world.layout==='grandHall'?world.hall.phase==='cleared':world.theme?world.bossDefeated:world.hasKey&&combat.finished)?'#9cf4b1':'#c799ee',world.depth?(world.depth===3?'WAY HOME':'DESCEND'):'EXIT',10]]){
    assets.draw(g,'102',cell,p.x+ox-16,p.y+oy-20,32,32);
    g.fillStyle=color;g.font='7px monospace';g.fillText(label,p.x+ox-16,p.y+oy+23);
   }
