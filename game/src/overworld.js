@@ -54,6 +54,22 @@ export function createOverworld(seed='Dunbarrow',expedition=false){
    const tx=hall.tx+dx,ty=hall.ty+dy,i=ty*width+tx;
    terrain[i]=1;solid[i]=false;
   }
+  // Two more independent legendary entrances, connected to the safe outpost.
+  for(const [id,name,dx,dy] of [
+   ['labyrinth','The Whispering Labyrinth',-11,-7],
+   ['threeWings','The Three Wings',12,-8]
+  ]){
+   const l={id,name,tx:camp.tx+dx,ty:camp.ty+dy};
+   l.x=(l.tx+.5)*TILE;l.y=(l.ty+.5)*TILE;landmarks.push(l);
+   for(let y=l.ty-3;y<=l.ty+3;y++)for(let x=l.tx-3;x<=l.tx+3;x++){
+    const i=y*width+x;terrain[i]=1;solid[i]=false;
+   }
+   // Visible, traversable approach. Only the expedition outpost changes.
+   for(let x=Math.min(camp.tx,l.tx);x<=Math.max(camp.tx,l.tx);x++)
+    for(let k=-1;k<=1;k++){const i=(camp.ty+k)*width+x;terrain[i]=1;solid[i]=false;}
+   for(let y=Math.min(camp.ty,l.ty);y<=Math.max(camp.ty,l.ty);y++)
+    for(let k=-1;k<=1;k++){const i=y*width+l.tx+k;terrain[i]=1;solid[i]=false;}
+  }
  }
  // Keep the caravan clear of trees, rocks, and decorative camp buildings.
  // Preserve every pre-carved route. Natural hazards never create artificial biome gates.
