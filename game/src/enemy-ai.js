@@ -22,14 +22,15 @@ export function updateEnemy(c,e,dt,clear){
  if(e.colossal){updateColossal(c,e,dt,clear);return;}
  if(e.finalBoss){updateHerald(c,e,dt,clear);return;}
  const p=c.player,w=c.world,d=dist(e,p);
- if(w.kind==='overworld'&&(d>640||dist(p,w.safeZone)<w.safeZone.radius)){e.state='idle';e.alert=false;return;}
+ if(w.kind==='overworld'&&(d>690||dist(p,w.safeZone)<w.safeZone.radius)){e.state='idle';e.alert=false;return;}
  for(const k of ['cooldown','flash','slow','ward','abilityCooldown'])e[k]=Math.max(0,(e[k]||0)-dt);
  e.pathTimer-=dt;e.tacticalTimer-=dt;
  if(e.tacticalTimer<=0){e.tactics=tactics(e,c.enemies);e.tacticalTimer=.45;}
  // Dungeon fights intensify when enemies are allowed to fight together.
  // Outdoor creatures retain their original, introductory difficulty.
- const dangerous=w.kind!=='overworld';
- e.pressure=Math.max(0,Math.min(1,(e.pressure||0)+(dangerous&&e.alert?dt*.09:-dt*.2)));
+ // Outdoor packs coordinate too. Safe-zone immunity and roaming animals stay unchanged.
+ const dangerous=w.kind!=='overworld',coordinated=dangerous||d<460;
+ e.pressure=Math.max(0,Math.min(1,(e.pressure||0)+(coordinated&&e.alert?dt*(dangerous?.09:.07):-dt*.2)));
  if(e.boss&&!e.enraged&&e.hp<=e.maxHp*.48){
   e.enraged=true;e.attackSpeed*=1.2;e.speed*=1.08;
   e.abilityCooldown=Math.max(e.abilityCooldown,1.5);
@@ -37,18 +38,18 @@ export function updateEnemy(c,e,dt,clear){
   c.effect('100',14,e.x,e.y-20,58,0,.45);
   c.onNotice?.(e.name+' is enraged! Watch for faster follow-up attacks.');
  }
- const visible=clear(w,e,p),notice=e.role==='ambusher'?105:e.detection;
+ const visible=clear(w,e,p),notice=e.role==='ambusher'?175:e.detection;
  if(d<notice&&visible)e.alert=true;
- if(!e.alert&&c.noise&&dist(e,c.noise)<210&&c.noise.until>c.time){e.state='investigate';e.investigate={x:c.noise.x,y:c.noise.y};e.timer=3;}
- if(!e.alert&&e.tactics.allies.some(a=>a.alert&&dist(a,e)<(dangerous?200:140))&&d<(dangerous?390:340)){e.state='alert';e.alert=true;}
- if(e.alert&&d>520){e.alert=false;e.state='return';}
+ if(!e.alert&&c.noise&&dist(e,c.noise)<260&&c.noise.until>c.time){e.state='investigate';e.investigate={x:c.noise.x,y:c.noise.y};e.timer=3;}
+ if(!e.alert&&e.tactics.allies.some(a=>a.alert&&dist(a,e)<(coordinated?220:140))&&d<(coordinated?440:340)){e.state='alert';e.alert=true;}
+ if(e.alert&&d>(dangerous?570:610)){e.alert=false;e.state='return';}
  if(!e.alert){
   if(e.state==='investigate'){e.timer-=dt;if(visible&&d<320)e.alert=true;if(e.timer<=0)e.state='return';}
-  else if(dist(e,e.post)>50)e.state='return';
+  else if(dist(e,e.post)>90)e.state='return';
   else if(e.role==='ambusher'){e.state='idle';return;}
   else e.state='patrol';
-  const target=e.state==='investigate'?e.investigate:e.state==='return'?e.post:{x:e.post.x+Math.sin(c.time*.4+e.id)*28,y:e.post.y};
-  navigate(c,e,target,dt,clear,.45);return;
+  const target=e.state==='investigate'?e.investigate:e.state==='return'?e.post:{x:e.post.x+Math.sin(c.time*.37+e.id)*62,y:e.post.y};
+  navigate(c,e,target,dt,clear,.68);return;
  }
  if(e.state==='attack'){
   e.timer-=dt;if(e.timer>0)return;
@@ -65,9 +66,9 @@ export function updateEnemy(c,e,dt,clear){
   else {
    c.shoot(e,e.angle,e.kind,e.damage,'enemy',e.kind==='arrow'?190:135,false,e.statuses);
    if(e.tier==='elite')for(const offset of [-.18,.18])c.shoot(e,e.angle+offset,e.kind,e.damage*.7,'enemy',135);
-   if(dangerous)e.repositionUntil=c.time+1.25;
+   if(coordinated)e.repositionUntil=c.time+1.65;
   }
-  e.state='recover';e.timer=.42;e.cooldown=(e.kind==='melee'?.7:1.4)/e.attackSpeed/(1+e.pressure*.18);return;
+  e.state='recover';e.timer=e.boss?.35:.29;e.cooldown=(e.kind==='melee'?.65:1.16)/e.attackSpeed/(1+e.pressure*.2);return;
  }
  if(e.state==='recover'){e.timer-=dt;if(e.timer<=0)e.state='chase';return;}
  if(e.abilityCooldown===0&&visible&&d<280){
@@ -78,24 +79,24 @@ export function updateEnemy(c,e,dt,clear){
   if(e.abilities.includes('summon'))action=e.attackCount%2?'summon':'rune';
   if(action==='rune'&&!e.abilities.includes('rune'))action='summon';
   if(e.abilities.includes('lunge')&&d>60&&d<190)action='lunge';
-  if(action){e.action=action;e.target=target;e.abilityCooldown=e.tier==='elite'?4:6;e.attackCount=(e.attackCount||0)+1;e.mark=action==='rune'?{x:p.x,y:p.y,radius:46}:null;windup(e,p,action==='rune'?1.25:1);return;}
+  if(action){e.action=action;e.target=target;e.abilityCooldown=e.tier==='elite'?3.6:5.2;e.attackCount=(e.attackCount||0)+1;e.mark=action==='rune'?{x:p.x,y:p.y,radius:46}:null;windup(e,p,action==='rune'?1.25:.85);return;}
  }
- if(d<e.range&&visible&&e.cooldown===0){windup(e,p,e.kind==='melee'?.48:.7);return;}
+ if(d<e.range&&visible&&e.cooldown===0){windup(e,p,e.kind==='melee'?.4:.56);return;}
  let target=p,speed=1;e.state='chase';
  if(e.kind!=='melee'&&visible){
   const front=e.tactics.frontline;
   if(front?.hp>0&&d>150){const a=Math.atan2(front.y-p.y,front.x-p.x);target={x:front.x+Math.cos(a)*60,y:front.y+Math.sin(a)*60};if(!canOccupy(w,target.x,target.y,e.radius))target=p;}
   if(d<110){const a=Math.atan2(e.y-p.y,e.x-p.x);const choices=[a,a+1.2,a-1.2].map(v=>({x:e.x+Math.cos(v)*50,y:e.y+Math.sin(v)*50}));target=choices.find(t=>canOccupy(w,t.x,t.y,e.radius)&&clear(w,e,t,e.radius));if(!target){e.tactics.mode='cornered';if(e.cooldown===0)windup(e,p,.55);return;}e.state='retreat';}
-  else if(d<e.range*.85&&!(dangerous&&e.repositionUntil>c.time))return;
+  else if(d<e.range*.85&&!(coordinated&&e.repositionUntil>c.time))return;
   // Ranged units sidestep between volleys instead of becoming static turrets.
-  if(dangerous&&e.repositionUntil>c.time&&d>105&&d<260){
+  if(coordinated&&e.repositionUntil>c.time&&d>105&&d<285){
    const angle=Math.atan2(e.y-p.y,e.x-p.x),side=(e.id%2?1:-1);
    const flank={x:e.x+Math.cos(angle+side*Math.PI/2)*76,y:e.y+Math.sin(angle+side*Math.PI/2)*76};
    if(canOccupy(w,flank.x,flank.y,e.radius))target=flank;
   }
  }
  // Second-line melee fighters circle a frontline ally, pressuring dodge decisions.
- if(dangerous&&e.kind==='melee'&&!e.boss&&d>e.range+22&&d<255){
+ if(coordinated&&e.kind==='melee'&&!e.boss&&d>e.range+22&&d<280){
   const lead=e.tactics.allies.find(a=>a.kind==='melee'&&dist(a,p)+23<d&&dist(a,p)<115);
   if(lead){
    const bearing=Math.atan2(p.y-lead.y,p.x-lead.x),side=e.id%2?1:-1;
