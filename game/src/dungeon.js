@@ -13,7 +13,10 @@ export function createDungeon(seed='Dunbarrow'){
  }
  const extras=[];for(let a=0;a<9;a++)for(const b of [a%3<2?a+1:-1,a<6?a+3:-1])if(b>=0&&!edges.some(e=>e.includes(a)&&e.includes(b)))extras.push([a,b]);
  edges.push(extras[pick(extras.length)]);
- const rooms=Array.from({length:9},(_,id)=>{const w=8+pick(4),h=8+pick(4),x=3+(id%3)*18+pick(3),y=3+Math.floor(id/3)*18+pick(3);return {id,x,y,w,h,cx:x+Math.floor(w/2),cy:y+Math.floor(h/2)};});
+ // Every run contains all six visual room families; the middle rooms are shuffled by seed.
+ const roomStyles=['storage','collapsed','crypt','ritual','standard','standard','storage'];
+ for(let i=roomStyles.length-1;i>0;i--){const j=pick(i+1);[roomStyles[i],roomStyles[j]]=[roomStyles[j],roomStyles[i]];}
+ const rooms=Array.from({length:9},(_,id)=>{const w=8+pick(4),h=8+pick(4),x=3+(id%3)*18+pick(3),y=3+Math.floor(id/3)*18+pick(3);return {id,x,y,w,h,cx:x+Math.floor(w/2),cy:y+Math.floor(h/2),floorType:id===0?'standard':id===8?'boss':roomStyles[id-1]};});
  const solid=Array(width*height).fill(true),floor=(x,y)=>solid[y*width+x]=false;
  for(const r of rooms)for(let y=r.y;y<r.y+r.h;y++)for(let x=r.x;x<r.x+r.w;x++)floor(x,y);
  const doors=[];
