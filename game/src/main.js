@@ -36,7 +36,7 @@ function showStory(npc=null){if(!adventure)return;setMode('story');openStory(adv
 async function encounter(){
  if(mode!=='playing'||!adventure)return;const npc=nearbyNPC(adventure);if(npc){if(npc.id==='aldric'&&adventure.quests.heraldDefeated){adventure.quests.finished=true;presentEnding(adventure,$('completeSummary'));setMode('complete');return;}showStory(npc);return;}
  const destination=world.kind==='overworld'?nearbyLandmark(world,player):null;
- if((destination?.id==='chapel'||(destination?.id==='underkeep'&&adventure.quests.ready))&&!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('loading');notifyLoot('Loading dungeon artwork…');await assets.load(()=>{},['64','66','67','68','69','70']);if(!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('playing');notifyLoot('Dungeon artwork missing. Check 64.png and 66–70.png in game/assets, then retry.');return;}setMode('playing');}
+ if((destination?.id==='chapel'||destination?.id==='threeWings'||(destination?.id==='underkeep'&&adventure.quests.ready))&&!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('loading');notifyLoot('Loading dungeon artwork…');await assets.load(()=>{},['64','66','67','68','69','70']);if(!['64','66','67','68','69','70'].every(id=>assets.atlases.has(id))){setMode('playing');notifyLoot('Dungeon artwork missing. Check 64.png and 66–70.png in game/assets, then retry.');return;}setMode('playing');}
  if(destination?.id==='caravan'&&!world.expedition&&adventure.progression.gold>=(adventure.expeditionTrips?20:40)){
   const frontierSheets=['06','07','12','16','91','103','104','105','106','107','108','109','110','111'];
   if(frontierSheets.some(id=>!assets.atlases.has(id))){
