@@ -8,7 +8,7 @@ import {openStory} from './story-ui.js?v=7.0';
 import {storyAction} from './story-dungeon.js?v=7.5f-danger';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
 import {Adventure} from './adventure.js?v=8';
-import {captureAdventure,restoreAdventure,validateSave,saveToBrowser,readBrowserSave,latestBrowserSave,deleteBrowserSaves} from './save-state.js?v=8';
+import {captureAdventure,restoreAdventure,validateSave,saveToBrowser,readBrowserSave,latestBrowserSave,deleteBrowserSaves,SAVE_SLOTS,cleanSaveName,listNamedSlots,readNamedSlot,saveNamedSlot,renameNamedSlot,deleteNamedSlot} from './save-state.js?v=8';
 import {reveal,nearbyLandmark} from './overworld.js?v=7.5f-wilderness';
 import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5f-wilderness';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.5e-room-layout';
@@ -26,7 +26,7 @@ let world=createDungeon('Dunbarrow'),aimUntil=0,mapVisible=true;
 let selected=0,mode='selection',debug=false,animation=0,last=0,accumulator=0,fps=60;
 const player={...world.spawn,radius:8,flip:false};
 let combat=new Combat(world,player,classes[0]),attacking=false,dodgeRequested=false;
-let progression=new Progression(classes[0],player),toastTime=0,adventure=null,lastAutoSave=0;
+let progression=new Progression(classes[0],player),toastTime=0,adventure=null,lastAutoSave=0,activeSaveSlot=null;
 function notifyLoot(message){$('toast').textContent=message;$('toast').hidden=false;toastTime=3.5;}
 function showGear(character=false){if(!['playing','paused'].includes(mode))return;setMode('inventory');try{openInventory(progression,assets,character);}catch(error){setMode('paused');reportError(error);}}
 function drinkPotion(){if(!['playing','paused'].includes(mode))return;if(progression.usePotion()){notifyLoot('Healed to '+player.hp+' / '+progression.stats.hp+' HP');}else notifyLoot(progression.potions?'Health is already full.':'No potions remaining.');syncVitals();}
@@ -49,7 +49,7 @@ async function encounter(){
  const oldWorld=world,message=adventure.interact();world=adventure.world;combat=adventure.combat;
  if(world!==oldWorld){Object.assign(camera,player);keys.clear();attacking=false;aimUntil=0;}
  notifyLoot(message);canvas.focus();
- if(world!==oldWorld&&player.hp>0)try{saveToBrowser(adventure,selected,'auto');lastAutoSave=adventure.elapsed;}catch(error){notifyLoot('Autosave unavailable: '+error.message);}
+ if(world!==oldWorld&&player.hp>0)try{saveToBrowser(adventure,selected,'auto',activeSaveSlot);lastAutoSave=adventure.elapsed;}catch(error){notifyLoot('Autosave unavailable: '+error.message);}
 }
 const pointer={x:innerWidth/2+100,y:innerHeight/2};
 canvas.addEventListener('pointermove',e=>{pointer.x=e.clientX;pointer.y=e.clientY;aimUntil=performance.now()+300;});
@@ -62,7 +62,7 @@ addEventListener('resize',resize);resize();
 function select(index){selected=index;document.querySelectorAll('.character').forEach((b,i)=>{b.classList.toggle('selected',i===index);b.setAttribute('aria-pressed',String(i===index));});const c=classes[index];$('chosenName').textContent=c.name;$('chosenStats').textContent=`${c.style} · ${c.hp} health · ${c.speed} speed · ${c.attack} power · ${c.defense} defense · ${weapons[index].special}`;}
 function setMode(next){mode=next;keys.clear();attacking=false;dodgeRequested=false;accumulator=0;$('selection').hidden=next!=='selection';$('pause').hidden=next!=='paused';$('result').hidden=next!=='dead';$('complete').hidden=next!=='complete';$('hud').hidden=next==='selection';$('debug').hidden=!debug||next==='selection';if(next==='playing')canvas.focus();}
 function reset(){Object.assign(player,world.spawn,{flip:false});Object.assign(camera,world.spawn);}
-function begin(){debugSpeed.reset();adventure=new Adventure($('seed').value.trim()||'Dunbarrow',classes[selected],player,notifyLoot);world=adventure.world;combat=adventure.combat;progression=adventure.progression;Object.assign(camera,player);$('heroName').textContent=classes[selected].name;syncVitals();aimUntil=0;lastAutoSave=0;setMode('playing');notifyLoot('Welcome to Dunbarrow. Speak with Aldric northwest of the campfire. J opens your journal; E talks or interacts.');}
+function begin(){debugSpeed.reset();adventure=new Adventure($('seed').value.trim()||'Dunbarrow',classes[selected],player,notifyLoot);world=adventure.world;combat=adventure.combat;progression=adventure.progression;Object.assign(camera,player);$('heroName').textContent=classes[selected].name;syncVitals();aimUntil=0;lastAutoSave=0;activeSaveSlot=null;setMode('playing');notifyLoot('Welcome to Dunbarrow. Speak with Aldric northwest of the campfire. J opens your journal; E talks or interacts.');}
 $('begin').onclick=begin;$('pauseButton').onclick=()=>setMode('paused');$('resume').onclick=()=>setMode('playing');$('reset').onclick=()=>{reset();setMode('playing');};$('change').onclick=()=>setMode('selection');
 $('reset').textContent='Restart this seed';$('reset').onclick=begin;
 $('retry').onclick=begin;$('resultChange').onclick=()=>setMode('selection');
@@ -76,25 +76,72 @@ $('journalButton').onclick=()=>showStory();
 $('story').addEventListener('close',()=>{if(mode==='story')setMode('playing');});
 $('gear').addEventListener('close',()=>{if(mode==='inventory')setMode('playing');});
 // Save/load is a separate UI module; no simulation advances while files load.
+function readableSlot(slot){try{return !!readBrowserSave(slot);}catch{return false;}}
 function refreshSaveButtons(){
  const saved=latestBrowserSave();$('continueRun').disabled=!saved;
- $('continueRun').textContent=saved?'Continue · '+classes[saved.save.heroId].name:'No saved adventure';
- $('loadManual').disabled=!readableSlot('manual');$('loadAuto').disabled=!readableSlot('auto');
- $('saveManual').disabled=!adventure||player.hp<=0||mode==='dead';
+ $('continueRun').textContent=saved?'Continue · '+(saved.name||classes[saved.save.heroId].name):'No saved adventure';
+ $('loadAuto').disabled=!readableSlot('auto');
  $('exportSave').disabled=!adventure||player.hp<=0;
+ renderSaveSlots();
 }
-function readableSlot(slot){try{return !!readBrowserSave(slot);}catch{return false;}}
+function renderSaveSlots(){
+ const panel=$('saveSlots');panel.replaceChildren();
+ for(const {slot,save,name,error} of listNamedSlots()){
+  const card=document.createElement('section');card.className='save-slot';
+  const heading=document.createElement('h3');heading.textContent='Slot '+slot+(activeSaveSlot===slot?' · Current':'');
+  const status=document.createElement('p');status.className='slot-meta';
+  status.textContent=error?'Unreadable save: '+error:save?
+   classes[save.heroId].name+' · Level '+save.progression.level+' · '+(save.regionId==='overworld'?'Dunwood':save.regionId)+
+   ' · '+(Number.isFinite(Date.parse(save.savedAt))?new Date(save.savedAt).toLocaleString():'Date unknown'):'Empty slot';
+  const label=document.createElement('label');label.textContent='Save name · Slot '+slot;
+  const input=document.createElement('input');input.type='text';input.maxLength=32;
+  input.setAttribute('aria-label','Name for save slot '+slot);
+  input.value=name||'Adventure '+slot;label.append(input);
+  const actions=document.createElement('div');actions.className='slot-actions';
+  const makeButton=(text,action,disabled=false)=>{
+   const button=document.createElement('button');button.type='button';button.textContent=text;
+   button.disabled=disabled;button.onclick=action;actions.append(button);return button;
+  };
+  makeButton(save?'Overwrite':'Save',()=>{
+   if(!adventure||player.hp<=0){$('saveStatus').textContent='Start a living adventure before saving.';return;}
+   if(save&&!confirm('Overwrite slot '+slot+' ('+name+')? This replaces the previous adventure in this slot.'))return;
+   try{
+    const snapshot=saveNamedSlot(adventure,selected,slot,input.value);
+    activeSaveSlot=slot;refreshSaveButtons();$('saveStatus').textContent='Saved to slot '+slot+': '+snapshot.slotName+'.';
+   }catch(error){$('saveStatus').textContent='Save failed: '+error.message;}
+  },!adventure||player.hp<=0||mode==='dead');
+  makeButton('Load',()=>{
+   if(save)loadSnapshot(save,slot);
+  },!save);
+  makeButton('Rename',()=>{
+   try{
+    const named=renameNamedSlot(slot,input.value);refreshSaveButtons();
+    $('saveStatus').textContent='Renamed slot '+slot+' to '+named.slotName+'.';
+   }catch(error){$('saveStatus').textContent='Rename failed: '+error.message;}
+  },!save);
+  makeButton('Delete',()=>{
+   if(!save||!confirm('Delete slot '+slot+' ('+name+')? This cannot be undone.'))return;
+   try{deleteNamedSlot(slot);if(activeSaveSlot===slot)activeSaveSlot=null;refreshSaveButtons();$('saveStatus').textContent='Deleted slot '+slot+'.';}
+   catch(error){$('saveStatus').textContent='Delete failed: '+error.message;}
+  },!save);
+  card.append(heading,status,label,actions);panel.append(card);
+ }
+}
 function manualSave(){
  if(!adventure||player.hp<=0){notifyLoot('Start a living adventure before saving.');return;}
- try{saveToBrowser(adventure,selected,'manual');refreshSaveButtons();notifyLoot('Adventure saved in this browser.');}
- catch(error){notifyLoot('Save failed: '+error.message);}
+ if(!activeSaveSlot){openSavePanel();$('saveStatus').textContent='Choose one of the three slots and name your adventure before saving.';return;}
+ try{
+  const old=readNamedSlot(activeSaveSlot);
+  saveNamedSlot(adventure,selected,activeSaveSlot,old?.slotName||'Adventure '+activeSaveSlot);
+  refreshSaveButtons();notifyLoot('Saved to slot '+activeSaveSlot+'.');
+ }catch(error){notifyLoot('Save failed: '+error.message);}
 }
 function openSavePanel(){
  if(mode==='playing')setMode('paused');
- $('saveStatus').textContent='Manual saves persist in this browser. Autosaves update every 90 seconds of play and on region changes.';
+ $('saveStatus').textContent='Choose a named save slot. Autosaves remain a separate recovery checkpoint.';
  refreshSaveButtons();$('savePanel').showModal();
 }
-async function loadSnapshot(snapshot){
+async function loadSnapshot(snapshot,slot=null){
  try{
   const data=validateSave(snapshot);
   const sheets=['64','66','67','68','69','70'];
@@ -108,7 +155,7 @@ async function loadSnapshot(snapshot){
   const restored=restoreAdventure(data,classes,player,notifyLoot);
   adventure=restored;world=adventure.world;combat=adventure.combat;progression=adventure.progression;
   select(data.heroId);$('seed').value=data.seed;$('heroName').textContent=classes[data.heroId].name;
-  Object.assign(camera,player);lastAutoSave=adventure.elapsed;aimUntil=0;mapVisible=true;keys.clear();
+  Object.assign(camera,player);lastAutoSave=adventure.elapsed;activeSaveSlot=SAVE_SLOTS.includes(slot)?slot:(SAVE_SLOTS.includes(data.activeSaveSlot)?data.activeSaveSlot:null);aimUntil=0;mapVisible=true;keys.clear();
   syncVitals();if($('savePanel').open)$('savePanel').close();setMode('playing');refreshSaveButtons();
   notifyLoot('Adventure restored · '+(world.name||world.seed)+'.');
  }catch(error){setMode(adventure?'paused':'selection');$('saveStatus').textContent='Could not load: '+error.message;notifyLoot('Load failed: '+error.message);}
@@ -125,10 +172,8 @@ function exportCurrentSave(){
 }
 $('saveMenu').onclick=openSavePanel;
 $('closeSaves').onclick=()=>$('savePanel').close();
-$('saveManual').onclick=()=>{manualSave();$('saveStatus').textContent=readableSlot('manual')?'Manual save available in this browser.':'Manual save could not be verified.';};
-$('loadManual').onclick=()=>{try{const s=readBrowserSave('manual');if(s)loadSnapshot(s);}catch(error){$('saveStatus').textContent='Load failed: '+error.message;}};
 $('loadAuto').onclick=()=>{try{const s=readBrowserSave('auto');if(s)loadSnapshot(s);}catch(error){$('saveStatus').textContent='Load failed: '+error.message;}};
-$('continueRun').onclick=()=>{const entry=latestBrowserSave();if(entry)loadSnapshot(entry.save);};
+$('continueRun').onclick=()=>{const entry=latestBrowserSave();if(entry)loadSnapshot(entry.save,entry.slot);};
 $('exportSave').onclick=exportCurrentSave;
 $('importSave').onclick=()=>$('saveFile').click();
 $('saveFile').onchange=async event=>{
@@ -139,11 +184,11 @@ $('saveFile').onchange=async event=>{
  }catch(error){$('saveStatus').textContent='Import failed: '+error.message;}
 };
 $('deleteSaves').onclick=()=>{
- if(!confirm('Delete both local manual and automatic saves? Export a backup first if you want one.'))return;
+ if(!confirm('Delete all three named slots and the autosave? Export a backup first if you want one.'))return;
  try{deleteBrowserSaves();refreshSaveButtons();$('saveStatus').textContent='Browser saves deleted.';}
  catch(error){$('saveStatus').textContent=error.message;}
 };
-addEventListener('pagehide',()=>{if(adventure&&player.hp>0)try{saveToBrowser(adventure,selected,'auto');}catch{}});
+addEventListener('pagehide',()=>{if(adventure&&player.hp>0)try{saveToBrowser(adventure,selected,'auto',activeSaveSlot);}catch{}});
 const movementCodes=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowLeft','ArrowDown','ArrowRight'];
 addEventListener('keydown',e=>{
   if($('info').open||$('gear').open||$('story').open||$('savePanel').open)return;
@@ -169,7 +214,7 @@ $('assetsButton').onclick=()=>{
   for(const error of assets.errors){const p=document.createElement('p');p.textContent=error;$('infoBody').append(p);}$('info').showModal();
 };
 function simulate(dt){adventure.elapsed+=dt;
- if(player.hp>0&&adventure.elapsed-lastAutoSave>=90){lastAutoSave=adventure.elapsed;try{saveToBrowser(adventure,selected,'auto');refreshSaveButtons();}catch(error){notifyLoot('Autosave unavailable: '+error.message);}}const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});
+ if(player.hp>0&&adventure.elapsed-lastAutoSave>=90){lastAutoSave=adventure.elapsed;try{saveToBrowser(adventure,selected,'auto',activeSaveSlot);refreshSaveButtons();}catch(error){notifyLoot('Autosave unavailable: '+error.message);}}const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});
  if(world.expedition){
   const tx=Math.floor(player.x/TILE),ty=Math.floor(player.y/TILE),terrain=world.terrain[ty*world.width+tx];
   if(terrain===5||terrain===7)player.slow=Math.max(player.slow||0,.16);
