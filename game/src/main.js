@@ -171,6 +171,7 @@ function exportCurrentSave(){
  }catch(error){$('saveStatus').textContent='Export failed: '+error.message;}
 }
 $('saveMenu').onclick=openSavePanel;
+$('browseSaves').onclick=openSavePanel;
 $('closeSaves').onclick=()=>$('savePanel').close();
 $('loadAuto').onclick=()=>{try{const s=readBrowserSave('auto');if(s)loadSnapshot(s);}catch(error){$('saveStatus').textContent='Load failed: '+error.message;}};
 $('continueRun').onclick=()=>{const entry=latestBrowserSave();if(entry)loadSnapshot(entry.save,entry.slot);};
