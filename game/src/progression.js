@@ -20,7 +20,7 @@ export class Progression {
   const gold=1+Math.floor(this.random()*2),elite=enemy.tier==='elite';
   const equipmentChance=enemy.boss?0:elite?.22:.09;
   const item=this.random()<equipmentChance?this.makeItem(['weapon','armor','trinket'][Math.floor(this.random()*3)]):null;
-  const potions=this.random()<(elite?.10:.04)?1:0;
+  const potions=this.random()<(elite?.07:.025)?1:0;
   this.drops.push({x:enemy.x,y:enemy.y,item,gold,potions});
  }
  collect(player,clear){const found=[];this.drops=this.drops.filter(d=>{if(Math.hypot(d.x-player.x,d.y-player.y)>30||!clear(player,d))return true;if(d.item){this.items.push(d.item);found.push(d.item);}if(d.gold)this.addGold(d.gold);if(d.potions)this.potions+=d.potions;return false;});return found;}
