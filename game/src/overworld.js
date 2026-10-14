@@ -45,6 +45,16 @@ export function createOverworld(seed='Dunbarrow',expedition=false){
  caravan.x=(caravan.tx+.5)*TILE;caravan.y=(caravan.ty+.5)*TILE;
  landmarks.push(caravan);
  for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const tx=caravan.tx+dx,ty=caravan.ty+dy,i=ty*width+tx;terrain[i]=1;solid[i]=false;}
+ if(expedition){
+  // A separate optional dungeon at the outpost; never changes campaign entrances.
+  const hall={id:'grandhall',name:'The Grand Hall · Legendary Trial',tx:camp.tx+1,ty:camp.ty+9};
+  hall.x=(hall.tx+.5)*TILE;hall.y=(hall.ty+.5)*TILE;
+  landmarks.push(hall);
+  for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){
+   const tx=hall.tx+dx,ty=hall.ty+dy,i=ty*width+tx;
+   terrain[i]=1;solid[i]=false;
+  }
+ }
  // Keep the caravan clear of trees, rocks, and decorative camp buildings.
  // Preserve every pre-carved route. Natural hazards never create artificial biome gates.
  if(expedition)for(let y=2;y<height-2;y++)for(let x=2;x<width-2;x++){
