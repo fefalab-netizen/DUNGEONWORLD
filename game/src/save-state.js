@@ -168,18 +168,82 @@ export function restoreAdventure(data,classes,player,onNotice=()=>{}){
  Object.assign(player,plain(save.player));
  return a;
 }
-export function saveToBrowser(a,heroId,slot='manual'){
- const snapshot=captureAdventure(a,heroId);
- try{safeStorage().setItem(PREFIX+slot,JSON.stringify(snapshot));}
- catch(error){throw new Error('Could not save in this browser (storage may be full or blocked): '+error.message);}
- return snapshot;
+// Three named manual saves, plus a separate automatic recovery checkpoint.
+// A legacy M8 manual save is copied to the first empty slot at most once.
+export const SAVE_SLOTS=Object.freeze([1,2,3]);
+const slotKey=slot=>{
+ if(!SAVE_SLOTS.includes(Number(slot)))throw new Error('Choose save slot 1, 2, or 3.');
+ return 'slot'+Number(slot);
+};
+export function cleanSaveName(input,slot=1){
+ const name=String(input??'').trim().replace(/[\\u0000-\\u001f\\u007f]/g,'').slice(0,32).trim();
+ return name||'Adventure '+slot;
 }
-export function readBrowserSave(slot='manual'){
+const storeSnapshot=(key,snapshot)=>{
+ try{safeStorage().setItem(PREFIX+key,JSON.stringify(snapshot));}
+ catch(error){throw new Error('Could not save in this browser (storage may be full or blocked): '+error.message);}
+};
+export function readBrowserSave(slot='auto'){
  const raw=safeStorage().getItem(PREFIX+slot);
  return raw?validateSave(JSON.parse(raw)):null;
 }
-export function latestBrowserSave(){
- const saves=['manual','auto'].flatMap(slot=>{try{const save=readBrowserSave(slot);return save?[{slot,save}]:[];}catch{return [];}});
- return saves.sort((a,b)=>Date.parse(b.save.savedAt||0)-Date.parse(a.save.savedAt||0))[0]||null;
+export function readNamedSlot(slot){return readBrowserSave(slotKey(slot));}
+export function migrateLegacyManual(){
+ const storage=safeStorage();
+ if(storage.getItem(PREFIX+'legacyMigrated')==='1')return null;
+ const old=readBrowserSave('manual');
+ if(!old)return null;
+ const free=SAVE_SLOTS.find(i=>!storage.getItem(PREFIX+slotKey(i)));
+ if(!free)return null; // Never overwrite an existing named slot.
+ const copy={...old,slotName:cleanSaveName(old.slotName||'Recovered adventure',free)};
+ storeSnapshot(slotKey(free),copy);
+ storage.setItem(PREFIX+'legacyMigrated','1');
+ // Keep the original legacy record as an untouched fallback for export.
+ return free;
 }
-export function deleteBrowserSaves(){safeStorage().removeItem(PREFIX+'manual');safeStorage().removeItem(PREFIX+'auto');}
+export function saveNamedSlot(a,heroId,slot,name){
+ const id=Number(slot);
+ const snapshot=captureAdventure(a,heroId);
+ snapshot.slotName=cleanSaveName(name,id);
+ storeSnapshot(slotKey(id),snapshot);
+ return snapshot;
+}
+export function renameNamedSlot(slot,name){
+ const id=Number(slot),snapshot=readNamedSlot(id);
+ if(!snapshot)throw new Error('This save slot is empty.');
+ snapshot.slotName=cleanSaveName(name,id);
+ storeSnapshot(slotKey(id),snapshot);
+ return snapshot;
+}
+export function deleteNamedSlot(slot){safeStorage().removeItem(PREFIX+slotKey(slot));}
+export function listNamedSlots(){
+ try{migrateLegacyManual();}catch{/* An unreadable legacy save must not hide the current slots. */}
+ return SAVE_SLOTS.map(slot=>{
+  try{const save=readNamedSlot(slot);return {slot,save,name:save?cleanSaveName(save.slotName,slot):''};}
+  catch(error){return {slot,save:null,name:'',error:error.message};}
+ });
+}
+export function saveToBrowser(a,heroId,slot='auto',activeSlot=null){
+ if(slot!=='auto'&&slot!=='manual')throw new Error('Unknown automatic save destination.');
+ const snapshot=captureAdventure(a,heroId);
+ if(slot==='auto'&&SAVE_SLOTS.includes(Number(activeSlot)))snapshot.activeSaveSlot=Number(activeSlot);
+ storeSnapshot(slot,snapshot);
+ return snapshot;
+}
+export function latestBrowserSave(){
+ const slots=listNamedSlots().filter(entry=>entry.save).map(entry=>({slot:entry.slot,save:entry.save,name:entry.name}));
+ const candidates=[...slots];
+ try{const save=readBrowserSave('auto');if(save)candidates.push({slot:'auto',save,name:'Automatic recovery'});}catch{}
+ // If migration could not find a free slot, the former manual save remains recoverable.
+ try{
+  if(safeStorage().getItem(PREFIX+'legacyMigrated')!=='1'){
+   const save=readBrowserSave('manual');
+   if(save)candidates.push({slot:'legacy',save,name:'Earlier manual save'});
+  }
+ }catch{}
+ return candidates.sort((a,b)=>Date.parse(b.save.savedAt||0)-Date.parse(a.save.savedAt||0))[0]||null;
+}
+export function deleteBrowserSaves(){
+ const storage=safeStorage();
+ for(const key of [...SAVE_SLOTS.map(slotKey),'manual','auto','legacyMigrated'])storage.removeItem(PREFIX+key);
+}
