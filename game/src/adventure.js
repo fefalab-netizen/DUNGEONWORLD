@@ -1,12 +1,13 @@
 import {createUnderkeep,interactUnderkeep} from './underkeep.js?v=7.5e-room-layout';
 import {createStoryDungeon,interactStory} from './story-dungeon.js?v=7.5e-room-layout';
 import {Quests,campNPCs} from './quests.js?v=7.5b';
-import {createOverworld,nearbyLandmark} from './overworld.js?v=7.5e-grand-hall';
+import {createOverworld,nearbyLandmark} from './overworld.js?v=7.5e-complete';
 import {createDungeon,interactDungeon} from './dungeon.js?v=7.5e-room-layout';
 import {Combat} from './combat.js?v=7.5d';
 import {Progression} from './progression.js?v=7.5e-lootbalance';
 import {createGrandHall,interactGrandHall} from './grand-hall.js?v=7.5e-grand-hall';
 import {TILE} from './world.js?v=7.0';
+import {createLegendaryDungeon,interactLegendary} from './legendary-dungeons.js?v=7.5e-complete';
 
 // Region state survives travel: enemies, doors, loot and chests are not regenerated.
 export class Adventure {
@@ -65,6 +66,12 @@ export class Adventure {
     return `Caravan expedition: ${fare} gold paid. Explore the frontier; return to the caravan for a free ride home.`;
    }
    if(w.expedition){
+    if(['labyrinth','threeWings'].includes(l.id)){
+     this.legendaryReturn={x:l.x,y:l.y+TILE*2};
+     const dungeon=this.regions.get(l.id)?.world||createLegendaryDungeon(l.id,this.seed+':'+l.id,pr.level);
+     this.travel(l.id,dungeon,dungeon.spawn);
+     return l.id==='labyrinth'?'Entered the Whispering Labyrinth. Find the sigil and defeat the maze guardian.':'Entered the Three Wings. Claim all three guardian seals in any order.';
+    }
     if(l.id==='grandhall'){
      this.grandHallReturn={x:l.x,y:l.y+TILE*2};
      const hall=this.regions.get('grandhall')?.world||createGrandHall(this.seed+':grandhall',pr.level);
@@ -88,8 +95,15 @@ export class Adventure {
     return camp?'The Heart is silent. You emerge into the dawn at Dunbarrow. Speak with Aldric Venn to finish the adventure.':'Returned to the Black Stair entrance.';
    }return result;
   }
-  const result=w.layout==='grandHall'?interactGrandHall(w,p):w.theme?interactStory(w,p,pr,this.quests):interactDungeon(w,p,pr,this.combat.finished);
+  const result=['labyrinth','threeWings'].includes(w.layout)?interactLegendary(w,p,this.combat,pr):w.layout==='grandHall'?interactGrandHall(w,p):w.theme?interactStory(w,p,pr,this.quests):interactDungeon(w,p,pr,this.combat.finished);
+  if(result&&typeof result==='object'&&result.kind==='complete'){
+   this.travel('expedition',this.expedition,this.legendaryReturn);return result.text+' Returned to the expedition outpost.';
+  }
   if(result==='entrance'||result==='complete'){
+   if(['labyrinth','threeWings'].includes(w.layout)){
+    this.travel('expedition',this.expedition,this.legendaryReturn);
+    return 'Returned to the expedition outpost. Dungeon progress is preserved.';
+   }
    if(w.layout==='grandHall'){
     this.travel('expedition',this.expedition,this.grandHallReturn);
     return result==='complete'?'Grand Hall conquered! Returned to the expedition outpost.':'Returned to the expedition outpost.';
