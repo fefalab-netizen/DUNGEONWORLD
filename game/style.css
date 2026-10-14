@@ -31,3 +31,14 @@
 .tool-module button,.tool-footer button{margin:8px 8px 8px 0}
 #generationResults{max-height:420px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.7 monospace;color:#a6d7b1;background:#10171b;padding:15px;min-height:55px}
 #toolStatus{color:#e3d09c}
+
+/* Three independent named adventure save slots */
+#saveSlots{display:grid;gap:12px;margin:17px 0}
+.save-slot{padding:14px;background:#141d20;border:1px solid #51564c;border-radius:4px}
+.save-slot h3{font:600 15px system-ui;color:#e8d49e;margin:0 0 6px}
+.save-slot .slot-meta{font:12px/1.5 system-ui;color:#acb9b1;margin:5px 0 10px}
+.save-slot label{display:block;font:12px system-ui;color:#ded3bd}
+.save-slot input{display:block;margin:7px 0 10px;width:100%;max-width:100%;padding:9px;border:1px solid #817559;border-radius:3px;background:#0e1619;color:#f1e5cb;font:14px system-ui}
+.save-slot .slot-actions{display:flex;gap:6px;flex-wrap:wrap}
+#savePanel .slot-actions button{margin:0;padding:8px 12px;font:12px system-ui;flex:1 1 75px}
+#savePanel .save-help{font-size:12px;color:#a7b1a9}
