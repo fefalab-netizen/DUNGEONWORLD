@@ -1,8 +1,8 @@
-import {createUnderkeep,interactUnderkeep} from './underkeep.js?v=7.5a';
-import {createStoryDungeon,interactStory} from './story-dungeon.js?v=7.0';
+import {createUnderkeep,interactUnderkeep} from './underkeep.js?v=7.5e-room-layout';
+import {createStoryDungeon,interactStory} from './story-dungeon.js?v=7.5e-room-layout';
 import {Quests,campNPCs} from './quests.js?v=7.5b';
 import {createOverworld,nearbyLandmark} from './overworld.js?v=7.5d';
-import {createDungeon,interactDungeon} from './dungeon.js?v=7.0';
+import {createDungeon,interactDungeon} from './dungeon.js?v=7.5e-room-layout';
 import {Combat} from './combat.js?v=7.5d';
 import {Progression} from './progression.js?v=7.0';
 
