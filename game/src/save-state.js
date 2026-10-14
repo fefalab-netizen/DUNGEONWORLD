@@ -122,7 +122,8 @@ export function validateSave(data){
   names.add(rec.id);
  }
  if(!names.has('overworld')||!names.has(data.regionId))throw new Error('Save is missing its current region.');
- if(!data.progression||!data.quests||!Array.isArray(data.shop))throw new Error('Save is missing progression data.');
+ if(data.regionId!=='overworld'&&data.regionId!=='raider'&&data.regionId!=='chapel'&&!names.has('expedition')&&['grandhall','labyrinth','threeWings'].includes(data.regionId))throw new Error('Legendary save is missing its expedition region.');
+ if(!data.progression||!data.quests||!Array.isArray(data.shop)||data.shop.length!==3||!Array.isArray(data.progression.items))throw new Error('Save is missing progression data.');
  return data;
 }
 function generatedWorld(a,rec){
@@ -151,6 +152,7 @@ export function restoreAdventure(data,classes,player,onNotice=()=>{}){
  for(const rec of save.regions){
   if(rec.id==='overworld')continue;
   const w=generatedWorld(a,rec);
+  if(rec.id==='raider'||rec.id==='chapel')w.generation={level:rec.generation?.level||1,progress:rec.generation?.progress||0};
   a.travel(rec.id,w,w.spawn);
  }
  for(const rec of save.regions){
