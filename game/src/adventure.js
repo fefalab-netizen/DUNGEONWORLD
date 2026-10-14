@@ -1,13 +1,13 @@
-import {createUnderkeep,interactUnderkeep} from './underkeep.js?v=7.5e-room-layout';
-import {createStoryDungeon,interactStory} from './story-dungeon.js?v=7.5e-room-layout';
+import {createUnderkeep,interactUnderkeep} from './underkeep.js?v=7.5f-danger';
+import {createStoryDungeon,interactStory} from './story-dungeon.js?v=7.5f-danger';
 import {Quests,campNPCs} from './quests.js?v=7.5b';
 import {createOverworld,nearbyLandmark} from './overworld.js?v=7.5e-complete';
 import {createDungeon,interactDungeon} from './dungeon.js?v=7.5e-room-layout';
-import {Combat} from './combat.js?v=7.5d';
-import {Progression} from './progression.js?v=7.5e-lootbalance';
-import {createGrandHall,interactGrandHall} from './grand-hall.js?v=7.5e-grand-hall';
+import {Combat} from './combat.js?v=7.5f-danger';
+import {Progression} from './progression.js?v=7.5f-danger';
+import {createGrandHall,interactGrandHall} from './grand-hall.js?v=7.5f-danger';
 import {TILE} from './world.js?v=7.0';
-import {createLegendaryDungeon,interactLegendary} from './legendary-dungeons.js?v=7.5e-complete';
+import {createLegendaryDungeon,interactLegendary} from './legendary-dungeons.js?v=7.5f-danger';
 
 // Region state survives travel: enemies, doors, loot and chests are not regenerated.
 export class Adventure {
