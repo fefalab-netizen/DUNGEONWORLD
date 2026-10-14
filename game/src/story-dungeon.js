@@ -1,13 +1,20 @@
 import {hashSeed,spawnMonster} from './monsters.js?v=7.5a-audit';
 import {directEncounter} from './encounters.js?v=7.5a-audit';
 import {canOccupy} from './world.js?v=7.0';
-export function createStoryDungeon(seed,theme,level=1,progress=0){
+export function createStoryDungeon(seed,theme,level=1,progress=0,varyLayout=true){
  let rng=hashSeed(seed+theme);const random=()=>{rng=(Math.imul(rng,1664525)+1013904223)>>>0;return rng/4294967296;};
  const chapel=theme==='chapel',mainCount=chapel?7:6,width=80,height=60;
  const positions=[[0,0],[1,0],[2,0],[2,1],[1,1],[0,1],...(chapel?[[0,2]]:[]),[3,0],[3,1]];
  // Required chain and optional branches are fixed before any room carving.
  const edges=Array.from({length:mainCount-1},(_,i)=>[i,i+1]);edges.push([2,mainCount],[3,mainCount+1]);
- const rooms=positions.map(([gx,gy],id)=>{const w=11+Math.floor(random()*3),h=11+Math.floor(random()*3),x=3+gx*19,y=3+gy*19;return {id,x,y,w,h,cx:x+6,cy:y+6,optional:id>=mainCount,type:id===0?'entrance':id===mainCount-1?'boss':id===mainCount-2?'objective':id>=mainCount?'treasure':chapel?['crypt','plate','ritual'][id%3]:['storage','guard post','supply'][id%3]};});
+ // Six seeded layout arrangements reuse the verified connected quest graph.
+ // The Underkeep opts out because its handcrafted return route depends on fixed coordinates.
+ const layout=varyLayout?Math.floor(random()*6):0;
+ const rooms=positions.map(([gx,gy],id)=>{const w=11+Math.floor(random()*3),h=11+Math.floor(random()*3);
+  const flipX=[1,3,5].includes(layout),flipY=[2,3].includes(layout);
+  const gx1=flipX?3-gx:gx,gy1=flipY?2-gy:gy;
+  const offset=layout>=4?Math.floor(random()*3):0;
+  const x=3+gx1*19+offset,y=3+gy1*19+(layout>=4?Math.floor(random()*3):0);return {id,x,y,w,h,cx:x+6,cy:y+6,optional:id>=mainCount,type:id===0?'entrance':id===mainCount-1?'boss':id===mainCount-2?'objective':id>=mainCount?'treasure':chapel?['crypt','plate','ritual'][id%3]:['storage','guard post','supply'][id%3]};});
  // The room's gameplay role remains unchanged; only the visual floor family varies.
  const floorForType={entrance:'standard',boss:'boss',objective:chapel?'ritual':'standard',treasure:'storage',crypt:'crypt',plate:'standard',ritual:'ritual',storage:'storage','guard post':'collapsed',supply:'storage'};
  for(const room of rooms)room.floorType=floorForType[room.type]||'standard';
