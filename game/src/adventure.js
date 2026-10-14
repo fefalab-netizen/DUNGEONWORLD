@@ -82,7 +82,7 @@ export class Adventure {
     return `${l.name}. The frontier is open for exploration. Return to the caravan when ready.`;
    }
    if(l.id==='camp'){p.hp=pr.stats.hp;pr.potions=Math.max(2,pr.potions);return 'Rested at camp. Health restored; at least two potions supplied. West: Raider Cellar. East: Bone Chapel.';}
-   if(['raider','chapel'].includes(l.id)){this.returnPosition={x:l.x,y:l.y+64};const dungeon=this.regions.get(l.id)?.world||createStoryDungeon(this.seed+':'+l.id,l.id,pr.level,this.quests.artifacts.size);dungeon.name=l.name;this.travel(l.id,dungeon,dungeon.spawn);return `Entered ${l.name}. Use the entrance stairs to return anytime.`;}
+   if(['raider','chapel'].includes(l.id)){this.returnPosition={x:l.x,y:l.y+64};const dungeon=this.regions.get(l.id)?.world||createStoryDungeon(this.seed+':'+l.id,l.id,pr.level,this.quests.artifacts.size);dungeon.generation??={level:pr.level,progress:this.quests.artifacts.size};dungeon.name=l.name;this.travel(l.id,dungeon,dungeon.spawn);return `Entered ${l.name}. Use the entrance stairs to return anytime.`;}
    if(l.id==='underkeep'){if(!this.quests.ready)return 'The Black Stair is sealed. Recover the Iron Seal Key and Rune of Opening.';this.underkeepReturn={x:l.x,y:l.y+64};return this.enterUnderkeep(1);}
    return {bandit:'Bandit Road — the Raider Cellar lies northwest. Follow the roads.',ridge:'North Ridge — roads lead southwest to the Cellar and southeast to the Chapel.',grave:'Grave Path — the Bone Chapel lies northeast. Follow the roads.',approach:'Sealed Stair Approach — the Black Stair lies to the south.'}[l.id];
   }
