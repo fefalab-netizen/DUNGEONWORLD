@@ -125,22 +125,29 @@ function render(){
   for(const drop of progression.drops)sprites.push({depth:drop.y-1,draw:()=>{g.strokeStyle=colors[drop.item.rarity];g.strokeRect(Math.round(drop.x+ox-11),Math.round(drop.y+oy-11),22,22);assets.draw(g,drop.item.sheet,drop.item.cell,drop.x+ox-9,drop.y+oy-9,18,18);}});
   if(!outdoors)for(let y=minY;y<maxY;y++)for(let x=minX;x<maxX;x++){
     const px=x*TILE+ox,py=y*TILE+oy,isProp=world.props.some(p=>p.x===x&&p.y===y),wall=world.solid[y*world.width+x]&&!isProp&&!world.doors.some(d=>d.x===x&&d.y===y);
-    // Region-aware, deterministic authored floor variation; respect specialized story floors.
+    // Choose a room palette first, then only subtle variation within that room.
+    // Hallways share plain flagstone; themed floors never mix randomly tile-by-tile.
     const seed=(world.numericSeed||0)>>>0;
     const noise=(()=>{let h=(Math.imul(x+17,374761393)^Math.imul(y+29,668265263)^seed)>>>0;h=Math.imul(h^(h>>>13),1274126177);return (h>>>0)/4294967296;})();
-    const ceremonial=world.theme==='chapel'||world.depth===3;
-    // Only authored ground atlases may be used as floors. Sheet 03 contains props/torches.
+    const room=world.rooms?.find(r=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h);
     const requestedFloor=world.floorSheet||(world.theme==='chapel'?'68':art.floor);
     const mainFloor=requestedFloor==='03'?'05':requestedFloor;
-    const generic=mainFloor==='05';
-    const floorSheet=!ceremonial&&generic&&noise>.56?'101':mainFloor;
-    const floorCell=floorSheet==='101'?[0,1,2,4,5,8,9,14,15][Math.min(8,Math.floor(noise*9))]:noise>.9?1:0;
+    let floorSheet=mainFloor,floorCell=noise>.96?1:0;
+    if(mainFloor==='05'){
+      const type=room?.floorType||'standard';
+      if(type==='storage'){floorSheet='101';floorCell=8;}
+      else if(type==='collapsed'){floorCell=noise<.85?4:1;}
+      else if(type==='crypt'){floorCell=noise<.9?2:0;}
+      else if(type==='ritual'){floorCell=noise<.96?0:1;}
+      else if(type==='boss'){floorCell=noise<.98?0:1;}
+      else floorCell=noise<.94?0:1;
+    }
     assets.draw(g,floorSheet,floorCell,px,py,TILE,TILE);
     // Subtle ground shading keeps characters and collision silhouettes legible.
     g.fillStyle='#07101735';g.fillRect(px,py,TILE,TILE);
-    if(wall)sprites.push({depth:(y+1)*TILE,draw:()=>{g.fillStyle='#070b0b88';g.fillRect(px+3,py+12,32,23);const standardWall=!world.wallSheet||world.wallSheet==='04';
-      const wallSheet=standardWall&&noise>.68?'102':world.wallSheet||(world.theme==='chapel'?'69':art.walls);
-      const wallCell=wallSheet==='102'?(noise>.93?5:noise>.83?1:0):noise>.91?2:noise>.84?1:0;
+    if(wall)sprites.push({depth:(y+1)*TILE,draw:()=>{g.fillStyle='#070b0b88';g.fillRect(px+3,py+12,32,23);
+      const wallSheet=world.wallSheet||(world.theme==='chapel'?'69':art.walls);
+      const wallCell=noise>.96?2:noise>.86?1:0;
       assets.draw(g,wallSheet,wallCell,px,py-12,32,44);}});
     if(debug&&world.solid[y*world.width+x]){g.strokeStyle='#e79462';g.strokeRect(px+.5,py+.5,31,31);}
   }
