@@ -49,7 +49,7 @@ export function drawOverworld(g,assets,w,p,bounds,ox,oy,sprites){
   sprites.push({depth:(prop.ty+1)*TILE,draw:()=>assets.draw(g,prop.sheet,prop.cell,(prop.tx+.5)*TILE+ox-prop.size/2,(prop.ty+1)*TILE+oy-prop.size,prop.size,prop.size)});
  }
  for(const l of w.landmarks){if(l.tx<minX-3||l.tx>maxX+3||l.ty<minY-3||l.ty>maxY+3)continue;
-  const camp=l.id==='camp',caravan=l.id==='caravan',dungeon=['raider','chapel','underkeep'].includes(l.id),size=caravan?66:camp?48:dungeon?62:34;
+  const camp=l.id==='camp',caravan=l.id==='caravan',dungeon=['raider','chapel','underkeep','grandhall'].includes(l.id),size=caravan?66:camp?48:dungeon?62:34;
   sprites.push({depth:l.y+12,draw:()=>{
    assets.draw(g,caravan?'96':camp?'84':dungeon?'85':'96',caravan?5:camp?8:dungeon?7:0,l.x+ox-size/2,l.y+oy-size+14,size,size);
    g.font='9px monospace';g.textAlign='center';g.fillStyle='#0a1210df';g.fillRect(l.x+ox-80,l.y+oy+17,160,15);g.fillStyle=camp?'#efcf89':'#e0e6c9';g.fillText(l.name,l.x+ox,l.y+oy+28);g.textAlign='start';
