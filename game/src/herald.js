@@ -9,7 +9,7 @@ export function updateHerald(c,e,dt,clear){
  const inside=p.x>a.left&&p.x<a.right&&p.y>a.top&&p.y<a.bottom;
  if(!inside||!clear(c.world,e,p)){e.state='idle';e.action=null;e.runes=[];return;}
  e.alert=true;e.phase??=1;e.sequence??=0;e.runes??=[];
- if(e.phase===1&&e.hp<=e.maxHp*.5){e.phase=2;e.state='recover';e.timer=1.5;e.action=null;e.runes=[];c.number('THE SEAL BREAKS',e.x,e.y-90,'#e8b6ff');c.effect('100',12,e.x,e.y-25,110,0,.8);c.onNotice?.('The Herald breaks its seal. Violet circles will burn — move before they close.');}
+ if(e.phase===1&&e.hp<=e.maxHp*.5){e.phase=2;e.state='recover';e.timer=1.2;e.action=null;e.runes=[];c.number('THE SEAL BREAKS',e.x,e.y-90,'#e8b6ff');c.effect('100',12,e.x,e.y-25,110,0,.8);c.onNotice?.('The Herald breaks its seal. Violet circles will burn — move before they close.');}
  for(const r of e.runes){r.time-=dt;if(r.time<=0&&!r.fired){r.fired=true;r.fade=.35;if(distance(p,r)<r.radius&&clear(c.world,e,p))c.hurt(e.damage*1.2,e);c.effect('100',12,r.x,r.y,90,0,.35);}if(r.fired)r.fade-=dt;}
  e.runes=e.runes.filter(r=>!r.fired||r.fade>0);
  if(e.state==='attack'){
@@ -23,7 +23,7 @@ export function updateHerald(c,e,dt,clear){
    }
    if(!made)volley(c,e);
   }else if(e.action==='volley')volley(c,e);
-  e.action=null;e.state='recover';e.timer=e.phase===2?.65:1;return;
+  e.action=null;e.state='recover';e.timer=e.phase===2?.5:1;return;
  }
  if(e.state==='recover'){
   e.timer-=dt;
@@ -33,10 +33,10 @@ export function updateHerald(c,e,dt,clear){
   if(x>a.left+48&&x<a.right-48&&y>a.top+48&&y<a.bottom-48)move(c.world,e,x-e.x,y-e.y);
   if(e.timer<=0)e.state='chase';return;
  }
- e.sequence++;e.angle=Math.atan2(p.y-e.y,p.x-e.x);e.action=['volley','rune','volley','summon'][(e.sequence-1)%4];e.state='attack';e.timer=e.action==='rune'?1.25:.9;
+ e.sequence++;e.angle=Math.atan2(p.y-e.y,p.x-e.x);e.action=['volley','rune','volley','summon'][(e.sequence-1)%4];e.state='attack';e.timer=e.action==='rune'?(e.phase===2?1.1:1.25):(e.phase===2?.72:.9);
  if(e.action==='rune'){
-  const offsets=e.phase===2?[[0,0],[-82,0],[82,0],[0,82]]:[[0,0]];
-  for(const [dx,dy]of offsets){const x=p.x+dx,y=p.y+dy;if(canOccupy(c.world,x,y,12))e.runes.push({x,y,radius:34,time:1.25,total:1.25,fired:false});}
+  const offsets=e.phase===2?[[0,0],[-82,0],[82,0],[0,82],[0,-82]]:[[0,0]];
+  for(const [dx,dy]of offsets){const x=p.x+dx,y=p.y+dy;if(canOccupy(c.world,x,y,12))e.runes.push({x,y,radius:34,time:e.timer,total:e.timer,fired:false});}
  }
 }
-function volley(c,e){for(const offset of (e.phase===2?[-.36,-.18,0,.18,.36]:[-.18,0,.18]))c.shoot(e,e.angle+offset,'magic',e.damage,'enemy',e.phase===2?175:145);}
+function volley(c,e){for(const offset of (e.phase===2?[-.45,-.27,-.09,.09,.27,.45]:[-.18,0,.18]))c.shoot(e,e.angle+offset,'magic',e.damage,'enemy',e.phase===2?175:145);}
