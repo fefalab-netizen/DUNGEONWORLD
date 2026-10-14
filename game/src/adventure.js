@@ -5,6 +5,8 @@ import {createOverworld,nearbyLandmark} from './overworld.js?v=7.5d';
 import {createDungeon,interactDungeon} from './dungeon.js?v=7.5e-room-layout';
 import {Combat} from './combat.js?v=7.5d';
 import {Progression} from './progression.js?v=7.5e-lootbalance';
+import {createGrandHall,interactGrandHall} from './grand-hall.js?v=7.5e-grand-hall';
+import {TILE} from './world.js?v=7.0';
 
 // Region state survives travel: enemies, doors, loot and chests are not regenerated.
 export class Adventure {
@@ -17,7 +19,14 @@ export class Adventure {
   if(this.current)this.current.drops=pr.drops;
   let region=this.regions.get(id);
   if(!region){const combat=new Combat(world,p,pr.stats);combat.randomState=world.numericSeed||1;combat.start();combat.onNotice=this.onNotice;if(world.depth===2)for(const e of combat.enemies)e.faction='underkeep';region={world,combat,drops:[]};this.regions.set(id,region);
-   combat.onDefeat=(enemy)=>{if(!enemy.wildlife)this.totalKills=(this.totalKills||0)+1;if(!enemy.noLoot)pr.drop(enemy);if(enemy.colossal){
+   combat.onDefeat=(enemy)=>{if(!enemy.wildlife)this.totalKills=(this.totalKills||0)+1;if(!enemy.noLoot)pr.drop(enemy);if(enemy.grandHallBoss){
+    world.hall.bossDefeated=true;
+    const reward=pr.makeItem('weapon',true);
+    reward.rarity=3;reward.name='Hallbreaker’s Legacy';
+    reward.stats.attack=Math.max(24,(pr.equipment.weapon?.stats.attack||0)+8);
+    pr.items.push(reward);pr.addGold(80);
+    this.onNotice('THE HALLBREAKER FALLS! Hallbreaker’s Legacy (Epic) and 80 gold awarded. The exit remains open.');
+   }else if(enemy.colossal){
     // Expedition bosses are optional; never satisfy story artifact or dungeon boss conditions.
     world.colossiDefeated??=new Set();world.colossiDefeated.add(enemy.species);
     const reward=pr.makeItem('weapon',true);
@@ -56,6 +65,12 @@ export class Adventure {
     return `Caravan expedition: ${fare} gold paid. Explore the frontier; return to the caravan for a free ride home.`;
    }
    if(w.expedition){
+    if(l.id==='grandhall'){
+     this.grandHallReturn={x:l.x,y:l.y+TILE*2};
+     const hall=this.regions.get('grandhall')?.world||createGrandHall(this.seed+':grandhall',pr.level);
+     this.travel('grandhall',hall,hall.spawn);
+     return 'Entered the Grand Hall. Fight through two chambers, survive three waves, then choose to exit or face the optional Hallbreaker.';
+    }
     if(l.id==='camp'){p.hp=pr.stats.hp;pr.potions=Math.max(2,pr.potions);return 'Rested at the expedition outpost. Health restored and emergency potions replenished. Caravan travel home is free.';}
     return `${l.name}. The frontier is open for exploration. Return to the caravan when ready.`;
    }
@@ -73,8 +88,15 @@ export class Adventure {
     return camp?'The Heart is silent. You emerge into the dawn at Dunbarrow. Speak with Aldric Venn to finish the adventure.':'Returned to the Black Stair entrance.';
    }return result;
   }
-  const result=w.theme?interactStory(w,p,pr,this.quests):interactDungeon(w,p,pr,this.combat.finished);
-  if(result==='entrance'||result==='complete'){this.travel('overworld',this.overworld,this.returnPosition);return result==='complete'?`${w.name} cleared. Returned to Dunbarrow with your equipment and rewards.`:'Returned to Dunbarrow.';}
+  const result=w.layout==='grandHall'?interactGrandHall(w,p):w.theme?interactStory(w,p,pr,this.quests):interactDungeon(w,p,pr,this.combat.finished);
+  if(result==='entrance'||result==='complete'){
+   if(w.layout==='grandHall'){
+    this.travel('expedition',this.expedition,this.grandHallReturn);
+    return result==='complete'?'Grand Hall conquered! Returned to the expedition outpost.':'Returned to the expedition outpost.';
+   }
+   this.travel('overworld',this.overworld,this.returnPosition);
+   return result==='complete'?`${w.name} cleared. Returned to Dunbarrow with your equipment and rewards.`:'Returned to Dunbarrow.';
+  }
   return result;
  }
 }
