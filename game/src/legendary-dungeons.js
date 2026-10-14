@@ -90,12 +90,13 @@ export function createLabyrinth(seed,level=1){
  rooms[0].floorType='standard';rooms[exitRoomId].floorType='boss';rooms[keyRoomId].floorType='ritual';
  const enemySpawns=[];
  for(const r of rooms){
-  if(r.id===0||r.id===exitRoomId||r.id===keyRoomId||random()>.32)continue;
+  if(r.id===0||r.id===exitRoomId||r.id===keyRoomId||random()>.47)continue;
   const species=['grunt','scavenger','bandit','archer','tank'][Math.floor(random()*5)];
-  enemySpawns.push([r.cx,r.cy,species,random()<.12?'elite':'normal']);
+  enemySpawns.push([r.cx,r.cy,species,random()<.22?'elite':'normal']);
  }
  const guardIndex=enemySpawns.length,guardian=rooms[exitRoomId];
  enemySpawns.push([guardian.cx,guardian.cy,'brute','elite']);
+ enemySpawns.push([guardian.cx-2,guardian.cy-2,'archer','normal']);
  const w=common('labyrinth',seed,width,height,solid,rooms,edges,enemySpawns,{
   exitRoomId,keyRoomId,guardIndex,level,rewarded:false
  });
@@ -135,9 +136,11 @@ export function createThreeWings(seed,level=1){
  for(let i=0;i<3;i++){
   const outer=rooms[2+i*2],inner=rooms[1+i*2];
   enemySpawns.push([inner.cx,inner.cy,i===0?'bone':i===1?'bandit':'cult','normal']);
+  enemySpawns.push([inner.cx+3,inner.cy-2,i===0?'cult':i===1?'scavenger':'archer','normal']);
   const guardIndex=enemySpawns.length;
   enemySpawns.push([outer.cx-2,outer.cy-2,guardSpecies[i],'elite']);
   enemySpawns.push([outer.cx+3,outer.cy+2,i===0?'bone':i===1?'tank':'archer','normal']);
+  enemySpawns.push([outer.cx+2,outer.cy-3,i===0?'cult':i===1?'bandit':'bone','normal']);
   wings.push({...point(outer.cx+1,outer.cy),name:wingNames[i],cell:wingColors[i],roomId:outer.id,guardIndex,claimed:false});
  }
  const w=common('threeWings',seed,width,height,solid,rooms,edges,enemySpawns,{
