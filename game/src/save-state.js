@@ -176,7 +176,7 @@ const slotKey=slot=>{
  return 'slot'+Number(slot);
 };
 export function cleanSaveName(input,slot=1){
- const name=String(input??'').trim().replace(/[\\u0000-\\u001f\\u007f]/g,'').slice(0,32).trim();
+ const name=String(input??'').trim().replace(/[\u0000-\u001f\u007f]/g,'').slice(0,32).trim();
  return name||'Adventure '+slot;
 }
 const storeSnapshot=(key,snapshot)=>{
