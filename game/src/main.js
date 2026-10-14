@@ -14,7 +14,7 @@ import {AssetManager} from './assets.js?v=7.5a-floorfix';
 import {classes,art} from './data.js?v=7.5a-floorfix';
 import {TILE,direction} from './world.js?v=7.0';
 import {Combat,weapons,lineClear} from './combat.js?v=7.5d';
-import {Progression,xpNeeded,colors} from './progression.js?v=7.0';
+import {Progression,xpNeeded,colors} from './progression.js?v=7.5e-lootbalance';
 import {openInventory} from './inventory.js?v=7.0';
 
 const $=id=>document.getElementById(id),canvas=$('game'),g=canvas.getContext('2d');
@@ -122,7 +122,27 @@ function render(){
   const minY=Math.max(0,Math.floor(-oy/TILE)-2),maxY=Math.min(world.height,Math.ceil((viewHeight-oy)/TILE)+2);
   const sprites=[],outdoors=world.kind==='overworld',bounds={minX,maxX,minY,maxY};
   if(outdoors)drawOverworld(g,assets,world,player,bounds,ox,oy,sprites);
-  for(const drop of progression.drops)sprites.push({depth:drop.y-1,draw:()=>{g.strokeStyle=colors[drop.item.rarity];g.strokeRect(Math.round(drop.x+ox-11),Math.round(drop.y+oy-11),22,22);assets.draw(g,drop.item.sheet,drop.item.cell,drop.x+ox-9,drop.y+oy-9,18,18);}});
+  for(const drop of progression.drops)sprites.push({depth:drop.y-1,draw:()=>{
+    const x=drop.x+ox,y=drop.y+oy;
+    if(drop.item){
+      const color=colors[drop.item.rarity],pulse=1+.12*Math.sin(animation*3+drop.x*.02);
+      g.save();
+      // Soft, unmistakable rarity-colored ground glow, with no rectangular item frame.
+      const halo=g.createRadialGradient(x,y-6,3,x,y-6,25*pulse);
+      halo.addColorStop(0,color+'bb');halo.addColorStop(.4,color+'66');halo.addColorStop(1,color+'00');
+      g.fillStyle=halo;g.beginPath();g.ellipse(x,y-6,25*pulse,18*pulse,0,0,Math.PI*2);g.fill();
+      g.strokeStyle=color;g.globalAlpha=.7+.2*Math.sin(animation*3);
+      g.lineWidth=2;g.beginPath();g.ellipse(x,y+3,15,6,0,0,Math.PI*2);g.stroke();
+      g.restore();
+      assets.draw(g,drop.item.sheet,drop.item.cell,x-15,y-24,30,30);
+    }
+    if(drop.gold){
+      const coinX=x+(drop.item?17:0),coinY=y+(drop.item?5:0);
+      assets.draw(g,'88',8,coinX-10,coinY-9,20,20);
+      g.font='bold 9px monospace';g.fillStyle='#ffdf85';g.fillText(String(drop.gold),coinX+9,coinY+4);
+    }
+    if(drop.potions)assets.draw(g,'88',0,x+(drop.item?12:-8),y+7,16,16);
+  }});
   if(!outdoors)for(let y=minY;y<maxY;y++)for(let x=minX;x<maxX;x++){
     const px=x*TILE+ox,py=y*TILE+oy,isProp=world.props.some(p=>p.x===x&&p.y===y),wall=world.solid[y*world.width+x]&&!isProp&&!world.doors.some(d=>d.x===x&&d.y===y);
     // Choose a room palette first, then only subtle variation within that room.
