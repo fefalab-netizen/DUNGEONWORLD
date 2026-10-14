@@ -7,7 +7,8 @@ import {nearbyNPC} from './quests.js?v=7.5b';
 import {openStory} from './story-ui.js?v=7.0';
 import {storyAction} from './story-dungeon.js?v=7.5f-danger';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
-import {Adventure} from './adventure.js?v=7.5f-wilderness';
+import {Adventure} from './adventure.js?v=8';
+import {captureAdventure,restoreAdventure,validateSave,saveToBrowser,readBrowserSave,latestBrowserSave,deleteBrowserSaves} from './save-state.js?v=8';
 import {reveal,nearbyLandmark} from './overworld.js?v=7.5f-wilderness';
 import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5f-wilderness';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.5e-room-layout';
@@ -25,7 +26,7 @@ let world=createDungeon('Dunbarrow'),aimUntil=0,mapVisible=true;
 let selected=0,mode='selection',debug=false,animation=0,last=0,accumulator=0,fps=60;
 const player={...world.spawn,radius:8,flip:false};
 let combat=new Combat(world,player,classes[0]),attacking=false,dodgeRequested=false;
-let progression=new Progression(classes[0],player),toastTime=0,adventure=null;
+let progression=new Progression(classes[0],player),toastTime=0,adventure=null,lastAutoSave=0;
 function notifyLoot(message){$('toast').textContent=message;$('toast').hidden=false;toastTime=3.5;}
 function showGear(character=false){if(!['playing','paused'].includes(mode))return;setMode('inventory');try{openInventory(progression,assets,character);}catch(error){setMode('paused');reportError(error);}}
 function drinkPotion(){if(!['playing','paused'].includes(mode))return;if(progression.usePotion()){notifyLoot('Healed to '+player.hp+' / '+progression.stats.hp+' HP');}else notifyLoot(progression.potions?'Health is already full.':'No potions remaining.');syncVitals();}
@@ -48,6 +49,7 @@ async function encounter(){
  const oldWorld=world,message=adventure.interact();world=adventure.world;combat=adventure.combat;
  if(world!==oldWorld){Object.assign(camera,player);keys.clear();attacking=false;aimUntil=0;}
  notifyLoot(message);canvas.focus();
+ if(world!==oldWorld&&player.hp>0)try{saveToBrowser(adventure,selected,'auto');lastAutoSave=adventure.elapsed;}catch(error){notifyLoot('Autosave unavailable: '+error.message);}
 }
 const pointer={x:innerWidth/2+100,y:innerHeight/2};
 canvas.addEventListener('pointermove',e=>{pointer.x=e.clientX;pointer.y=e.clientY;aimUntil=performance.now()+300;});
@@ -60,7 +62,7 @@ addEventListener('resize',resize);resize();
 function select(index){selected=index;document.querySelectorAll('.character').forEach((b,i)=>{b.classList.toggle('selected',i===index);b.setAttribute('aria-pressed',String(i===index));});const c=classes[index];$('chosenName').textContent=c.name;$('chosenStats').textContent=`${c.style} · ${c.hp} health · ${c.speed} speed · ${c.attack} power · ${c.defense} defense · ${weapons[index].special}`;}
 function setMode(next){mode=next;keys.clear();attacking=false;dodgeRequested=false;accumulator=0;$('selection').hidden=next!=='selection';$('pause').hidden=next!=='paused';$('result').hidden=next!=='dead';$('complete').hidden=next!=='complete';$('hud').hidden=next==='selection';$('debug').hidden=!debug||next==='selection';if(next==='playing')canvas.focus();}
 function reset(){Object.assign(player,world.spawn,{flip:false});Object.assign(camera,world.spawn);}
-function begin(){debugSpeed.reset();adventure=new Adventure($('seed').value.trim()||'Dunbarrow',classes[selected],player,notifyLoot);world=adventure.world;combat=adventure.combat;progression=adventure.progression;Object.assign(camera,player);$('heroName').textContent=classes[selected].name;syncVitals();aimUntil=0;setMode('playing');notifyLoot('Welcome to Dunbarrow. Speak with Aldric northwest of the campfire. J opens your journal; E talks or interacts.');}
+function begin(){debugSpeed.reset();adventure=new Adventure($('seed').value.trim()||'Dunbarrow',classes[selected],player,notifyLoot);world=adventure.world;combat=adventure.combat;progression=adventure.progression;Object.assign(camera,player);$('heroName').textContent=classes[selected].name;syncVitals();aimUntil=0;lastAutoSave=0;setMode('playing');notifyLoot('Welcome to Dunbarrow. Speak with Aldric northwest of the campfire. J opens your journal; E talks or interacts.');}
 $('begin').onclick=begin;$('pauseButton').onclick=()=>setMode('paused');$('resume').onclick=()=>setMode('playing');$('reset').onclick=()=>{reset();setMode('playing');};$('change').onclick=()=>setMode('selection');
 $('reset').textContent='Restart this seed';$('reset').onclick=begin;
 $('retry').onclick=begin;$('resultChange').onclick=()=>setMode('selection');
@@ -73,9 +75,80 @@ $('inventoryButton').onclick=()=>showGear();$('characterButton').onclick=()=>sho
 $('journalButton').onclick=()=>showStory();
 $('story').addEventListener('close',()=>{if(mode==='story')setMode('playing');});
 $('gear').addEventListener('close',()=>{if(mode==='inventory')setMode('playing');});
+// Save/load is a separate UI module; no simulation advances while files load.
+function refreshSaveButtons(){
+ const saved=latestBrowserSave();$('continueRun').disabled=!saved;
+ $('continueRun').textContent=saved?'Continue · '+classes[saved.save.heroId].name:'No saved adventure';
+ $('loadManual').disabled=!readableSlot('manual');$('loadAuto').disabled=!readableSlot('auto');
+ $('saveManual').disabled=!adventure||player.hp<=0||mode==='dead';
+ $('exportSave').disabled=!adventure||player.hp<=0;
+}
+function readableSlot(slot){try{return !!readBrowserSave(slot);}catch{return false;}}
+function manualSave(){
+ if(!adventure||player.hp<=0){notifyLoot('Start a living adventure before saving.');return;}
+ try{saveToBrowser(adventure,selected,'manual');refreshSaveButtons();notifyLoot('Adventure saved in this browser.');}
+ catch(error){notifyLoot('Save failed: '+error.message);}
+}
+function openSavePanel(){
+ if(mode==='playing')setMode('paused');
+ $('saveStatus').textContent='Manual saves persist in this browser. Autosaves update every 90 seconds of play and on region changes.';
+ refreshSaveButtons();$('savePanel').showModal();
+}
+async function loadSnapshot(snapshot){
+ try{
+  const data=validateSave(snapshot);
+  const sheets=['64','66','67','68','69','70'];
+  if(data.regions.some(r=>r.id==='expedition'||['grandhall','labyrinth','threeWings'].includes(r.id)))
+   sheets.push('06','07','12','16','91','103','104','105','106','107','108','109','110','111');
+  const needed=[...new Set(sheets)].filter(id=>!assets.atlases.has(id));
+  const previousMode=mode;
+  if(needed.length){
+   setMode('loading');await assets.load(()=>{},needed);
+   if(needed.some(id=>!assets.atlases.has(id)))throw new Error('Required dungeon or biome artwork could not load.');
+  }
+  const restored=restoreAdventure(data,classes,player,notifyLoot);
+  adventure=restored;world=adventure.world;combat=adventure.combat;progression=adventure.progression;
+  select(data.heroId);$('seed').value=data.seed;$('heroName').textContent=classes[data.heroId].name;
+  Object.assign(camera,player);lastAutoSave=adventure.elapsed;aimUntil=0;mapVisible=true;keys.clear();
+  syncVitals();$('savePanel').close();setMode('playing');refreshSaveButtons();
+  notifyLoot('Adventure restored · '+(world.name||world.seed)+'.');
+ }catch(error){setMode(adventure?'paused':'selection');$('saveStatus').textContent='Could not load: '+error.message;notifyLoot('Load failed: '+error.message);}
+}
+function exportCurrentSave(){
+ if(!adventure||player.hp<=0)return;
+ try{
+  const snapshot=captureAdventure(adventure,selected);
+  const url=URL.createObjectURL(new Blob([JSON.stringify(snapshot)],{type:'application/json'}));
+  const link=document.createElement('a');link.href=url;link.download='the-first-descent-save.json';link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  $('saveStatus').textContent='Save file exported.';
+ }catch(error){$('saveStatus').textContent='Export failed: '+error.message;}
+}
+$('saveMenu').onclick=openSavePanel;
+$('closeSaves').onclick=()=>$('savePanel').close();
+$('saveManual').onclick=()=>{manualSave();$('saveStatus').textContent='Manual save updated.';};
+$('loadManual').onclick=()=>{try{const s=readBrowserSave('manual');if(s)loadSnapshot(s);}catch(error){$('saveStatus').textContent='Load failed: '+error.message;}};
+$('loadAuto').onclick=()=>{try{const s=readBrowserSave('auto');if(s)loadSnapshot(s);}catch(error){$('saveStatus').textContent='Load failed: '+error.message;}};
+$('continueRun').onclick=()=>{const entry=latestBrowserSave();if(entry)loadSnapshot(entry.save);};
+$('exportSave').onclick=exportCurrentSave;
+$('importSave').onclick=()=>$('saveFile').click();
+$('saveFile').onchange=async event=>{
+ const file=event.target.files?.[0];event.target.value='';if(!file)return;
+ try{
+  if(file.size>4_000_000)throw new Error('Save exceeds the 4 MB import limit.');
+  await loadSnapshot(validateSave(JSON.parse(await file.text())));
+ }catch(error){$('saveStatus').textContent='Import failed: '+error.message;}
+};
+$('deleteSaves').onclick=()=>{
+ if(!confirm('Delete both local manual and automatic saves? Export a backup first if you want one.'))return;
+ try{deleteBrowserSaves();refreshSaveButtons();$('saveStatus').textContent='Browser saves deleted.';}
+ catch(error){$('saveStatus').textContent=error.message;}
+};
+addEventListener('pagehide',()=>{if(adventure&&player.hp>0)try{saveToBrowser(adventure,selected,'auto');}catch{}});
 const movementCodes=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowLeft','ArrowDown','ArrowRight'];
 addEventListener('keydown',e=>{
-  if($('info').open||$('gear').open||$('story').open)return;
+  if($('info').open||$('gear').open||$('story').open||$('savePanel').open)return;
+  if(e.code==='F5'&&!e.repeat&&['playing','paused'].includes(mode)){e.preventDefault();manualSave();return;}
   if(e.code==='F4'&&!e.repeat&&mode!=='selection'){e.preventDefault();if(e.shiftKey)debugSpeed.cycle();else debugSpeed.toggle();return;}
   if(e.code==='KeyJ'&&!e.repeat&&['playing','paused'].includes(mode)){showStory();return;}
   if(['playing','paused'].includes(mode)&&!e.repeat&&['KeyI','KeyC','Digit1','Numpad1'].includes(e.code)){e.preventDefault();if(['Digit1','Numpad1'].includes(e.code))drinkPotion();else showGear(e.code==='KeyC');return;}
@@ -96,7 +169,8 @@ $('assetsButton').onclick=()=>{
   $('infoBody').innerHTML+='<h3>Verified cell uses (zero-based)</h3><p>'+spriteUsage.map(u=>`${u.sheet}.${u.cell}: ${u.use}`).join('<br>')+'</p>';
   for(const error of assets.errors){const p=document.createElement('p');p.textContent=error;$('infoBody').append(p);}$('info').showModal();
 };
-function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});
+function simulate(dt){adventure.elapsed+=dt;
+ if(player.hp>0&&adventure.elapsed-lastAutoSave>=90){lastAutoSave=adventure.elapsed;try{saveToBrowser(adventure,selected,'auto');refreshSaveButtons();}catch(error){notifyLoot('Autosave unavailable: '+error.message);}}const d=direction(keys);const mx=pointer.x*viewWidth/innerWidth-viewWidth/2+camera.x,my=pointer.y*viewHeight/innerHeight-viewHeight/2+camera.y;combat.update(dt,{...d,angle:Math.atan2(my-(player.y-13),mx-player.x),aiming:performance.now()<aimUntil,attack:attacking,dodge:dodgeRequested,moveMultiplier:debugSpeed.value});
  if(world.expedition){
   const tx=Math.floor(player.x/TILE),ty=Math.floor(player.y/TILE),terrain=world.terrain[ty*world.width+tx];
   if(terrain===5||terrain===7)player.slow=Math.max(player.slow||0,.16);
