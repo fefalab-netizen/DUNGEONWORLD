@@ -57,7 +57,7 @@ export function interactUnderkeep(w,p,pr,q){
   const c=action.target;c.open=true;const slot=w.depth===1?'armor':w.depth===2?'weapon':'trinket',item=pr.makeItem(slot,true),power=w.depth+2;
   item.rarity=c.rare?3:2;item.name=`${c.rare?'Forgotten':'Underkeep'} ${slot==='weapon'?'Arsenal':slot==='armor'?'Bastion':'Star Seal'}`;
   item.stats=slot==='weapon'?{attack:power*5}:slot==='armor'?{defense:power*2,hp:power*8}:{crit:.02*power,haste:.04*power};
-  pr.items.push(item);pr.addGold(25*w.depth);pr.potions+=2;return `${item.name} recovered, ${25*w.depth} gold and two potions. I to equip.`;
+  pr.items.push(item);pr.addGold(25*w.depth);pr.potions++;return `${item.name} recovered, ${25*w.depth} gold and a potion. I to equip.`;
  }
  return interactStory(w,p,pr,q);
 }
