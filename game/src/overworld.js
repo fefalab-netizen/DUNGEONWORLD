@@ -233,6 +233,33 @@ export function updateChunks(w,p){
    }
    props.push({tx,ty,sheet,cell,size});
   }
+  // Nonblocking points of interest: patches of undergrowth, old camps,
+  // forgotten stones, shoreline debris. Keep road cells and landmark approaches clear.
+  for(let ty=y*64+2;ty<(y+1)*64-2;ty++)for(let tx=x*64+2;tx<(x+1)*64-2;tx++){
+   if(w.terrain[ty*256+tx]!==0||w.solid[ty*256+tx]||
+      w.landmarks.some(l=>Math.abs(tx-l.tx)<8&&Math.abs(ty-l.ty)<8))continue;
+   const cluster=w.hash(Math.floor(tx/8)+174,Math.floor(ty/8)-249);
+   const detail=w.hash(tx+539,ty-919);
+   const special=w.hash(tx-311,ty+711);
+   if(!(cluster>.88&&detail>.90)&&special<.9975)continue;
+   const biome=w.expedition?expeditionBiome(tx,ty):'forest';
+   let sheet='83',cell=14,size=26;
+   if(biome==='forest'){
+    if(special>.9995){sheet='85';cell=[0,4,5,6,8,10][Math.floor(detail*6)];size=35;}
+    else {cell=[4,5,6,12,13,14,15][Math.floor(detail*7)];size=cell===12?43:cell===13?28:24;}
+   }else if(biome==='volcanic'){
+    sheet='104';cell=[4,5,6,8,10,13,15][Math.floor(detail*7)];size=cell===8?40:28;
+   }else if(biome==='jungle'){
+    if(special>.9985){sheet='85';cell=[2,6,8,10][Math.floor(detail*4)];size=38;}
+    else {sheet='83';cell=[4,5,6,7,12,14,15][Math.floor(detail*7)];size=30;}
+   }else if(biome==='frozen'){
+    if(special>.9985){sheet='85';cell=[1,4,5,8][Math.floor(detail*4)];size=34;}
+    else {sheet='83';cell=[3,8,9,10,13][Math.floor(detail*5)];size=28;}
+   }else if(biome==='coast'){
+    sheet='111';cell=[0,3,5,8,9,10,12,14][Math.floor(detail*8)];size=cell===5?20:28;
+   }else continue;
+   props.push({tx,ty,sheet,cell,size,ambient:true});
+  }
   props.push(...w.decorations.filter(p=>Math.floor(p.tx/64)===x&&Math.floor(p.ty/64)===y));w.chunks.set(key,{x,y,props});
  }
  for(const key of w.chunks.keys())if(!wanted.has(key))w.chunks.delete(key);
