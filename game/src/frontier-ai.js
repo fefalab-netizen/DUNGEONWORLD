@@ -44,6 +44,8 @@ export function updateColossal(c,e,dt,clear){
  const p=c.player,w=c.world,d=distance(e,p);
  for(const k of ['cooldown','flash','slow'])e[k]=Math.max(0,(e[k]||0)-dt);
  if(d>700){e.state='idle';return;}
+ const furious=e.hp<=e.maxHp*.48;
+ if(furious&&!e.phaseNotice){e.phaseNotice=true;c.onNotice?.(e.name+' enters a frenzy! Its attacks accelerate.');c.number('FRENZY',e.x,e.y-85,'#ff9b6e');}
  if(distance(p,w.safeZone)<w.safeZone.radius){e.state='patrol';e.alert=false;e.telegraph=null;wander(c,e,dt,130);return;}
  if(!e.alert&&d>e.detection){e.state='roaming';wander(c,e,dt,165);return;}
  e.alert=true;
@@ -51,7 +53,7 @@ export function updateColossal(c,e,dt,clear){
  if(e.telegraph){
   e.telegraph.time-=dt;e.state='windup';
   if(e.telegraph.time>0)return;
-  const t=e.telegraph;e.telegraph=null;e.state='recover';e.cooldown=3.8;
+  const t=e.telegraph;e.telegraph=null;e.state='recover';e.cooldown=furious?2.8:3.8;
   if(t.type==='line'){
    const ax=t.end.x-t.origin.x,ay=t.end.y-t.origin.y,len=Math.hypot(ax,ay)||1;
    const px=p.x-t.origin.x,py=p.y-t.origin.y,projection=(px*ax+py*ay)/len;
@@ -68,7 +70,8 @@ export function updateColossal(c,e,dt,clear){
   const target={x:p.x,y:p.y},origin={x:e.x,y:e.y};
   const angle=Math.atan2(p.y-e.y,p.x-e.x);
   const end={x:origin.x+Math.cos(angle)*265,y:origin.y+Math.sin(angle)*265};
-  e.telegraph={type,target,origin,end,radius:type==='slam'?74:63,time:type==='slam'?1.75:2.05,total:type==='slam'?1.75:2.05};
+  const warning=(type==='slam'?1.75:2.05)*(furious?.77:1);
+  e.telegraph={type,target,origin,end,radius:type==='slam'?74:63,time:warning,total:warning};
   e.state='windup';e.angle=angle;return;
  }
  e.state='stalking';
