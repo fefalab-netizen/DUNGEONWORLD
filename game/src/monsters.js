@@ -68,6 +68,12 @@ monsters.frostfangTyrant=titan('frostfangTyrant','Frostfang Tyrant',6,'frozen',2
 monsters.drownedAdmiral=titan('drownedAdmiral','Drowned Admiral',8,'coast',195,36,24,'#8dcef0');
 monsters.brute={...monsters.tank,id:'brute',name:'Orc Clubber Brute',hp:100,damage:24,armor:5,speed:43,cost:6,xp:36,abilities:['lunge']};
 monsters.herald={...monsters.keeper,id:'herald',name:'The First Herald',finalBoss:true,hp:280,damage:24,armor:4,xp:180,abilities:['rune','summon'],loot:{gold:3,rarity:3}};
+// User-authored development profiles apply only when saved in the editor.
+import {readOverrides} from './content-config.js?v=8';
+for(const [species,stats] of Object.entries(readOverrides().monsters)){
+ if(!monsters[species])continue;
+ for(const [key,value] of Object.entries(stats))if(Number.isFinite(value))monsters[species][key]=value;
+}
 export const legacyMonsters=['grunt','archer','tank','scavenger','bandit','cult'].map(id=>monsters[id]);
 export function hashSeed(value){let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;}
 export const variationCurves={hp:.85,damage:.35,reach:.45,speed:.18,reward:.8};
