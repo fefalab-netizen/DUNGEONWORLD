@@ -1,4 +1,4 @@
-import {createStoryDungeon,storyAction,interactStory} from './story-dungeon.js?v=7.5a-audit';
+import {createStoryDungeon,storyAction,interactStory} from './story-dungeon.js?v=7.5e-room-layout';
 import {hashSeed} from './monsters.js?v=7.5a-audit';
 
 export const floorNames=['Gate Halls','Broken Barracks','Sealed Sanctum'];
@@ -6,7 +6,7 @@ export const underkeepSheets=['64','66','67','68','69','70'];
 const center=r=>({x:(r.cx+.5)*32,y:(r.cy+.5)*32});
 export function createUnderkeep(seed,depth){
  // Retain the established three-wide corridors, optional branches and gated spine.
- const w=createStoryDungeon(`${seed}:underkeep:${depth}`,depth===2?'chapel':'raider',4,2);
+ const w=createStoryDungeon(`${seed}:underkeep:${depth}`,depth===2?'chapel':'raider',4,2,false);
  w.theme='underkeep';w.depth=depth;w.name=`Black Stair ${depth} / 3 · ${floorNames[depth-1]}`;
  w.floorSheet=depth===3?'68':'05';w.wallSheet=depth===3?'69':'04';w.requiredSheets=underkeepSheets;
  w.key.taken=false;w.hasKey=false;w.objects=[];w.traps=[];w.props=[];
