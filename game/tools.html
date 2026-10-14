@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The First Descent · Development Tools</title><link rel="stylesheet" href="style.css?v=8"></head>
+<body class="tools-page"><main class="tools-shell">
+<header><span class="eyebrow">THE FIRST DESCENT · MILESTONE 8</span><h1>DEVELOPMENT<br><em>TOOLS</em></h1>
+<p class="intro">Edit optional content profiles and inspect procedural dungeons. Changes take effect when you start a new adventure or refresh the game; existing saves retain their progress.</p><a href="index.html">← Return to the game</a></header>
+<nav class="tool-tabs" aria-label="Development modules"><button data-tab="monsters" class="selected">Monster Editor</button><button data-tab="encounters">Encounter Balance</button><button data-tab="generation">Generation Checks</button></nav>
+<section id="monsters" class="tool-module"><h2>Monster Editor</h2><p>Only stats you explicitly change override the defaults. Names, sprite assignments, and abilities remain unchanged.</p>
+<label for="monsterSelect">Creature</label><select id="monsterSelect"></select><div id="monsterFields" class="tool-fields"></div>
+<button id="monsterSave" class="primary">Save this creature</button><button id="monsterReset">Restore creature defaults</button></section>
+<section id="encounters" class="tool-module" hidden><h2>Encounter Balance</h2><p>Optional seeded story-dungeon encounter modifiers. Defaults retain the approved 7.5F combat balance.</p>
+<label for="budgetBonus">Enemy encounter budget adjustment (−2 to +5)</label><input id="budgetBonus" type="number" min="-2" max="5" step="1">
+<label for="eliteChance">Additional elite chance (percentage points, 0 to 25)</label><input id="eliteChance" type="number" min="0" max="25" step="1">
+<button id="encountersSave" class="primary">Save encounter settings</button></section>
+<section id="generation" class="tool-module" hidden><h2>Generation Checks</h2><p>Validation runs <strong>only when you press the button</strong>. It creates throwaway seeded worlds without modifying your saved game.</p>
+<label for="generationType">Generator</label><select id="generationType"><option value="classic">Classic Dungeon</option><option value="raider">Raider Cellar</option><option value="chapel">Bone Chapel</option><option value="underkeep1">Underkeep · floor 1</option><option value="underkeep2">Underkeep · floor 2</option><option value="underkeep3">Underkeep · floor 3</option><option value="grandhall">Grand Hall</option><option value="labyrinth">Labyrinth</option><option value="threeWings">Three Wings</option><option value="dunwood">Dunwood Overworld</option><option value="expedition">Expedition Biomes</option></select>
+<label for="generationSeed">Seed</label><input id="generationSeed" maxlength="48" value="Dunbarrow">
+<label for="generationRuns">Number of seeds (1–25)</label><input id="generationRuns" type="number" min="1" max="25" value="1">
+<button id="runGeneration" class="primary">Run checks now</button><pre id="generationResults" aria-live="polite"></pre></section>
+<section class="tool-footer"><h2>Content profiles</h2><p>Profiles are stored locally in this browser. Export JSON to share changes, or import a profile to restore them.</p>
+<button id="exportContent">Export JSON</button><button id="importContent">Import JSON</button><input type="file" id="contentFile" accept=".json,application/json" hidden>
+<button id="resetContent">Reset all editor overrides</button><p id="toolStatus" role="status" aria-live="polite"></p></section>
+</main><script type="module" src="src/dev-tools.js?v=8"></script></body></html>
