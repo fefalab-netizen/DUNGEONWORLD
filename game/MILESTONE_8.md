@@ -4,10 +4,10 @@ Milestone 8 implements the originally planned four workstreams without changing 
 
 ## 1. Save/load
 
-- **Continue saved adventure** on the character selection screen loads the most recent valid manual or autosave.
-- **Escape → Save / Load** opens manual save, manual load, autosave recovery, export, import, and deletion controls.
-- **F5** saves manually while playing or paused. Autosaves occur after 90 seconds of active gameplay, on successful region changes, and when closing/reloading a living adventure.
-- Browser saves use localStorage keys `first-descent.m8.manual` and `first-descent.m8.auto`. JSON export creates a portable local backup. They are **not cloud synchronized**.
+- **Continue saved adventure** on the character selection screen loads the most recently saved valid named slot or autosave.
+- **Escape → Save / Load** displays three independently named manual save slots, with Save/Overwrite, Load, Rename, and Delete controls for each. It also provides autosave recovery and JSON export/import.
+- **F5** saves directly to the last loaded/saved named slot; before choosing a slot, it opens the slot picker. Autosaves occur after 90 seconds of active gameplay, on successful region changes, and when closing/reloading a living adventure.
+- Browser saves use localStorage keys `first-descent.m8.slot1`, `.slot2`, `.slot3`, and `.auto`. An old `first-descent.m8.manual` save is copied into the first empty slot without overwriting any slot and the original record is retained. JSON export creates a portable local backup. They are **not cloud synchronized**.
 - Saved data uses a versioned (`version: 1`) format. Saves contain the character and equipped gear, inventory and dropped items, gold, experience, improvements, quest flags, NPC dialogue, trader stock, dungeon keys and doors, chests, activated objects, explored terrain, enemies and boss state, giant defeats, wave state, dungeon seals, and visited regions.
 - Large static tile maps and graphics are **regenerated deterministically** from the seed and original generation settings, then restored using compact mutable-state overlays.
 - Malformed, incompatible, and incomplete saves are rejected with an explanation; a missing manual save does not prevent autosave recovery.
@@ -33,7 +33,7 @@ The checks report the generated dimensions, rooms, enemy spawn count, and availa
 
 ## 4. Polish
 
-- Consistent save/load messages, a Continue entry point, and portable backup flows.
+- Consistent save/load messages, a Continue entry point, three independently named save slots, overwrite confirmation, and portable backup flows.
 - Asset preloading before restoring visited regions.
 - Exact story-dungeon generation inputs preserved across subsequent saves.
 - Updated journal and inventory guidance reflecting Milestone 8.
