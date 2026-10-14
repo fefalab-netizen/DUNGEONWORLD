@@ -1,5 +1,5 @@
 import {hashSeed,spawnMonster} from './monsters.js?v=7.5a-audit';
-import {directEncounter} from './encounters.js?v=7.5a-audit';
+import {directEncounter} from './encounters.js?v=7.5f-danger';
 import {canOccupy} from './world.js?v=7.0';
 export function createStoryDungeon(seed,theme,level=1,progress=0,varyLayout=true){
  let rng=hashSeed(seed+theme);const random=()=>{rng=(Math.imul(rng,1664525)+1013904223)>>>0;return rng/4294967296;};
