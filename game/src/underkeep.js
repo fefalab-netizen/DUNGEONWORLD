@@ -1,4 +1,4 @@
-import {createStoryDungeon,storyAction,interactStory} from './story-dungeon.js?v=7.5e-room-layout';
+import {createStoryDungeon,storyAction,interactStory} from './story-dungeon.js?v=7.5f-danger';
 import {hashSeed} from './monsters.js?v=7.5a-audit';
 
 export const floorNames=['Gate Halls','Broken Barracks','Sealed Sanctum'];
