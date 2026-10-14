@@ -77,9 +77,9 @@ export function interactGrandHall(w,p){
 }
 
 const wavePositions=[
- [[-5,-6,'grunt'],[6,-6,'archer'],[0,8,'bandit']],
- [[-8,-7,'tank','elite'],[7,-7,'archer'],[-7,8,'grunt'],[7,8,'bandit']],
- [[-6,-10,'brute','elite'],[6,-10,'archer'],[-9,0,'tank','elite'],[9,0,'bandit'],[-5,10,'grunt'],[5,10,'archer']]
+ [[-5,-6,'grunt'],[6,-6,'archer'],[0,8,'bandit'],[-8,6,'scavenger']],
+ [[-8,-7,'tank','elite'],[7,-7,'archer'],[-7,8,'grunt'],[7,8,'bandit'],[0,-10,'scavenger']],
+ [[-6,-10,'brute','elite'],[6,-10,'archer','elite'],[-9,0,'tank','elite'],[9,0,'bandit'],[-5,10,'grunt'],[5,10,'archer'],[0,3,'scavenger']]
 ];
 export function updateGrandHall(w,combat,p,dt,progression,onNotice){
  const h=w.hall,hall=w.rooms[h.roomId],arena=w.rooms[h.bossRoomId];
@@ -96,7 +96,7 @@ export function updateGrandHall(w,combat,p,dt,progression,onNotice){
    h.phase='fight';onNotice('Great Hall · Wave '+h.wave+' / 3');
   }
  }else if(h.phase==='fight'&&!combat.enemies.some(e=>e.grandHallWave===h.wave&&e.hp>0)){
-  if(h.wave<3){h.phase='intermission';h.delay=3;onNotice('Wave '+h.wave+' defeated. The hall stirs again…');}
+  if(h.wave<3){h.phase='intermission';h.delay=2.5;onNotice('Wave '+h.wave+' defeated. The hall stirs again…');}
   else {
    h.phase='cleared';w.hasKey=true;w.traps=[];
    progression.addGold(30);progression.potions++;
