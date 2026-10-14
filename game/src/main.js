@@ -101,7 +101,6 @@ async function loadSnapshot(snapshot){
   if(data.regions.some(r=>r.id==='expedition'||['grandhall','labyrinth','threeWings'].includes(r.id)))
    sheets.push('06','07','12','16','91','103','104','105','106','107','108','109','110','111');
   const needed=[...new Set(sheets)].filter(id=>!assets.atlases.has(id));
-  const previousMode=mode;
   if(needed.length){
    setMode('loading');await assets.load(()=>{},needed);
    if(needed.some(id=>!assets.atlases.has(id)))throw new Error('Required dungeon or biome artwork could not load.');
@@ -110,7 +109,7 @@ async function loadSnapshot(snapshot){
   adventure=restored;world=adventure.world;combat=adventure.combat;progression=adventure.progression;
   select(data.heroId);$('seed').value=data.seed;$('heroName').textContent=classes[data.heroId].name;
   Object.assign(camera,player);lastAutoSave=adventure.elapsed;aimUntil=0;mapVisible=true;keys.clear();
-  syncVitals();$('savePanel').close();setMode('playing');refreshSaveButtons();
+  syncVitals();if($('savePanel').open)$('savePanel').close();setMode('playing');refreshSaveButtons();
   notifyLoot('Adventure restored · '+(world.name||world.seed)+'.');
  }catch(error){setMode(adventure?'paused':'selection');$('saveStatus').textContent='Could not load: '+error.message;notifyLoot('Load failed: '+error.message);}
 }
@@ -126,7 +125,7 @@ function exportCurrentSave(){
 }
 $('saveMenu').onclick=openSavePanel;
 $('closeSaves').onclick=()=>$('savePanel').close();
-$('saveManual').onclick=()=>{manualSave();$('saveStatus').textContent='Manual save updated.';};
+$('saveManual').onclick=()=>{manualSave();$('saveStatus').textContent=readableSlot('manual')?'Manual save available in this browser.':'Manual save could not be verified.';};
 $('loadManual').onclick=()=>{try{const s=readBrowserSave('manual');if(s)loadSnapshot(s);}catch(error){$('saveStatus').textContent='Load failed: '+error.message;}};
 $('loadAuto').onclick=()=>{try{const s=readBrowserSave('auto');if(s)loadSnapshot(s);}catch(error){$('saveStatus').textContent='Load failed: '+error.message;}};
 $('continueRun').onclick=()=>{const entry=latestBrowserSave();if(entry)loadSnapshot(entry.save);};
@@ -316,6 +315,7 @@ try {
   await assets.load((done,total)=>$('loading').textContent=`Loading supplied sheets · ${done} / ${total}`);
   for(const c of classes){const b=document.createElement('button');b.className='character';b.setAttribute('aria-label',c.name);b.innerHTML=`<span class="number">0${c.id+1}</span><canvas width="96" height="96"></canvas><span class="name">${c.name}</span>`;b.onclick=()=>select(c.id);$('characters').append(b);}
   select(0);
+  refreshSaveButtons();
   const ready=coreSheets.every(id=>assets.atlases.has(id));$('begin').disabled=!ready;
   $('loading').textContent=assets.errors.length?`${assets.errors.length} sheet(s) unavailable — open Asset report${ready?'':'. Required combat art is missing.'}`:'Core artwork loaded · 111 sheets registered · Regions load on demand';
   requestAnimationFrame(frame);
