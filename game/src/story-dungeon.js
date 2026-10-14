@@ -8,6 +8,9 @@ export function createStoryDungeon(seed,theme,level=1,progress=0){
  // Required chain and optional branches are fixed before any room carving.
  const edges=Array.from({length:mainCount-1},(_,i)=>[i,i+1]);edges.push([2,mainCount],[3,mainCount+1]);
  const rooms=positions.map(([gx,gy],id)=>{const w=11+Math.floor(random()*3),h=11+Math.floor(random()*3),x=3+gx*19,y=3+gy*19;return {id,x,y,w,h,cx:x+6,cy:y+6,optional:id>=mainCount,type:id===0?'entrance':id===mainCount-1?'boss':id===mainCount-2?'objective':id>=mainCount?'treasure':chapel?['crypt','plate','ritual'][id%3]:['storage','guard post','supply'][id%3]};});
+ // The room's gameplay role remains unchanged; only the visual floor family varies.
+ const floorForType={entrance:'standard',boss:'boss',objective:chapel?'ritual':'standard',treasure:'storage',crypt:'crypt',plate:'standard',ritual:'ritual',storage:'storage','guard post':'collapsed',supply:'storage'};
+ for(const room of rooms)room.floorType=floorForType[room.type]||'standard';
  const solid=Array(width*height).fill(true),carve=(x,y)=>solid[y*width+x]=false;
  for(const r of rooms)for(let y=r.y;y<r.y+r.h;y++)for(let x=r.x;x<r.x+r.w;x++)carve(x,y);
  const doors=[];
