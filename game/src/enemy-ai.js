@@ -1,7 +1,7 @@
 import {updateHerald} from './herald.js?v=7.5f-danger';
 import {updateWildlife,updateColossal} from './frontier-ai.js?v=7.5f-danger';
 import {move,canOccupy} from './world.js?v=7.0';
-import {spawnMonster} from './monsters.js?v=7.5d';
+import {spawnMonster} from './monsters.js?v=7.5f-wilderness';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function tactics(e,enemies){
  const allies=enemies.filter(a=>a!==e&&a.hp>0&&a.faction===e.faction&&dist(a,e)<260);
@@ -118,7 +118,8 @@ function navigate(c,e,target,dt,clear,factor){
   aim=e.waypoint;if(!aim){e.state='recover';e.timer=.35;return;}
  }
  const a=Math.atan2(aim.y-e.y,aim.x-e.x),x=e.x,y=e.y;e.angle=a;
- const speed=e.speed*(e.slow>0?.5:1)*factor*(1+(e.pressure||0)*.12);move(c.world,e,Math.cos(a)*speed*dt,Math.sin(a)*speed*dt);
+ const pursuit=e.alert&&e.state==='chase'&&dist(e,c.player)>85?(c.world.kind==='overworld'?1.28:1.18):1;
+ const speed=e.speed*(e.slow>0?.5:1)*factor*pursuit*(1+(e.pressure||0)*.12);move(c.world,e,Math.cos(a)*speed*dt,Math.sin(a)*speed*dt);
  e.stuck=dist(e,{x,y})<speed*dt*.1?e.stuck+dt:0;
  if(e.stuck>1){e.waypoint=null;e.pathTimer=0;e.state='recover';e.timer=.3;e.stuck=0;}
 }
