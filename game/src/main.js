@@ -1,13 +1,13 @@
-import {underkeepAction,underkeepSheets} from './underkeep.js?v=7.5a-audit';
-import {grandHallAction,updateGrandHall} from './grand-hall.js?v=7.5e-grand-hall';
-import {legendaryAction,legendaryObjective} from './legendary-dungeons.js?v=7.5e-complete';
+import {underkeepAction,underkeepSheets} from './underkeep.js?v=7.5f-danger';
+import {grandHallAction,updateGrandHall} from './grand-hall.js?v=7.5f-danger';
+import {legendaryAction,legendaryObjective} from './legendary-dungeons.js?v=7.5f-danger';
 import {presentEnding} from './ending.js?v=7.0';
 import {DebugSpeed} from './debug-speed.js?v=7.0';
 import {nearbyNPC} from './quests.js?v=7.5b';
 import {openStory} from './story-ui.js?v=7.0';
-import {storyAction} from './story-dungeon.js?v=7.5e-room-layout';
+import {storyAction} from './story-dungeon.js?v=7.5f-danger';
 import {spriteUsage,coreSheets} from './sprite-usage.js?v=7.5a-audit';
-import {Adventure} from './adventure.js?v=7.5e-complete';
+import {Adventure} from './adventure.js?v=7.5f-danger';
 import {reveal,nearbyLandmark} from './overworld.js?v=7.5e-complete';
 import {drawOverworld,drawFog,drawWorldMap} from './overworld-render.js?v=7.5e-complete';
 import {createDungeon,nearbyInteraction,interactDungeon,trapActive} from './dungeon.js?v=7.5e-room-layout';
@@ -15,8 +15,8 @@ import {flipForAim} from './facing.js?v=7.0';
 import {AssetManager} from './assets.js?v=7.5a-floorfix';
 import {classes,art} from './data.js?v=7.5a-floorfix';
 import {TILE,direction} from './world.js?v=7.0';
-import {Combat,weapons,lineClear} from './combat.js?v=7.5d';
-import {Progression,xpNeeded,colors} from './progression.js?v=7.5e-lootbalance';
+import {Combat,weapons,lineClear} from './combat.js?v=7.5f-danger';
+import {Progression,xpNeeded,colors} from './progression.js?v=7.5f-danger';
 import {openInventory} from './inventory.js?v=7.0';
 
 const $=id=>document.getElementById(id),canvas=$('game'),g=canvas.getContext('2d');
@@ -104,7 +104,7 @@ function simulate(dt){adventure.elapsed+=dt;const d=direction(keys);const mx=poi
    world.lastHazardAt=adventure.elapsed;combat.hurt(terrain===6?14:terrain===7?8:5,{x:player.x-1,y:player.y-1});
   }
  }
- dodgeRequested=false;if(world.kind==='overworld')reveal(world,player);else if(world.theme){world.explored??=new Set();const tx=Math.floor(player.x/32),ty=Math.floor(player.y/32);for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=tx+dx,y=ty+dy;if(x>=0&&y>=0&&x<world.width&&y<world.height)world.explored.add(y*world.width+x);}const plate=world.objects.find(o=>o.kind==='plate'&&Math.hypot(o.x-player.x,o.y-player.y)<20);if(plate&&!plate.active){plate.active=true;world.ritual.plate=true;notifyLoot('Pressure plate latched. Find the lever next.');}} for(const trap of world.traps)if(trapActive(trap,combat.time)&&Math.hypot(player.x-trap.x,player.y-trap.y)<17)combat.hurt(15,trap);const blend=1-Math.exp(-9*dt);camera.x+=(player.x-camera.x)*blend;camera.y+=(player.y-camera.y)*blend;animation+=dt;
+ dodgeRequested=false;if(world.kind==='overworld')reveal(world,player);else if(world.theme){world.explored??=new Set();const tx=Math.floor(player.x/32),ty=Math.floor(player.y/32);for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){const x=tx+dx,y=ty+dy;if(x>=0&&y>=0&&x<world.width&&y<world.height)world.explored.add(y*world.width+x);}const plate=world.objects.find(o=>o.kind==='plate'&&Math.hypot(o.x-player.x,o.y-player.y)<20);if(plate&&!plate.active){plate.active=true;world.ritual.plate=true;notifyLoot('Pressure plate latched. Find the lever next.');}} for(const trap of world.traps)if(trapActive(trap,combat.time)&&Math.hypot(player.x-trap.x,player.y-trap.y)<17)combat.hurt(['grandHall','labyrinth','threeWings'].includes(world.layout)?19:16,trap);const blend=1-Math.exp(-9*dt);camera.x+=(player.x-camera.x)*blend;camera.y+=(player.y-camera.y)*blend;animation+=dt;
  if(world.layout==='grandHall')updateGrandHall(world,combat,player,dt,progression,notifyLoot);
   const picked=progression.collect(player,(a,b)=>lineClear(world,a,b));if(picked.length)notifyLoot(`Collected ${picked.map(i=>i.name).join(', ')} · I to equip${progression.points?' · C: improvement available':''}`);
  toastTime-=dt;if(toastTime<=0)$('toast').hidden=true;
