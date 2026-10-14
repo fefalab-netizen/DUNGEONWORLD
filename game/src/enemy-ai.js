@@ -1,5 +1,5 @@
-import {updateHerald} from './herald.js?v=7.0';
-import {updateWildlife,updateColossal} from './frontier-ai.js?v=7.5d';
+import {updateHerald} from './herald.js?v=7.5f-danger';
+import {updateWildlife,updateColossal} from './frontier-ai.js?v=7.5f-danger';
 import {move,canOccupy} from './world.js?v=7.0';
 import {spawnMonster} from './monsters.js?v=7.5d';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
