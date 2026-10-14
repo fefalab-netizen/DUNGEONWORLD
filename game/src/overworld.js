@@ -152,6 +152,62 @@ export function createOverworld(seed='Dunbarrow',expedition=false){
    if(place)enemySpawns.push([place[0],place[1],id,'boss']);
   }
  }
+ // Seeded off-road patrol territories give Dunwood and the four frontier biomes
+ // real encounters between authored landmarks. Never overwrite existing ground or roads.
+ // Only terrain already connected to camp receives creatures.
+ const reachable=new Uint8Array(width*height),frontier=[camp.ty*width+camp.tx];reachable[frontier[0]]=1;
+ for(let i=0;i<frontier.length;i++){
+  const n=frontier[i],x=n%width,y=Math.floor(n/width);
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+   const nx=x+dx,ny=y+dy,k=ny*width+nx;
+   if(nx<2||ny<2||nx>253||ny>253||reachable[k]||solid[k])continue;
+   reachable[k]=1;frontier.push(k);
+  }
+ }
+ const offroadClear=(x,y)=>{
+  if(x<5||y<5||x>250||y>250||!reachable[y*width+x]||terrain[y*width+x]!==0)return false;
+  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(solid[(y+dy)*width+x+dx])return false;
+  if(Math.hypot(x-camp.tx,y-camp.ty)<(expedition?26:22))return false;
+  return !landmarks.some(l=>Math.hypot(x-l.tx,y-l.ty)<9);
+ };
+ const forestEnemy=['grunt','bandit','scavenger','archer','tank'];
+ const frontierEnemy={
+  volcanic:['fireImp','hellhound','magmaElemental'],
+  jungle:['sporeling','jungleStalker','fungalMage'],
+  frozen:['frostStalker','iceWraith','frostStalker'],
+  coast:['coastRaider','drownedWraith','coastRaider']
+ };
+ const frontierWildlife={
+  volcanic:['ashGecko'],
+  jungle:['jungleMacaw','jungleMonkey','jungleLizard'],
+  frozen:['snowHare','arcticFox','snowOwl'],
+  coast:['shoreCrab','seaTurtle','seagull','beachLizard']
+ };
+ // Keep each cell cluster small and separated, with occasional patrol pairs.
+ // Grid jitter is deterministic per seed and capped for reasonable combat cost.
+ let patrolCount=0,wildCount=0;
+ for(let gy=8;gy<248;gy+=12)for(let gx=8;gx<248;gx+=12){
+  const x=gx+2+Math.floor(random()*8),y=gy+2+Math.floor(random()*8);
+  const biome=expedition?expeditionBiome(x,y):'forest';
+  if(biome==='outpost'||!offroadClear(x,y))continue;
+  if(random()<.62){
+   const types=expedition?frontierEnemy[biome]:forestEnemy;
+   if(!types)continue;
+   const species=types[Math.floor(random()*types.length)];
+   enemySpawns.push([x,y,species,random()<.12?'elite':'normal']);patrolCount++;
+   // Second creature reinforces groups without creating a solid wall of monsters.
+   if(random()<.28){
+    for(const [dx,dy] of [[3,2],[-3,2],[2,-3],[-2,-3]]){
+     if(offroadClear(x+dx,y+dy)){
+      enemySpawns.push([x+dx,y+dy,types[Math.floor(random()*types.length)]]);patrolCount++;break;
+     }
+    }
+   }
+  }else if(expedition&&random()<.58){
+   const types=frontierWildlife[biome];
+   if(types){enemySpawns.push([x,y,types[Math.floor(random()*types.length)]]);wildCount++;}
+  }
+ }
  const w={kind:'overworld',expedition,biomeAt:expedition?expeditionBiome:null,seed:String(seed),numericSeed,width,height,terrain,solid,landmarks,decorations,enemySpawns,spawn:{x:camp.x,y:camp.y},safeZone:{x:camp.x,y:camp.y,radius:11*TILE},explored:new Uint8Array(width*height),chunks:new Map(),props:[],doors:[],traps:[],chests:[],hash};
  const report=validateOverworld(w);if(!report.valid)throw new Error('Overworld has unreachable landmarks.');
  reveal(w,w.spawn);updateChunks(w,w.spawn);return w;
